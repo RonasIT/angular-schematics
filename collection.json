@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "section-module": {
+      "description": "Generate section module",
+      "factory": "./src/section-module/index#sectionModule",
+      "schema": "./src/section-module/schema.json"
+    },
+    "page-module": {
+      "description": "Generate page module",
+      "factory": "./page-module/index#pageModule",
+      "schema": "./page-module/schema.json"
+    }
+  }
+}

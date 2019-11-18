@@ -1,0 +1,28 @@
+{
+  "name": "@ronas-it/angular-schematics",
+  "version": "1.0.2",
+  "description": "Ronas IT Angular Schematics",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "keywords": [
+    "schematics",
+    "generator",
+    "boilerplate",
+    "angular",
+    "modules"
+  ],
+  "author": "Ronas IT",
+  "license": "MIT",
+  "schematics": "./collection.json",
+  "dependencies": {
+    "@angular-devkit/core": "^8.3.19",
+    "@angular-devkit/schematics": "^8.3.19",
+    "@schematics/angular": "^8.3.19",
+    "@types/node": "^12.12.8",
+    "typescript": "~3.7.2"
+  },
+  "devDependencies": {
+    "@angular-devkit/schematics-cli": "^0.803.19"
+  }
+}
