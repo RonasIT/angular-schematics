@@ -3,13 +3,8 @@
   "schematics": {
     "section-module": {
       "description": "Generate section module",
-      "factory": "./src/section-module/index#sectionModule",
+      "factory": "./src/section-module",
       "schema": "./src/section-module/schema.json"
-    },
-    "page-module": {
-      "description": "Generate page module",
-      "factory": "./page-module/index#pageModule",
-      "schema": "./page-module/schema.json"
     }
   }
 }
