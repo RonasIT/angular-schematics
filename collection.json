@@ -1,6 +1,11 @@
 {
   "$schema": "./node_modules/@angular-devkit/schematics/collection-schema.json",
   "schematics": {
+    "init-project": {
+      "description": "Initialize project",
+      "factory": "./src/init-project",
+      "schema": "./src/init-project/schema.json"
+    },
     "section-module": {
       "description": "Generate section module",
       "factory": "./src/section-module",

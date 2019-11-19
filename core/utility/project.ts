@@ -19,7 +19,13 @@ export function getProject(
         : workspace.defaultProject
   }
 
-  return workspace.projects[options.project];
+  const project = workspace.projects[options.project];
+
+  if (project && project.root.substr(-1) === '/') {
+    project.root = project.root.substr(0, project.root.length - 1);
+  }
+
+  return project;
 }
 
 export function getProjectPath(
@@ -31,14 +37,27 @@ export function getProjectPath(
   }
 
   const project = getProject(host, options);
-
-  if (project.root.substr(-1) === '/') {
-    project.root = project.root.substr(0, project.root.length - 1);
-  }
-
   const projectDirName = project.projectType === 'application' ? 'app' : 'lib';
 
   return `${(project.root) ? `/${project.root}` : ''}/src/${projectDirName}`;
+}
+
+export function getAppRootPath(
+  host: Tree,
+  options: { project?: string | undefined; path?: string | undefined }
+) {
+  const project = getProject(host, options);
+
+  return `${project.root}/src`;
+}
+
+export function getRootPath(
+  host: Tree,
+  options: { project?: string | undefined; path?: string | undefined }
+) {
+  const project = getProject(host, options);
+
+  return project.root;
 }
 
 export function isLib(
