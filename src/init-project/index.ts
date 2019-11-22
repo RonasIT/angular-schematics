@@ -1,26 +1,26 @@
-import { fragment } from '@angular-devkit/core';
+import { fragment, normalize } from '@angular-devkit/core';
 import { getAppRootPath, getProjectPath, getRootPath } from '../../core';
 import { Rule, Tree } from '@angular-devkit/schematics';
 import { Schema as InitProjectOptions } from './schema';
 
 export function replaceEnvironmentsDirectory(host: Tree, options: InitProjectOptions): void {
   const appRootPath = getAppRootPath(host, options);
-  const environmentsDirectory = host.getDir(`${appRootPath}/environments`);
+  const environmentsDirectory = host.getDir(normalize(`${appRootPath}/environments`));
 
-  host.delete(`${appRootPath}/environments`);
+  host.delete(normalize(`${appRootPath}/environments`));
 
   const environmentProdFileEntry = environmentsDirectory.file(fragment('environment.prod.ts'));
   const environmentFileEntry = environmentsDirectory.file(fragment('environment.ts'));
   if (environmentProdFileEntry !== null) {
     host.create(
-      `${appRootPath}/configurations/configuration.prod.ts`,
+      normalize(`${appRootPath}/configurations/configuration.prod.ts`),
       environmentProdFileEntry.content.toString().replace(/environment/g, 'configuration')
     );
   }
 
   if (environmentFileEntry !== null) {
     host.create(
-      `${appRootPath}/configurations/configuration.ts`,
+      normalize(`${appRootPath}/configurations/configuration.ts`),
       environmentFileEntry.content.toString().replace(/environment/g, 'configuration')
     );
   }
@@ -28,7 +28,7 @@ export function replaceEnvironmentsDirectory(host: Tree, options: InitProjectOpt
 
 export function replaceEnvironmentsInMainTs(host: Tree, options: InitProjectOptions): void {
   const appRootPath = getAppRootPath(host, options);
-  const mainTsPath = `${appRootPath}/main.ts`;
+  const mainTsPath = normalize(`${appRootPath}/main.ts`);
 
   if (host.exists(mainTsPath)) {
     const mainTsContent = host.read(mainTsPath)!.toString('utf-8');
@@ -38,7 +38,7 @@ export function replaceEnvironmentsInMainTs(host: Tree, options: InitProjectOpti
 
 export function replaceEnvironmentsInAngularJson(host: Tree, options: InitProjectOptions): void {
   const rootPath = getRootPath(host, options);
-  const configPath = `${rootPath}/angular.json`;
+  const configPath = normalize(`${rootPath}/angular.json`);
 
   if (host.exists(configPath)) {
     const angularJsonContent = host.read(configPath)!.toString('utf-8');
@@ -55,7 +55,10 @@ export function replaceEnvironments(host: Tree, options: InitProjectOptions): vo
 export function replaceRouting(host: Tree, options: InitProjectOptions): void {
   const projectPath = getProjectPath(host, options);
 
-  host.rename(`${projectPath}/app-routing.module.ts`, `${projectPath}/app.routing.ts`);
+  host.rename(
+    normalize(`${projectPath}/app-routing.module.ts`),
+    normalize(`${projectPath}/app.routing.ts`)
+  );
 }
 
 export default function (options: InitProjectOptions): Rule {

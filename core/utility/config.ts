@@ -1,5 +1,5 @@
 import { SchematicsException, Tree } from '@angular-devkit/schematics';
-import { experimental } from '@angular-devkit/core';
+import { experimental, parseJson, JsonParseMode } from '@angular-devkit/core';
 
 // The interfaces below are generated from the Angular CLI configuration schema
 // https://github.com/angular/angular-cli/blob/master/packages/@angular/cli/lib/config/schema.json
@@ -23,22 +23,20 @@ export interface AppConfig {
   /**
    * List of application assets.
    */
-  assets?: (
-    | string
-    | {
-        /**
-         * The pattern to match.
-         */
-        glob?: string;
-        /**
-         * The dir to search within.
-         */
-        input?: string;
-        /**
-         * The output path (relative to the outDir).
-         */
-        output?: string;
-      })[];
+  assets?: (string | {
+    /**
+     * The pattern to match.
+     */
+    glob?: string;
+    /**
+     * The dir to search within.
+     */
+    input?: string;
+    /**
+     * The output path (relative to the outDir).
+     */
+    output?: string;
+  })[];
   /**
    * URL where files will be deployed.
    */
@@ -50,7 +48,7 @@ export interface AppConfig {
   /**
    * The runtime platform of the app.
    */
-  platform?: 'browser' | 'server';
+  platform?: ('browser' | 'server');
   /**
    * The name of the start HTML file.
    */
@@ -86,12 +84,10 @@ export interface AppConfig {
   /**
    * Global styles to be included in the build.
    */
-  styles?: (
-    | string
-    | {
-        input?: string;
-        [name: string]: any; // tslint:disable-line:no-any
-      })[];
+  styles?: (string | {
+    input?: string;
+    [name: string]: any; // tslint:disable-line:no-any
+  })[];
   /**
    * Options to pass to style preprocessors
    */
@@ -104,12 +100,10 @@ export interface AppConfig {
   /**
    * Global scripts to be included in the build.
    */
-  scripts?: (
-    | string
-    | {
-        input: string;
-        [name: string]: any; // tslint:disable-line:no-any
-      })[];
+  scripts?: (string | {
+    input: string;
+    [name: string]: any; // tslint:disable-line:no-any
+  })[];
   /**
    * Source file for environment config.
    */
@@ -124,13 +118,51 @@ export interface AppConfig {
     app: string;
     route: string;
   };
+  budgets?: {
+    /**
+     * The type of budget
+     */
+    type?: ('bundle' | 'initial' | 'allScript' | 'all' | 'anyScript' | 'any' | 'anyComponentStyle');
+    /**
+     * The name of the bundle
+     */
+    name?: string;
+    /**
+     * The baseline size for comparison.
+     */
+    baseline?: string;
+    /**
+     * The maximum threshold for warning relative to the baseline.
+     */
+    maximumWarning?: string;
+    /**
+     * The maximum threshold for error relative to the baseline.
+     */
+    maximumError?: string;
+    /**
+     * The minimum threshold for warning relative to the baseline.
+     */
+    minimumWarning?: string;
+    /**
+     * The minimum threshold for error relative to the baseline.
+     */
+    minimumError?: string;
+    /**
+     * The threshold for warning relative to the baseline (min & max).
+     */
+    warning?: string;
+    /**
+     * The threshold for error relative to the baseline (min & max).
+     */
+    error?: string;
+  }[];
 }
 
 export type WorkspaceSchema = experimental.workspace.WorkspaceSchema;
 
 export function getWorkspacePath(host: Tree): string {
   const possibleFiles = ['/angular.json', '/.angular.json'];
-  const path = possibleFiles.filter(path => host.exists(path))[0];
+  const path = possibleFiles.filter((path) => host.exists(path))[0];
 
   return path;
 }
@@ -141,7 +173,7 @@ export function getWorkspace(host: Tree): WorkspaceSchema {
   if (configBuffer === null) {
     throw new SchematicsException(`Could not find (${path})`);
   }
-  const config = configBuffer.toString();
+  const content = configBuffer.toString();
 
-  return JSON.parse(config);
+  return parseJson(content, JsonParseMode.Loose) as {} as WorkspaceSchema;
 }

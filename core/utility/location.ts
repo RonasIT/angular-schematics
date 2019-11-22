@@ -1,4 +1,10 @@
-import { Path, basename, dirname, normalize } from '@angular-devkit/core';
+import {
+  basename,
+  dirname,
+  join,
+  normalize,
+  Path
+} from '@angular-devkit/core';
 
 export interface Location {
   name: string;
@@ -6,8 +12,8 @@ export interface Location {
 }
 
 export function parseLocation(path: string, name: string): Location {
-  const nameWithoutPath = basename(name as Path);
-  const namePath = dirname((path + '/' + name) as Path);
+  const nameWithoutPath = basename(normalize(name));
+  const namePath = dirname(join(normalize(path), name) as Path);
 
   return {
     name: nameWithoutPath,
