@@ -16,15 +16,19 @@ import {
   Tree,
   url
 } from '@angular-devkit/schematics';
+import { join, Path, strings } from '@angular-devkit/core';
 import { normalize } from 'path';
 import { Schema as PageModuleOptions } from './schema';
-import { strings } from '@angular-devkit/core';
 
 export default function (options: PageModuleOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
     if (!options.path) {
       options.path = getProjectPath(host, options);
       options.path = normalize(`${options.path}/${options.section}`);
+
+      if (options.parent) {
+        options.path = join(options.path as Path, `/${options.parent}`);
+      }
     }
 
     const location = parseLocation(options.path, options.name);
@@ -47,7 +51,12 @@ export default function (options: PageModuleOptions): Rule {
         name: options.name,
         route: strings.dasherize(options.name),
         path: options.path,
-        module: getRoutingModulePath(host, `${options.section}/${options.section}.routing.ts`)
+        module: getRoutingModulePath(
+          host,
+          (options.parent)
+            ? `${options.section}/${options.parent}/${options.parent}.routing.ts`
+            : `${options.section}/${options.section}.routing.ts`
+        )
       })
     ]);
 
