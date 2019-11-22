@@ -7,6 +7,7 @@
     "name": {
       "description": "The name of the section.",
       "type": "string",
+      "minLength": 1,
       "$default": {
         "$source": "argv",
         "index": 0

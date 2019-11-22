@@ -10,6 +10,11 @@
       "description": "Generate section module",
       "factory": "./src/section-module",
       "schema": "./src/section-module/schema.json"
+    },
+    "page-module": {
+      "description": "Generate page module",
+      "factory": "./src/page-module",
+      "schema": "./src/page-module/schema.json"
     }
   }
 }
