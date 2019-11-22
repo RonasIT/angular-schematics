@@ -1,4 +1,10 @@
 import {
+  addRouteDeclarationToNgModule,
+  getProjectPath,
+  getRoutingModulePath,
+  parseLocation
+} from '../../core';
+import {
   apply,
   chain,
   MergeStrategy,
@@ -9,8 +15,7 @@ import {
   template,
   Tree,
   url
-  } from '@angular-devkit/schematics';
-import { getProjectPath, parseLocation } from '../../core';
+} from '@angular-devkit/schematics';
 import { Schema as SectionModuleOptions } from './schema';
 import { strings } from '@angular-devkit/core';
 
@@ -18,10 +23,10 @@ export default function (options: SectionModuleOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
     options.path = getProjectPath(host, options);
 
-    const parsedPath = parseLocation(options.path, options.name);
+    const location = parseLocation(options.path, options.name);
 
-    options.name = parsedPath.name;
-    options.path = parsedPath.path;
+    options.name = location.name;
+    options.path = location.path;
 
     const templateSource = apply(url('./files'), [
       template({
@@ -34,6 +39,12 @@ export default function (options: SectionModuleOptions): Rule {
 
     const rule = chain([
       mergeWith(templateSource, MergeStrategy.Overwrite),
+      addRouteDeclarationToNgModule({
+        name: options.name,
+        route: strings.dasherize(options.name),
+        path: options.path,
+        module: getRoutingModulePath(host, 'app.routing.ts')
+      })
     ]);
 
     return rule(host, context);

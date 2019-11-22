@@ -1,4 +1,6 @@
 import { getWorkspace } from './config';
+import { MODULE_EXT } from '@schematics/angular/utility/find-module';
+import { normalize, Path, join } from '@angular-devkit/core';
 import { Tree } from '@angular-devkit/schematics';
 
 export interface WorkspaceProject {
@@ -31,15 +33,15 @@ export function getProject(
 export function getProjectPath(
   host: Tree,
   options: { project?: string | undefined; path?: string | undefined }
-) {
-  if (options.path !== undefined) {
-    return options.path;
+): Path {
+  if (options && options.path !== undefined) {
+    return options.path as Path;
   }
 
   const project = getProject(host, options);
   const projectDirName = project.projectType === 'application' ? 'app' : 'lib';
 
-  return `${(project.root) ? `/${project.root}` : ''}/src/${projectDirName}`;
+  return normalize(`${(project.root) ? `/${project.root}` : ''}/src/${projectDirName}`);
 }
 
 export function getAppRootPath(
@@ -48,7 +50,7 @@ export function getAppRootPath(
 ) {
   const project = getProject(host, options);
 
-  return `${project.root}/src`;
+  return normalize(`${project.root}/src`);
 }
 
 export function getRootPath(
@@ -58,6 +60,18 @@ export function getRootPath(
   const project = getProject(host, options);
 
   return project.root;
+}
+
+export declare const ROUTING_MODULE_EXT = '.routing.ts';
+
+export function getRoutingModulePath(host: Tree, modulePath: string): Path | undefined {
+  const routingModulePath = modulePath.endsWith(ROUTING_MODULE_EXT)
+    ? modulePath
+    : modulePath.replace(MODULE_EXT, ROUTING_MODULE_EXT);
+
+  const normalizedRoutingModulePath = join(getProjectPath(host, {}), normalize(routingModulePath));
+
+  return host.exists(normalizedRoutingModulePath) ? normalizedRoutingModulePath : undefined;
 }
 
 export function isLib(
