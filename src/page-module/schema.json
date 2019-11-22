@@ -17,11 +17,11 @@
     "parent": {
       "type": "string",
       "description": "The name of the parent page.",
+      "optional": true,
       "$default": {
         "$source": "argv",
-        "index": 1
-      },
-      "x-prompt": "What the name of the parent page? [optional]"
+        "index": 2
+      }
     },
     "name": {
       "description": "The name of the page.",
@@ -29,7 +29,7 @@
       "minLength": 1,
       "$default": {
         "$source": "argv",
-        "index": 2
+        "index": 1
       },
       "x-prompt": "What should be the name of the page?"
     },
