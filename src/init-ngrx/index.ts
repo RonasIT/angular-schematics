@@ -1,3 +1,4 @@
+import { addDepsToPackageJson, getAppRootPath } from '../../core';
 import {
   apply,
   chain,
@@ -10,9 +11,10 @@ import {
   Tree,
   url
 } from '@angular-devkit/schematics';
-import { getAppRootPath } from '../../core';
 import { Schema as InitNgRxOptions } from './schema';
 import { strings } from '@angular-devkit/core';
+
+const NGRX_VERSION = '^8.5.2';
 
 export function createAppStoreFiles(host: Tree, options: InitNgRxOptions): Rule {
   const appRootPath = getAppRootPath(host, options);
@@ -30,7 +32,16 @@ export function createAppStoreFiles(host: Tree, options: InitNgRxOptions): Rule 
 }
 
 export function addNgRxToPackageJson(host: Tree, options: InitNgRxOptions): Rule {
-  return noop();
+  return addDepsToPackageJson(
+    {
+      '@ngrx/effects': NGRX_VERSION,
+      '@ngrx/router-store': NGRX_VERSION,
+      '@ngrx/store': NGRX_VERSION
+    },
+    {
+      '@ngrx/store-devtools': NGRX_VERSION
+    }
+  );
 }
 
 export function addNgRxImportsToAppModule(host: Tree, options: InitNgRxOptions): Rule {
