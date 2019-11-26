@@ -20,6 +20,8 @@
     "@angular-devkit/schematics": "^8.3.19",
     "@schematics/angular": "^8.3.19",
     "@types/node": "^12.12.8",
+    "sort-keys": "^4.0.0",
+    "strip-json-comments": "^3.0.1",
     "typescript": "~3.7.2"
   },
   "devDependencies": {

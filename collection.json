@@ -1,6 +1,11 @@
 {
   "$schema": "./node_modules/@angular-devkit/schematics/collection-schema.json",
   "schematics": {
+    "init-ngrx": {
+      "description": "Initialize NgRx",
+      "factory": "./src/init-ngrx",
+      "schema": "./src/init-ngrx/schema.json"
+    },
     "init-project": {
       "description": "Initialize project",
       "factory": "./src/init-project",
