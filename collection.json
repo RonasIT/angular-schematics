@@ -20,6 +20,11 @@
       "description": "Generate page module",
       "factory": "./src/page-module",
       "schema": "./src/page-module/schema.json"
+    },
+    "shared-module": {
+      "description": "Generate shared module",
+      "factory": "./src/shared-module",
+      "schema": "./src/shared-module/schema.json"
     }
   }
 }
