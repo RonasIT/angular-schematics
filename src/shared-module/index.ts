@@ -26,6 +26,8 @@ export default function (options: SharedModuleOptions): Rule {
         options.type = 'component';
       } else if (options.directive) {
         options.type = 'directive';
+      } else if (options.pipe) {
+        options.type = 'pipe';
       } else if (options.service) {
         options.type = 'service';
       } else {
@@ -50,6 +52,8 @@ export default function (options: SharedModuleOptions): Rule {
       templatesPath = `${templatesPath}/component`;
     } else if (options.type === 'directive') {
       templatesPath = `${templatesPath}/directive`;
+    } else if (options.type === 'pipe') {
+      templatesPath = `${templatesPath}/pipe`;
     } else if (options.type === 'service') {
       templatesPath = `${templatesPath}/service`;
     }

@@ -21,6 +21,7 @@
       "enum": [
         "component",
         "directive",
+        "pipe",
         "service"
       ],
       "x-prompt": "Which type of shared module would you like to generate?"
@@ -28,6 +29,18 @@
     "component": {
       "type": "string",
       "description": "Generate component"
+    },
+    "directive": {
+      "type": "string",
+      "description": "Generate directive"
+    },
+    "pipe": {
+      "type": "string",
+      "description": "Generate pipe"
+    },
+    "service": {
+      "type": "string",
+      "description": "Generate service"
     },
     "path": {
       "type": "string",
