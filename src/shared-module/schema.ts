@@ -5,5 +5,6 @@ export interface Schema {
   directive: string;
   pipe: string;
   service: string;
+  section: string;
   path: string;
 }

@@ -37,9 +37,12 @@ export default function (options: SharedModuleOptions): Rule {
 
     if (!options.path) {
       options.path = getProjectPath(host, options);
-      if (options.type) {
-        options.path = join(options.path as Path, 'shared', options.name);
+
+      if (options.section) {
+        options.path = join(options.path as Path, options.section);
       }
+
+      options.path = join(options.path as Path, 'shared', options.name);
     }
 
     const location = parseLocation(options.path, options.name);
