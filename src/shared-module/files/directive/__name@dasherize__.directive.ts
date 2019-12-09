@@ -1,9 +1,9 @@
 import { Directive, ElementRef } from '@angular/core';
 
 @Directive({
-  selector: '[<%= camelize(name) %>]'
+  selector: '[<% if (section) { %><%= camelize(section) %><%= classify(name) %><% } else { %><%= camelize(name) %><% } %>]'
 })
-export class <%= classify(name) %>Directive {
+export class <% if (section) { %><%= classify(section) %><% } %><%= classify(name) %>Directive {
   constructor(
     private elementRef: ElementRef
   ) { }

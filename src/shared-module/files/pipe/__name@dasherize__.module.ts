@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { <%= classify(name) %>Pipe } from './<%= dasherize(name) %>.pipe';
+import { <% if (section) { %><%= classify(section) %><% } %><%= classify(name) %>Pipe } from './<%= dasherize(name) %>.pipe';
 
 @NgModule({
   declarations: [
-    <%= classify(name) %>Pipe
+    <% if (section) { %><%= classify(section) %><% } %><%= classify(name) %>Pipe
   ],
   imports: [
     CommonModule
   ],
   providers: []
 })
-export class <%= classify(name) %>Module { }
+export class <% if (section) { %><%= classify(section) %><% } %><%= classify(name) %>Module { }

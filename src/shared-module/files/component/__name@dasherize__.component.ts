@@ -1,6 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Component } from '@angular/core';
 
-@Injectable()
-export class <%= classify(name) %>Service {
-
-}
+@Component({
+  selector: '<% if (section) { %><%= dasherize(section) %>-<%= dasherize(name) %><% } else { %><%= dasherize(name) %><% } %>',
+  templateUrl: '<%= dasherize(name) %>.html',
+  styleUrls: ['<%= dasherize(name) %>.scss']
+})
+export class <% if (section) { %><%= classify(section) %><% } %><%= classify(name) %>Component { }
