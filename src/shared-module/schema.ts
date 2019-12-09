@@ -6,5 +6,6 @@ export interface Schema {
   pipe: string;
   service: string;
   section: string;
+  page: string;
   path: string;
 }

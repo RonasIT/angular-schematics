@@ -46,6 +46,10 @@
       "type": "string",
       "description": "The name of the section."
     },
+    "section": {
+      "type": "string",
+      "description": "The name of the page."
+    },
     "path": {
       "type": "string",
       "format": "path",

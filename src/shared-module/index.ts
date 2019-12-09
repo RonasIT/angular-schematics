@@ -3,7 +3,7 @@ import {
   getProjectPath,
   getRoutingModulePath,
   parseLocation
-  } from '../../core';
+} from '../../core';
 import {
   apply,
   chain,
@@ -15,7 +15,7 @@ import {
   template,
   Tree,
   url
-  } from '@angular-devkit/schematics';
+} from '@angular-devkit/schematics';
 import { join, Path, strings } from '@angular-devkit/core';
 import { Schema as SharedModuleOptions } from './schema';
 
@@ -40,6 +40,21 @@ function prepareOptionsType(options: SharedModuleOptions): void {
   }
 }
 
+function getFolderNameByType(options: SharedModuleOptions): string {
+  switch (options.type) {
+    case 'component':
+      return 'components';
+    case 'directive':
+      return 'directives';
+    case 'pipe':
+      return 'pipes';
+    case 'service':
+      return 'services';
+    default:
+      return 'unknown';
+  }
+}
+
 function prepareOptionsPath(host: Tree, options: SharedModuleOptions): void {
   if (!options.path) {
     options.path = getProjectPath(host, options);
@@ -48,7 +63,15 @@ function prepareOptionsPath(host: Tree, options: SharedModuleOptions): void {
       options.path = join(options.path as Path, options.section);
     }
 
-    options.path = join(options.path as Path, 'shared', options.name);
+    if (options.page) {
+      options.path = join(options.path as Path, options.page);
+    }
+
+    if (options.page) {
+      options.path = join(options.path as Path, 'shared', getFolderNameByType(options), options.name);
+    } else {
+      options.path = join(options.path as Path, 'shared', options.name);
+    }
   }
 
   const location = parseLocation(options.path, options.name);
@@ -59,14 +82,21 @@ function prepareOptionsPath(host: Tree, options: SharedModuleOptions): void {
 
 function getTemplatesPath(options: SharedModuleOptions): string {
   let templatesPath = './files';
-  if (options.type === 'component') {
-    templatesPath = `${templatesPath}/component`;
-  } else if (options.type === 'directive') {
-    templatesPath = `${templatesPath}/directive`;
-  } else if (options.type === 'pipe') {
-    templatesPath = `${templatesPath}/pipe`;
-  } else if (options.type === 'service') {
-    templatesPath = `${templatesPath}/service`;
+  switch (options.type) {
+    case 'component':
+      templatesPath = `${templatesPath}/component`;
+      break;
+    case 'directive':
+      templatesPath = `${templatesPath}/directive`;
+      break;
+    case 'pipe':
+      templatesPath = `${templatesPath}/pipe`;
+      break;
+    case 'service':
+      templatesPath = `${templatesPath}/service`;
+      break;
+    default:
+      break;
   }
 
   return templatesPath;
