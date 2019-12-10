@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: '<% if (section) { %><%= dasherize(section) %>-<%= dasherize(name) %><% } else { %><% if (page) { %><%= dasherize(page) %>-<% } %><%= dasherize(name) %><% } %>',
+  selector: '<%= dasherize(((hasSection && !hasPage) ? (section + ' '): '') + ((hasSection && hasPage) ? (page + ' ') : '') + name) %>',
   templateUrl: '<%= dasherize(name) %>.html',
   styleUrls: ['<%= dasherize(name) %>.scss']
 })
-export class <% if (section) { %><%= classify(section) %><% } %><% if (page) { %><%= classify(page) %><% } %><%= classify(name) %>Component { }
+export class <%= classify(((hasSection) ? (section + ' '): '') + ((hasSection && hasPage) ? (page + ' ') : '') + name) %>Component { }

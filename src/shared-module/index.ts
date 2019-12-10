@@ -63,17 +63,17 @@ function prepareOptionsPath(host: Tree, options: SharedModuleOptions): void {
     options.path = getProjectPath(host, options);
 
     if (options.section) {
-      options.path = join(options.path as Path, options.section);
+      options.path = join(options.path as Path, strings.dasherize(options.section));
     }
 
     if (options.page) {
-      options.path = join(options.path as Path, options.page);
+      options.path = join(options.path as Path, strings.dasherize(options.page));
     }
 
     if (options.page) {
-      options.path = join(options.path as Path, 'shared', getFolderNameByType(options), options.name);
+      options.path = join(options.path as Path, 'shared', getFolderNameByType(options), strings.dasherize(options.name));
     } else {
-      options.path = join(options.path as Path, 'shared', options.name);
+      options.path = join(options.path as Path, 'shared', strings.dasherize(options.name));
     }
   }
 
@@ -116,7 +116,9 @@ export default function (options: SharedModuleOptions): Rule {
         ...options,
         classify: strings.classify,
         dasherize: strings.dasherize,
-        camelize: strings.camelize
+        camelize: strings.camelize,
+        hasSection: !!options.section,
+        hasPage: !!options.page
       }),
       move(options.path)
     ]);

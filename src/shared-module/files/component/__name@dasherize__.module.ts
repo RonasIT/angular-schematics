@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { <% if (section) { %><%= classify(section) %><% } %><% if (page) { %><%= classify(page) %><% } %><%= classify(name) %>Component } from './<%= dasherize(name) %>.component';
+import { <%= classify(((hasSection) ? (section + ' '): '') + ((hasSection && hasPage) ? (page + ' ') : '') + name) %>Component } from './<%= dasherize(name) %>.component';
 
 @NgModule({
   declarations: [
-    <% if (section) { %><%= classify(section) %><% } %><% if (page) { %><%= classify(page) %><% } %><%= classify(name) %>Component
+    <%= classify(((hasSection) ? (section + ' '): '') + ((hasSection && hasPage) ? (page + ' ') : '') + name) %>Component
   ],
   imports: [
     CommonModule
   ],
   providers: []
 })
-export class <% if (section) { %><%= classify(section) %><% } %><% if (page) { %><%= classify(page) %><% } %><%= classify(name) %>Module { }
+export class <%= classify(((hasSection) ? (section + ' '): '') + ((hasSection && hasPage) ? (page + ' ') : '') + name) %>Module { }
