@@ -3,19 +3,22 @@ import {
   getProjectPath,
   getRoutingModulePath,
   parseLocation
-} from '../../core';
+  } from '../../core';
 import {
   apply,
+  applyTemplates,
   chain,
+  filter,
   MergeStrategy,
   mergeWith,
   move,
+  noop,
   Rule,
   SchematicContext,
   template,
   Tree,
   url
-} from '@angular-devkit/schematics';
+  } from '@angular-devkit/schematics';
 import { join, Path, strings } from '@angular-devkit/core';
 import { Schema as SharedModuleOptions } from './schema';
 
@@ -108,6 +111,7 @@ export default function (options: SharedModuleOptions): Rule {
 
     const templatesPath = getTemplatesPath(options);
     const templateSource = apply(url(templatesPath), [
+      (options.page) ? filter((path) => !path.endsWith('.module.ts')) : noop(),
       template({
         ...options,
         classify: strings.classify,
