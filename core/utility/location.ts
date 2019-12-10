@@ -5,11 +5,7 @@ import {
   normalize,
   Path
 } from '@angular-devkit/core';
-
-export interface Location {
-  name: string;
-  path: Path;
-}
+import { Location } from './interfaces';
 
 export function parseLocation(path: string, name: string): Location {
   const nameWithoutPath = basename(normalize(name));

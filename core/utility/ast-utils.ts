@@ -2,30 +2,34 @@ import * as sortKeys from 'sort-keys';
 import * as stripJsonComments from 'strip-json-comments';
 import * as ts from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
 import { addRouteDeclarationToModule } from '@schematics/angular/utility/ast-utils';
+import { AddRouteDeclarationToNgModuleOptions, BuildRelativePathOptions, BuildRouteOptions } from './interfaces';
 import { buildRelativePath } from '@schematics/angular/utility/find-module';
 import { InsertChange } from '@schematics/angular/utility/change';
+import { join, Path, strings } from '@angular-devkit/core';
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
-import { normalize, Path, strings } from '@angular-devkit/core';
-import { Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
+import {
+  Rule,
+  SchematicContext,
+  SchematicsException,
+  Tree
+} from '@angular-devkit/schematics';
 import { serializeJson } from './file-utils';
 
-export function buildRelativeModulePath(options: any): string {
-  const importModulePath = normalize(
-    `/${options.path}/`
-    + (options.flat ? '' : strings.dasherize(options.name) + '/')
-    + strings.dasherize(options.name)
-    + '.module',
-  );
+function _buildRelativePath(options: BuildRelativePathOptions): string {
+  const importModulePath = join(options.path as Path, strings.dasherize(options.name), `${strings.dasherize(options.name)}${options.postfix}`);
 
   return buildRelativePath(options.module, importModulePath);
 }
 
-export function buildRoute(options: any) {
-  const relativeModulePath = buildRelativeModulePath(options);
+function _buildRoute(options: BuildRouteOptions): string {
+  const relativeModulePath = _buildRelativePath({
+    ...options,
+    postfix: '.module'
+  });
   const moduleName = `${strings.classify(options.name)}Module`;
   const loadChildren = `() => import('${relativeModulePath}').then((module) => module.${moduleName})`;
 
-  let route =`{
+  let route = `{
     path: '${options.route}',
     loadChildren: ${loadChildren}
   }`;
@@ -41,40 +45,31 @@ export function isRouteDeclarationExist(sourceText: string): boolean {
   return sourceText.includes('loadChildren');
 }
 
-export function addRouteDeclarationToNgModule(
-  options: any,
-  routingModulePath?: Path | undefined,
-): Rule {
+export function addRouteDeclarationToNgModule(options: AddRouteDeclarationToNgModuleOptions): Rule {
   return (host: Tree) => {
     if (!options.route) {
       return host;
     }
     if (!options.module) {
-      throw new Error('Module option required when creating a lazy loaded routing module.');
+      throw new SchematicsException('Module option required when creating a lazy loaded routing module.');
     }
 
-    let path: string;
-    if (routingModulePath) {
-      path = routingModulePath;
-    } else {
-      path = options.module;
-    }
-
-    const text = host.read(path);
+    const text = host.read(options.module);
     if (!text) {
-      throw new Error(`Couldn't find the module nor its routing module.`);
+      throw new SchematicsException(`Couldn't find the module nor its routing module.`);
     }
 
     const sourceText = text.toString();
-    options.isFirstRoute = !isRouteDeclarationExist(sourceText);
-
     const addDeclaration = addRouteDeclarationToModule(
-      ts.createSourceFile(path, sourceText, ts.ScriptTarget.Latest, true),
-      path,
-      buildRoute(options),
+      ts.createSourceFile(options.module, sourceText, ts.ScriptTarget.Latest, true),
+      options.module,
+      _buildRoute({
+        ...options,
+        isFirstRoute: isRouteDeclarationExist(sourceText)
+      }),
     ) as InsertChange;
 
-    const recorder = host.beginUpdate(path);
+    const recorder = host.beginUpdate(options.module);
     recorder.insertLeft(addDeclaration.pos, addDeclaration.toAdd);
     host.commitUpdate(recorder);
 
@@ -128,12 +123,12 @@ export function updateJsonInTree<T = any, O = T>(
 
 export function readJsonInTree<T = any>(host: Tree, path: string): T {
   if (!host.exists(path)) {
-    throw new Error(`Cannot find ${path}`);
+    throw new SchematicsException(`Cannot find ${path}`);
   }
   const contents = stripJsonComments(host.read(path)!.toString('utf-8'));
   try {
     return JSON.parse(contents);
   } catch (e) {
-    throw new Error(`Cannot parse ${path}: ${e.message}`);
+    throw new SchematicsException(`Cannot parse ${path}: ${e.message}`);
   }
 }

@@ -12,6 +12,7 @@ import {
   move,
   Rule,
   SchematicContext,
+  SchematicsException,
   template,
   Tree,
   url

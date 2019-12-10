@@ -48,7 +48,7 @@ export default function (options: PageModuleOptions): Rule {
     const rule = chain([
       mergeWith(templateSource, MergeStrategy.Overwrite),
       addRouteDeclarationToNgModule({
-        name: options.name,
+        name: options.name, // TODO: need to add section + parent 
         route: strings.dasherize(options.name),
         path: options.path,
         module: getRoutingModulePath(

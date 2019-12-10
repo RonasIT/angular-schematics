@@ -3,7 +3,7 @@ import {
   getProjectPath,
   getRoutingModulePath,
   parseLocation
-  } from '../../core';
+} from '../../core';
 import {
   apply,
   applyTemplates,
@@ -18,12 +18,13 @@ import {
   template,
   Tree,
   url
-  } from '@angular-devkit/schematics';
+} from '@angular-devkit/schematics';
 import { join, Path, strings } from '@angular-devkit/core';
 import { Schema as SharedModuleOptions } from './schema';
 
 function prepareOptions(host: Tree, options: SharedModuleOptions): void {
   prepareOptionsType(options);
+  prepareOptionsFlat(options);
   prepareOptionsPath(host, options);
 }
 
@@ -41,6 +42,10 @@ function prepareOptionsType(options: SharedModuleOptions): void {
       options.type = 'component';
     }
   }
+}
+
+function prepareOptionsFlat(options: SharedModuleOptions): void {
+  options.flat = options.type !== 'component'
 }
 
 function getFolderNameByType(options: SharedModuleOptions): string {
@@ -73,7 +78,7 @@ function prepareOptionsPath(host: Tree, options: SharedModuleOptions): void {
     if (options.page) {
       options.path = join(options.path as Path, 'shared', getFolderNameByType(options));
 
-      if (options.type === 'component') {
+      if (!options.flat) {
         options.path = join(options.path as Path, strings.dasherize(options.name));
       }
     } else {

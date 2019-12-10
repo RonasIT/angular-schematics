@@ -7,5 +7,6 @@ export interface Schema {
   service: string;
   section: string;
   page: string;
+  flat: boolean;
   path: string;
 }

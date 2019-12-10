@@ -1,12 +1,9 @@
 import { getWorkspace } from './config';
+import { join, normalize, Path } from '@angular-devkit/core';
 import { MODULE_EXT } from '@schematics/angular/utility/find-module';
-import { normalize, Path, join } from '@angular-devkit/core';
-import { Tree } from '@angular-devkit/schematics';
-
-export interface WorkspaceProject {
-  root: string;
-  projectType: string;
-}
+import { ROUTING_MODULE_EXT } from './interfaces';
+import { SchematicsException, Tree } from '@angular-devkit/schematics';
+import { WorkspaceProject } from '@angular-devkit/core/src/experimental/workspace';
 
 export function getProject(
   host: Tree,
@@ -62,16 +59,18 @@ export function getRootPath(
   return project.root;
 }
 
-export declare const ROUTING_MODULE_EXT = '.routing.ts';
-
-export function getRoutingModulePath(host: Tree, modulePath: string): Path | undefined {
+export function getRoutingModulePath(host: Tree, modulePath: string): Path {
   const routingModulePath = modulePath.endsWith(ROUTING_MODULE_EXT)
     ? modulePath
     : modulePath.replace(MODULE_EXT, ROUTING_MODULE_EXT);
 
   const normalizedRoutingModulePath = join(getProjectPath(host, {}), normalize(routingModulePath));
 
-  return host.exists(normalizedRoutingModulePath) ? normalizedRoutingModulePath : undefined;
+  if (host.exists(normalizedRoutingModulePath)) {
+    return normalizedRoutingModulePath;
+  } else {
+    throw new SchematicsException('Module does not exist');
+  }
 }
 
 export function isLib(
