@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { <% if (section) { %><%= classify(section) %><% } %><%= classify(name) %>Service } from './<%= dasherize(name) %>.service';
+import { <%= classify(name) %><%= (hasPage) ? 'Page' : '' %>Service } from './<%= dasherize(name) %>.service';
 
 @NgModule({
   declarations: [],
@@ -8,8 +8,8 @@ import { <% if (section) { %><%= classify(section) %><% } %><%= classify(name) %
     CommonModule
   ],
   providers: [
-    <% if (section) { %><%= classify(section) %><% } %><%= classify(name) %>Service
+    <%= classify(name) %><%= (hasPage) ? 'Page' : '' %>Service
   ]
 })
-export class <% if (section) { %><%= classify(section) %><% } %><%= classify(name) %>Module { }
+export class <%= classify(((hasSection) ? (section + ' '): '') + ((hasSection && hasPage) ? (page + ' ') : '') + name) %>Module { }
 

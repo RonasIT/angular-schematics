@@ -71,7 +71,11 @@ function prepareOptionsPath(host: Tree, options: SharedModuleOptions): void {
     }
 
     if (options.page) {
-      options.path = join(options.path as Path, 'shared', getFolderNameByType(options), strings.dasherize(options.name));
+      options.path = join(options.path as Path, 'shared', getFolderNameByType(options));
+
+      if (options.type === 'component') {
+        options.path = join(options.path as Path, strings.dasherize(options.name));
+      }
     } else {
       options.path = join(options.path as Path, 'shared', strings.dasherize(options.name));
     }
