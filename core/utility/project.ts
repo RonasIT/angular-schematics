@@ -1,6 +1,11 @@
 import { GetSymbolImportPathOptions, ROUTING_MODULE_EXT } from './interfaces';
 import { getWorkspace } from './config';
-import { join, normalize, Path, strings } from '@angular-devkit/core';
+import {
+  join,
+  normalize,
+  Path,
+  strings
+} from '@angular-devkit/core';
 import { MODULE_EXT } from '@schematics/angular/utility/find-module';
 import { SchematicsException, Tree } from '@angular-devkit/schematics';
 import { WorkspaceProject } from '@angular-devkit/core/src/experimental/workspace';

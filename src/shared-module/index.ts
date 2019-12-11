@@ -3,7 +3,7 @@ import {
   getProjectPath,
   getSymbolImportPath,
   parseLocation
-  } from '../../core';
+} from '../../core';
 import {
   apply,
   chain,
@@ -17,13 +17,13 @@ import {
   template,
   Tree,
   url
-  } from '@angular-devkit/schematics';
+} from '@angular-devkit/schematics';
 import {
   join,
   Path,
   split,
   strings
-  } from '@angular-devkit/core';
+} from '@angular-devkit/core';
 import { MODULE_EXT } from '@schematics/angular/utility/find-module';
 import { Schema as SharedModuleOptions } from './schema';
 
