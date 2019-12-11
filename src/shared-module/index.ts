@@ -1,9 +1,9 @@
 import {
   addDeclarationToNgModule,
+  addProviderToNgModule,
   getProjectPath,
   getSymbolImportPath,
-  parseLocation,
-  addProviderToNgModule
+  parseLocation
 } from '../../core';
 import {
   apply,
