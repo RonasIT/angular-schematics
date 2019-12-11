@@ -1,3 +1,4 @@
+import { addDeclarationToNgModule, getProjectPath, parseLocation } from '../../core';
 import {
   apply,
   chain,
@@ -12,8 +13,12 @@ import {
   Tree,
   url
 } from '@angular-devkit/schematics';
-import { getProjectPath, parseLocation } from '../../core';
-import { join, Path, strings } from '@angular-devkit/core';
+import {
+  join,
+  Path,
+  split,
+  strings
+} from '@angular-devkit/core';
 import { MODULE_EXT } from '@schematics/angular/utility/find-module';
 import { Schema as SharedModuleOptions } from './schema';
 
@@ -109,26 +114,53 @@ function getTemplatesPath(options: SharedModuleOptions): string {
   return templatesPath;
 }
 
+function getPageModulePath(options: SharedModuleOptions): Path {
+  const fragments = split(options.path as Path);
+  const itemsToDelete = (options.type === 'component') ? 3 : 2;
+
+  fragments.splice(-itemsToDelete, itemsToDelete);
+
+  return join(fragments[0], ...fragments, strings.dasherize(options.page) + MODULE_EXT);
+}
+
 export default function (options: SharedModuleOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
     prepareOptions(host, options);
 
     const templatesPath = getTemplatesPath(options);
+    const hasSection = !!options.section;
+    const hasPage = !!options.page;
+
     const templateSource = apply(url(templatesPath), [
-      (options.page) ? filter((path) => !path.endsWith(MODULE_EXT)) : noop(),
+      (options.page)
+        ? filter((path) => !path.endsWith(MODULE_EXT))
+        : noop(),
       template({
         ...options,
         classify: strings.classify,
         dasherize: strings.dasherize,
         camelize: strings.camelize,
-        hasSection: !!options.section,
-        hasPage: !!options.page
+        hasSection,
+        hasPage
       }),
       move(options.path)
     ]);
 
     const rule = chain([
-      mergeWith(templateSource, MergeStrategy.Overwrite)
+      mergeWith(templateSource, MergeStrategy.Overwrite),
+      (
+        hasPage &&
+        (options.type === 'component' || options.type === 'directive' || options.type === 'pipe')
+      )
+        ? addDeclarationToNgModule({
+          modulePath: getPageModulePath(options),
+          name: options.name,
+          classifiedName: options.section + ' ' + options.page + ' ' + options.name,
+          type: options.type,
+          export: false,
+          path: options.path
+        })
+        : noop(),
     ]);
 
     return rule(host, context);

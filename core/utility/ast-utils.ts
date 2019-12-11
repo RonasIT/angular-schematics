@@ -1,8 +1,8 @@
 import * as sortKeys from 'sort-keys';
 import * as stripJsonComments from 'strip-json-comments';
 import * as ts from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
-import { addRouteDeclarationToModule } from '@schematics/angular/utility/ast-utils';
-import { AddRouteDeclarationToNgModuleOptions, BuildRouteOptions } from './interfaces';
+import { addDeclarationToModule, addRouteDeclarationToModule, addExportToModule } from '@schematics/angular/utility/ast-utils';
+import { AddDeclarationToNgModule, AddRouteDeclarationToNgModuleOptions, BuildRouteOptions } from './interfaces';
 import { buildRelativePath, MODULE_EXT } from '@schematics/angular/utility/find-module';
 import { InsertChange } from '@schematics/angular/utility/change';
 import { join, Path, strings } from '@angular-devkit/core';
@@ -12,7 +12,7 @@ import {
   SchematicContext,
   SchematicsException,
   Tree
-  } from '@angular-devkit/schematics';
+} from '@angular-devkit/schematics';
 import { serializeJson } from './file-utils';
 
 function _buildRoute(options: BuildRouteOptions): string {
@@ -50,8 +50,8 @@ export function addRouteDeclarationToNgModule(options: AddRouteDeclarationToNgMo
     }
 
     const text = host.read(options.routingModulePath);
-    if (!text) {
-      throw new SchematicsException(`Couldn't find the module nor its routing module.`);
+    if (text === null) {
+      throw new SchematicsException(`File ${options.routingModulePath} does not exist.`);
     }
 
     const sourceText = text.toString();
@@ -67,6 +67,65 @@ export function addRouteDeclarationToNgModule(options: AddRouteDeclarationToNgMo
     const recorder = host.beginUpdate(options.routingModulePath);
     recorder.insertLeft(addDeclaration.pos, addDeclaration.toAdd);
     host.commitUpdate(recorder);
+
+    return host;
+  };
+}
+
+export function addDeclarationToNgModule(options: AddDeclarationToNgModule): Rule {
+  return (host: Tree) => {
+    if (!options.modulePath) {
+      return host;
+    }
+
+    const text = host.read(options.modulePath);
+    if (text === null) {
+      throw new SchematicsException(`File ${options.modulePath} does not exist.`);
+    }
+    const sourceText = text.toString('utf-8');
+    const source = ts.createSourceFile(options.modulePath, sourceText, ts.ScriptTarget.Latest, true);
+
+    const declarationPath = join(options.path as Path, strings.dasherize(options.name) + `.${options.type}`);
+    const relativePath = buildRelativePath(options.modulePath, declarationPath);
+
+    const classifiedName = strings.classify(`${options.classifiedName} ${options.type}`);
+    const declarationChanges = addDeclarationToModule(
+      source,
+      options.modulePath,
+      classifiedName,
+      relativePath
+    );
+    const declarationRecorder = host.beginUpdate(options.modulePath);
+    for (const change of declarationChanges) {
+      if (change instanceof InsertChange) {
+        declarationRecorder.insertLeft(change.pos, change.toAdd);
+      }
+    }
+    host.commitUpdate(declarationRecorder);
+
+    if (options.export) {
+      const text = host.read(options.modulePath);
+      if (text === null) {
+        throw new SchematicsException(`File ${options.modulePath} does not exist.`);
+      }
+      const sourceText = text.toString('utf-8');
+      const source = ts.createSourceFile(options.modulePath, sourceText, ts.ScriptTarget.Latest, true);
+
+      const exportRecorder = host.beginUpdate(options.modulePath);
+      const exportChanges = addExportToModule(
+        source,
+        options.modulePath,
+        classifiedName,
+        relativePath
+      );
+
+      for (const change of exportChanges) {
+        if (change instanceof InsertChange) {
+          exportRecorder.insertLeft(change.pos, change.toAdd);
+        }
+      }
+      host.commitUpdate(exportRecorder);
+    }
 
     return host;
   };
