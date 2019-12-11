@@ -2,7 +2,8 @@ import {
   addDeclarationToNgModule,
   getProjectPath,
   getSymbolImportPath,
-  parseLocation
+  parseLocation,
+  addProviderToNgModule
 } from '../../core';
 import {
   apply,
@@ -160,6 +161,13 @@ export default function (options: SharedModuleOptions): Rule {
           importName: [options.section, options.page, options.name, options.type].join(' ')
         })
         : noop(),
+      (hasPage && options.type === 'service')
+        ? addProviderToNgModule({
+          modulePath: getPageModulePath(options),
+          importPath: getSymbolImportPath(options),
+          importName: [options.name, 'Page', options.type].join(' ')
+        })
+        : noop()
     ]);
 
     return rule(host, context);

@@ -1,13 +1,13 @@
 import * as sortKeys from 'sort-keys';
 import * as stripJsonComments from 'strip-json-comments';
 import * as ts from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
+import { addRouteDeclarationToModule, addSymbolToNgModuleMetadata } from '@schematics/angular/utility/ast-utils';
 import {
-  AddDeclarationToNgModuleOptions,
   AddRouteDeclarationToNgModuleOptions,
   AddSymbolToNgModuleMetadataOptions,
+  AddSymbolToNgModuleOptions,
   BuildRouteOptions
 } from './interfaces';
-import { addRouteDeclarationToModule, addSymbolToNgModuleMetadata } from '@schematics/angular/utility/ast-utils';
 import { buildRelativePath, MODULE_EXT } from '@schematics/angular/utility/find-module';
 import { InsertChange } from '@schematics/angular/utility/change';
 import { join, Path, strings } from '@angular-devkit/core';
@@ -105,10 +105,17 @@ export function addRouteDeclarationToNgModule(options: AddRouteDeclarationToNgMo
   };
 }
 
-export function addDeclarationToNgModule(options: AddDeclarationToNgModuleOptions): Rule {
+export function addDeclarationToNgModule(options: AddSymbolToNgModuleOptions): Rule {
   return _addSymbolToNgModuleMetadata({
     ...options,
     metadataField: 'declarations'
+  });
+}
+
+export function addProviderToNgModule(options: AddSymbolToNgModuleOptions): Rule {
+  return _addSymbolToNgModuleMetadata({
+    ...options,
+    metadataField: 'providers'
   });
 }
 

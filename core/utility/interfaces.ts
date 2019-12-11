@@ -22,7 +22,7 @@ export interface AddSymbolToNgModuleMetadataOptions {
   metadataField: 'bootstrap' | 'declarations' | 'entryComponents' | 'exports' | 'imports' | 'providers';
 }
 
-export interface AddDeclarationToNgModuleOptions {
+export interface AddSymbolToNgModuleOptions {
   modulePath: Path;
   importPath: Path;
   importName: string;
