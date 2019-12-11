@@ -25,6 +25,25 @@ export interface AddDeclarationToNgModule {
   path: string | Path;
 }
 
+export interface AddSymbolToNgModuleMetadataOptions {
+  modulePath: Path;
+  importPath: Path;
+  importName: string;
+  metadataField: 'bootstrap' | 'declarations' | 'entryComponents' | 'exports' | 'imports' | 'providers';
+}
+
+export interface AddDeclarationToNgModuleOptions {
+  modulePath: Path;
+  importPath: Path;
+  importName: string;
+}
+
+export interface GetSymbolImportPathOptions {
+  path: string | Path,
+  name: string,
+  type: 'component' | 'directive' | 'pipe' | 'service'
+}
+
 export interface Location {
   name: string;
   path: Path;

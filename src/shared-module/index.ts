@@ -1,4 +1,9 @@
-import { addDeclarationToNgModule, getProjectPath, parseLocation } from '../../core';
+import {
+  addDeclarationToNgModule,
+  getProjectPath,
+  getSymbolImportPath,
+  parseLocation
+  } from '../../core';
 import {
   apply,
   chain,
@@ -12,13 +17,13 @@ import {
   template,
   Tree,
   url
-} from '@angular-devkit/schematics';
+  } from '@angular-devkit/schematics';
 import {
   join,
   Path,
   split,
   strings
-} from '@angular-devkit/core';
+  } from '@angular-devkit/core';
 import { MODULE_EXT } from '@schematics/angular/utility/find-module';
 import { Schema as SharedModuleOptions } from './schema';
 
@@ -127,10 +132,10 @@ export default function (options: SharedModuleOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
     prepareOptions(host, options);
 
-    const templatesPath = getTemplatesPath(options);
     const hasSection = !!options.section;
     const hasPage = !!options.page;
 
+    const templatesPath = getTemplatesPath(options);
     const templateSource = apply(url(templatesPath), [
       (options.page)
         ? filter((path) => !path.endsWith(MODULE_EXT))
@@ -148,17 +153,11 @@ export default function (options: SharedModuleOptions): Rule {
 
     const rule = chain([
       mergeWith(templateSource, MergeStrategy.Overwrite),
-      (
-        hasPage &&
-        (options.type === 'component' || options.type === 'directive' || options.type === 'pipe')
-      )
+      (hasPage && ['component', 'directive', 'pipe'].includes(options.type))
         ? addDeclarationToNgModule({
           modulePath: getPageModulePath(options),
-          name: options.name,
-          classifiedName: options.section + ' ' + options.page + ' ' + options.name,
-          type: options.type,
-          export: false,
-          path: options.path
+          importPath: getSymbolImportPath(options),
+          importName: [options.section, options.page, options.name, options.type].join(' ')
         })
         : noop(),
     ]);
