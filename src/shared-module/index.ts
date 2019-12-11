@@ -2,7 +2,6 @@ import {
   addDeclarationToNgModule,
   addProviderToNgModule,
   getProjectPath,
-  getSymbolImportPath,
   parseLocation
 } from '../../core';
 import {
@@ -129,6 +128,10 @@ function getPageModulePath(options: SharedModuleOptions): Path {
   return join(fragments[0], ...fragments, strings.dasherize(options.page) + MODULE_EXT);
 }
 
+export function getImportPathForPageModule(options: SharedModuleOptions): Path {
+  return join(options.path as Path, strings.dasherize(options.name) + ((options.type === 'component') ? `.${options.type}` : ''));
+}
+
 export default function (options: SharedModuleOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
     prepareOptions(host, options);
@@ -143,9 +146,8 @@ export default function (options: SharedModuleOptions): Rule {
         : noop(),
       template({
         ...options,
-        classify: strings.classify,
-        dasherize: strings.dasherize,
-        camelize: strings.camelize,
+        ...strings,
+        'with-suffix': (s: string) => (!hasPage || (hasPage && options.type === 'component')) ? `${s}.${options.type}` : s,
         hasSection,
         hasPage
       }),
@@ -157,14 +159,14 @@ export default function (options: SharedModuleOptions): Rule {
       (hasPage && ['component', 'directive', 'pipe'].includes(options.type))
         ? addDeclarationToNgModule({
           modulePath: getPageModulePath(options),
-          importPath: getSymbolImportPath(options),
+          importPath: getImportPathForPageModule(options),
           importName: [options.section, options.page, options.name, options.type].join(' ')
         })
         : noop(),
       (hasPage && options.type === 'service')
         ? addProviderToNgModule({
           modulePath: getPageModulePath(options),
-          importPath: getSymbolImportPath(options),
+          importPath: getImportPathForPageModule(options),
           importName: [options.name, 'Page', options.type].join(' ')
         })
         : noop()

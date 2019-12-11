@@ -28,12 +28,6 @@ export interface AddSymbolToNgModuleOptions {
   importName: string;
 }
 
-export interface GetSymbolImportPathOptions {
-  path: string | Path,
-  name: string,
-  type: 'component' | 'directive' | 'pipe' | 'service'
-}
-
 export interface Location {
   name: string;
   path: Path;
