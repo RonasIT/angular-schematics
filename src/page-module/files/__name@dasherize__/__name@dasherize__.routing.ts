@@ -1,11 +1,11 @@
-import { <%= classify(section) %><% if (parent) { %><%= classify(parent) %><% } %><%= classify(name) %>PageComponent } from './<%= dasherize(name) %>.component';
+import { <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageComponent } from './<%= dasherize(name) %>.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
     path: '',
-    component: <%= classify(section) %><% if (parent) { %><%= classify(parent) %><% } %><%= classify(name) %>PageComponent
+    component: <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageComponent
   }
 ];
 
@@ -13,4 +13,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class <%= classify(section) %><% if (parent) { %><%= classify(parent) %><% } %><%= classify(name) %>PageRoutingModule { }
+export class <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageRoutingModule { }

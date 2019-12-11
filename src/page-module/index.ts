@@ -41,6 +41,7 @@ export default function (options: PageModuleOptions): Rule {
         ...options,
         classify: strings.classify,
         dasherize: strings.dasherize,
+        hasParent: !!options.parent
       }),
       move(options.path)
     ]);
