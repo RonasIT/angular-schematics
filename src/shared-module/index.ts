@@ -1,12 +1,5 @@
 import {
-  addRouteDeclarationToNgModule,
-  getProjectPath,
-  getRoutingModulePath,
-  parseLocation
-} from '../../core';
-import {
   apply,
-  applyTemplates,
   chain,
   filter,
   MergeStrategy,
@@ -18,7 +11,8 @@ import {
   template,
   Tree,
   url
-} from '@angular-devkit/schematics';
+  } from '@angular-devkit/schematics';
+import { getProjectPath, parseLocation } from '../../core';
 import { join, Path, strings } from '@angular-devkit/core';
 import { Schema as SharedModuleOptions } from './schema';
 
