@@ -1,24 +1,18 @@
 import { Path } from '@angular-devkit/core';
-
-export interface BuildRelativePathOptions {
-  path: string | Path;
-  name: string;
-  module: Path;
-  postfix: string;
-}
+import { MODULE_EXT } from '@schematics/angular/utility/find-module';
 
 export interface BuildRouteOptions {
-  name: string;
-  module: Path;
-  route: string;
-  path: string | Path;
+  routeModule: string;
+  routePath: string;
+  routingModulePath: Path;
   isFirstRoute: boolean;
+  path: string | Path;
 }
 
 export interface AddRouteDeclarationToNgModuleOptions {
-  name: string;
-  module: Path;
-  route: string;
+  routeModule: string;
+  routePath: string;
+  routingModulePath: Path;
   path: string | Path;
 }
 

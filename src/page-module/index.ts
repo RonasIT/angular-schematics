@@ -49,15 +49,15 @@ export default function (options: PageModuleOptions): Rule {
     const rule = chain([
       mergeWith(templateSource, MergeStrategy.Overwrite),
       addRouteDeclarationToNgModule({
-        name: options.name, // TODO: need to add section + parent 
-        route: strings.dasherize(options.name),
-        path: options.path,
-        module: getRoutingModulePath(
+        routeModule: options.section + ' ' + ((!!options.parent) ? (options.parent + ' ') : '') + options.name + 'Page',
+        routePath: options.name,
+        routingModulePath: getRoutingModulePath(
           host,
           (options.parent)
             ? `${options.section}/${options.parent}/${options.parent}.routing.ts`
             : `${options.section}/${options.section}.routing.ts`
-        )
+        ),
+        path: options.path
       })
     ]);
 

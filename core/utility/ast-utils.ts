@@ -2,8 +2,8 @@ import * as sortKeys from 'sort-keys';
 import * as stripJsonComments from 'strip-json-comments';
 import * as ts from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
 import { addRouteDeclarationToModule } from '@schematics/angular/utility/ast-utils';
-import { AddRouteDeclarationToNgModuleOptions, BuildRelativePathOptions, BuildRouteOptions } from './interfaces';
-import { buildRelativePath } from '@schematics/angular/utility/find-module';
+import { AddRouteDeclarationToNgModuleOptions, BuildRouteOptions } from './interfaces';
+import { buildRelativePath, MODULE_EXT } from '@schematics/angular/utility/find-module';
 import { InsertChange } from '@schematics/angular/utility/change';
 import { join, Path, strings } from '@angular-devkit/core';
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
@@ -12,25 +12,20 @@ import {
   SchematicContext,
   SchematicsException,
   Tree
-} from '@angular-devkit/schematics';
+  } from '@angular-devkit/schematics';
 import { serializeJson } from './file-utils';
 
-function _buildRelativePath(options: BuildRelativePathOptions): string {
-  const importModulePath = join(options.path as Path, strings.dasherize(options.name), `${strings.dasherize(options.name)}${options.postfix}`);
-
-  return buildRelativePath(options.module, importModulePath);
-}
-
 function _buildRoute(options: BuildRouteOptions): string {
-  const relativeModulePath = _buildRelativePath({
-    ...options,
-    postfix: '.module'
-  });
-  const moduleName = `${strings.classify(options.name)}Module`;
-  const loadChildren = `() => import('${relativeModulePath}').then((module) => module.${moduleName})`;
+  const routePath = strings.dasherize(options.routePath);
+  const routeModule = strings.classify(options.routeModule);
+
+  const routeModulePath = join(options.path as Path, routePath, routePath + MODULE_EXT.replace('.ts', ''));
+  const relativeRouteModulePath = buildRelativePath(options.routingModulePath, routeModulePath);
+
+  const loadChildren = `() => import('${relativeRouteModulePath}').then((module) => module.${routeModule}Module)`;
 
   let route = `{
-    path: '${options.route}',
+    path: '${routePath}',
     loadChildren: ${loadChildren}
   }`;
 
@@ -47,29 +42,29 @@ export function isRouteDeclarationExist(sourceText: string): boolean {
 
 export function addRouteDeclarationToNgModule(options: AddRouteDeclarationToNgModuleOptions): Rule {
   return (host: Tree) => {
-    if (!options.route) {
+    if (!options.routePath) {
       return host;
     }
-    if (!options.module) {
-      throw new SchematicsException('Module option required when creating a lazy loaded routing module.');
+    if (!options.routingModulePath) {
+      throw new SchematicsException('Routing module path option required when creating a lazy loaded routing module.');
     }
 
-    const text = host.read(options.module);
+    const text = host.read(options.routingModulePath);
     if (!text) {
       throw new SchematicsException(`Couldn't find the module nor its routing module.`);
     }
 
     const sourceText = text.toString();
     const addDeclaration = addRouteDeclarationToModule(
-      ts.createSourceFile(options.module, sourceText, ts.ScriptTarget.Latest, true),
-      options.module,
+      ts.createSourceFile(options.routingModulePath, sourceText, ts.ScriptTarget.Latest, true),
+      options.routingModulePath,
       _buildRoute({
         ...options,
         isFirstRoute: isRouteDeclarationExist(sourceText)
       }),
     ) as InsertChange;
 
-    const recorder = host.beginUpdate(options.module);
+    const recorder = host.beginUpdate(options.routingModulePath);
     recorder.insertLeft(addDeclaration.pos, addDeclaration.toAdd);
     host.commitUpdate(recorder);
 

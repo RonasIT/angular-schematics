@@ -12,7 +12,6 @@ import {
   move,
   Rule,
   SchematicContext,
-  SchematicsException,
   template,
   Tree,
   url
@@ -41,10 +40,10 @@ export default function (options: SectionModuleOptions): Rule {
     const rule = chain([
       mergeWith(templateSource, MergeStrategy.Overwrite),
       addRouteDeclarationToNgModule({
-        name: options.name,
-        route: strings.dasherize(options.name),
-        path: options.path,
-        module: getRoutingModulePath(host, 'app.routing.ts')
+        routeModule: options.name,
+        routePath: options.name,
+        routingModulePath: getRoutingModulePath(host, 'app.routing.ts'),
+        path: options.path
       })
     ]);
 
