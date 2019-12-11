@@ -11,9 +11,10 @@ import {
   template,
   Tree,
   url
-  } from '@angular-devkit/schematics';
+} from '@angular-devkit/schematics';
 import { getProjectPath, parseLocation } from '../../core';
 import { join, Path, strings } from '@angular-devkit/core';
+import { MODULE_EXT } from '@schematics/angular/utility/find-module';
 import { Schema as SharedModuleOptions } from './schema';
 
 function prepareOptions(host: Tree, options: SharedModuleOptions): void {
@@ -114,7 +115,7 @@ export default function (options: SharedModuleOptions): Rule {
 
     const templatesPath = getTemplatesPath(options);
     const templateSource = apply(url(templatesPath), [
-      (options.page) ? filter((path) => !path.endsWith('.module.ts')) : noop(),
+      (options.page) ? filter((path) => !path.endsWith(MODULE_EXT)) : noop(),
       template({
         ...options,
         classify: strings.classify,
