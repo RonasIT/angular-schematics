@@ -9,9 +9,7 @@ import { <%= classify(((hasSection) ? (section + ' '): '') + ((hasSection && has
   imports: [
     CommonModule
   ],
-  providers: [
-
-  ],
+  providers: [],
   exports: [
     <%= classify(((hasSection) ? (section + ' '): '') + ((hasSection && hasPage) ? (page + ' ') : '') + name) %>Directive
   ]

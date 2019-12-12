@@ -7,9 +7,7 @@ import { <%= classify(name) %><%= (hasPage) ? 'Page' : '' %>Service } from './<%
   imports: [
     CommonModule
   ],
-  providers: [
-    <%= classify(name) %><%= (hasPage) ? 'Page' : '' %>Service
-  ]
+  providers: [<%= classify(name) %><%= (hasPage) ? 'Page' : '' %>Service]
 })
 export class <%= classify(((hasSection) ? (section + ' '): '') + ((hasSection && hasPage) ? (page + ' ') : '') + name) %>Module { }
 
