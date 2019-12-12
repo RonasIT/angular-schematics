@@ -76,6 +76,10 @@ function prepareOptionsPath(host: Tree, options: SharedModuleOptions): void {
       options.path = join(options.path as Path, strings.dasherize(options.section));
     }
 
+    if (options.parentPage) {
+      options.path = join(options.path as Path, strings.dasherize(options.parentPage));
+    }
+
     if (options.page) {
       options.path = join(options.path as Path, strings.dasherize(options.page));
     }
@@ -137,6 +141,7 @@ export default function (options: SharedModuleOptions): Rule {
     prepareOptions(host, options);
 
     const hasSection = !!options.section;
+    const hasParentPage = !!options.parentPage;
     const hasPage = !!options.page;
 
     const templatesPath = getTemplatesPath(options);
@@ -149,6 +154,7 @@ export default function (options: SharedModuleOptions): Rule {
         ...strings,
         'with-suffix': (s: string) => (!hasPage || (hasPage && options.type === 'component')) ? `${s}.${options.type}` : s,
         hasSection,
+        hasParentPage,
         hasPage
       }),
       move(options.path)
@@ -160,7 +166,7 @@ export default function (options: SharedModuleOptions): Rule {
         ? addDeclarationToNgModule({
           modulePath: getPageModulePath(options),
           importPath: getImportPathForPageModule(options),
-          importName: [options.section, options.page, options.name, options.type].join(' ')
+          importName: [options.section, options.parentPage, options.page, options.name, options.type].join(' ')
         })
         : noop(),
       (hasPage && options.type === 'service')

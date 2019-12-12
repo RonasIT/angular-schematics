@@ -6,6 +6,7 @@ export interface Schema {
   pipe: string;
   service: string;
   section: string;
+  parentPage: string;
   page: string;
   flat: boolean;
   path: string;
