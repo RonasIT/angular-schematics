@@ -3,7 +3,8 @@ import {
   addProviderToNgModule,
   BARREL_FILE,
   getProjectPath,
-  parseLocation
+  parseLocation,
+  upsertBarrelFile
 } from '../../core';
 import {
   apply,
@@ -134,7 +135,7 @@ function getPageModulePath(options: SharedModuleOptions): Path {
 }
 
 export function getImportPathForPageModule(options: SharedModuleOptions): Path {
-  return join(options.path as Path, strings.dasherize(options.name) + ((options.type === 'component') ? `.${options.type}` : ''));
+  return join(options.path as Path, (options.type === 'component') ? strings.dasherize(options.name) + '.component' : '');
 }
 
 export default function (options: SharedModuleOptions): Rule {
@@ -175,6 +176,12 @@ export default function (options: SharedModuleOptions): Rule {
           modulePath: getPageModulePath(options),
           importPath: getImportPathForPageModule(options),
           importName: [options.name, 'Page', options.type].join(' ')
+        })
+        : noop(),
+      (hasPage && ['directive', 'pipe', 'service'].includes(options.type))
+        ? upsertBarrelFile({
+          path: options.path as Path,
+          exportFileName: options.name
         })
         : noop()
     ]);

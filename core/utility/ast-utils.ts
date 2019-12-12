@@ -6,11 +6,12 @@ import {
   AddRouteDeclarationToNgModuleOptions,
   AddSymbolToNgModuleMetadataOptions,
   AddSymbolToNgModuleOptions,
-  BuildRouteOptions
+  BuildRouteOptions,
+  UpsertBarrelFileOptions
 } from './interfaces';
 import { buildRelativePath, MODULE_EXT } from '@schematics/angular/utility/find-module';
 import { InsertChange } from '@schematics/angular/utility/change';
-import { join, Path, strings } from '@angular-devkit/core';
+import { join, Path, strings, split } from '@angular-devkit/core';
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 import {
   Rule,
@@ -117,6 +118,25 @@ export function addProviderToNgModule(options: AddSymbolToNgModuleOptions): Rule
     ...options,
     metadataField: 'providers'
   });
+}
+
+export function upsertBarrelFile(options: UpsertBarrelFileOptions): Rule {
+  return (host: Tree): Tree => {
+    const barrelFile = join(options.path, 'index.ts');
+    const exportContent = `export * from './${strings.dasherize(options.exportFileName)}';\n`;
+
+    if (!host.exists(barrelFile)) {
+      host.create(barrelFile, exportContent);
+    } else {
+      const existingExportContent = host.read(barrelFile);
+
+      if (existingExportContent) {
+        host.overwrite(barrelFile, existingExportContent.toString() + exportContent);
+      }
+    }
+
+    return host;
+  };
 }
 
 let installTaskAdded = false;

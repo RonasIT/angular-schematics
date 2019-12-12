@@ -28,6 +28,11 @@ export interface AddSymbolToNgModuleOptions {
   importName: string;
 }
 
+export interface UpsertBarrelFileOptions {
+  path: Path;
+  exportFileName: string; 
+}
+
 export interface Location {
   name: string;
   path: Path;
