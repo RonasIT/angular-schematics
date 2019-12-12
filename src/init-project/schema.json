@@ -3,6 +3,12 @@
   "id": "SchematicsInitProject",
   "title": "Init Project Schema",
   "type": "object",
-  "properties": {},
+  "properties": {
+    "ngrx": {
+      "type": "boolean",
+      "description": "When true, installs NgRx for the initial project.",
+      "x-prompt": "Would you like to add NgRx?"
+    }
+  },
   "required": []
 }

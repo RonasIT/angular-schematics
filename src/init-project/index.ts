@@ -1,6 +1,22 @@
-import { chain, Rule, Tree } from '@angular-devkit/schematics';
-import { fragment, normalize } from '@angular-devkit/core';
-import { getAppRootPath, getProjectPath, getRootPath } from '../../core';
+import {
+  addDepsToPackageJson,
+  getAppRootPath,
+  getProjectPath,
+  getRootPath
+} from '../../core';
+import {
+  apply,
+  chain,
+  MergeStrategy,
+  mergeWith,
+  move,
+  noop,
+  Rule,
+  template,
+  Tree,
+  url
+} from '@angular-devkit/schematics';
+import { fragment, normalize, strings } from '@angular-devkit/core';
 import { Schema as InitProjectOptions } from './schema';
 
 export function replaceEnvironmentsDirectory(host: Tree, options: InitProjectOptions): Rule {
@@ -105,13 +121,56 @@ export function replaceImportsInAppFiles(host: Tree, options: InitProjectOptions
   };
 }
 
+const NGRX_VERSION = '^8.5.2';
+
+export function createAppStoreFiles(host: Tree, options: InitProjectOptions): Rule {
+  const appRootPath = getAppRootPath(host, options);
+
+  const templateSource = apply(url('./files_ngrx'), [
+    template({
+      ...options,
+      ...strings
+    }),
+    move(appRootPath)
+  ]);
+
+  return mergeWith(templateSource, MergeStrategy.Overwrite);
+}
+
+export function addNgRxToPackageJson(host: Tree, options: InitProjectOptions): Rule {
+  return addDepsToPackageJson(
+    {
+      '@ngrx/effects': NGRX_VERSION,
+      '@ngrx/router-store': NGRX_VERSION,
+      '@ngrx/store': NGRX_VERSION
+    },
+    {
+      '@ngrx/store-devtools': NGRX_VERSION
+    }
+  );
+}
+
+export function addNgRxImportsToAppModule(host: Tree, options: InitProjectOptions): Rule {
+  return noop();
+}
+
 export default function (options: InitProjectOptions): Rule {
   return (host: Tree) => {
-    return chain([
+    const rules = [
       replaceEnvironments(host, options),
       renameAppFiles(host, options),
       replaceImportsInAppFiles(host, options)
-    ]);
+    ];
+
+    if (options.ngrx) {
+      rules.push(...[
+        createAppStoreFiles(host, options),
+        addNgRxToPackageJson(host, options),
+        addNgRxImportsToAppModule(host, options)
+      ]);
+    }
+
+    return chain(rules);
   };
 }
 
