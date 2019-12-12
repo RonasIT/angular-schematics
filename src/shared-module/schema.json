@@ -4,16 +4,6 @@
   "title": "Shared Module Schema",
   "type": "object",
   "properties": {
-    "name": {
-      "description": "The name of the shared module.",
-      "type": "string",
-      "minLength": 1,
-      "$default": {
-        "$source": "argv",
-        "index": 0
-      },
-      "x-prompt": "What should be the name of the shared module?"
-    },
     "type": {
       "description": "The type of shared module.",
       "type": "string",
@@ -25,6 +15,16 @@
         "service"
       ],
       "x-prompt": "Which type of shared module would you like to generate?"
+    },
+    "name": {
+      "description": "The name of the shared module.",
+      "type": "string",
+      "minLength": 1,
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What should be the name of the shared module?"
     },
     "component": {
       "type": "string",
