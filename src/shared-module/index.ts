@@ -1,6 +1,7 @@
 import {
   addDeclarationToNgModule,
   addProviderToNgModule,
+  BARREL_FILE,
   getProjectPath,
   parseLocation
 } from '../../core';
@@ -146,8 +147,8 @@ export default function (options: SharedModuleOptions): Rule {
 
     const templatesPath = getTemplatesPath(options);
     const templateSource = apply(url(templatesPath), [
-      (options.page)
-        ? filter((path) => !path.endsWith(MODULE_EXT))
+      (hasPage)
+        ? filter((path) => !path.endsWith(MODULE_EXT) && !path.endsWith(BARREL_FILE))
         : noop(),
       template({
         ...options,

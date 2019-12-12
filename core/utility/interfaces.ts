@@ -33,4 +33,5 @@ export interface Location {
   path: Path;
 }
 
-export declare const ROUTING_MODULE_EXT = '.routing.ts';
+export const BARREL_FILE = 'index.ts';
+export const ROUTING_MODULE_EXT = '.routing.ts';
