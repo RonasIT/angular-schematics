@@ -52,19 +52,46 @@ export function replaceEnvironments(host: Tree, options: InitProjectOptions): vo
   replaceEnvironmentsInAngularJson(host, options);
 }
 
-export function replaceRouting(host: Tree, options: InitProjectOptions): void {
+export function renameAppFiles(host: Tree, options: InitProjectOptions): void {
   const projectPath = getProjectPath(host, options);
 
   host.rename(
     normalize(`${projectPath}/app-routing.module.ts`),
     normalize(`${projectPath}/app.routing.ts`)
   );
+
+  host.rename(
+    normalize(`${projectPath}/app.component.html`),
+    normalize(`${projectPath}/app.html`)
+  );
+
+  host.rename(
+    normalize(`${projectPath}/app.component.scss`),
+    normalize(`${projectPath}/app.scss`)
+  );
+}
+
+export function replaceImportsInAppFiles(host: Tree, options: InitProjectOptions): void {
+  const projectPath = getProjectPath(host, options);
+
+  const appComponentPath = normalize(`${projectPath}/app.component.ts`);
+  if (host.exists(appComponentPath)) {
+    const appComponentContent = host.read(appComponentPath)!.toString('utf-8');
+    host.overwrite(appComponentPath, appComponentContent.replace(/app\.component/g, 'app'));
+  }
+
+  const appModulePath = normalize(`${projectPath}/app.module.ts`);
+  if (host.exists(appModulePath)) {
+    const appModuleContent = host.read(appModulePath)!.toString('utf-8');
+    host.overwrite(appModulePath, appModuleContent.replace(/app\-routing\.module/g, 'app.routing'));
+  }
 }
 
 export default function (options: InitProjectOptions): Rule {
   return (host: Tree) => {
     replaceEnvironments(host, options);
-    replaceRouting(host, options);
+    renameAppFiles(host, options);
+    replaceImportsInAppFiles(host, options);
 
     return host;
   };
