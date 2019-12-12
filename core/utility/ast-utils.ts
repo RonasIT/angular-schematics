@@ -93,7 +93,7 @@ export function addRouteDeclarationToNgModule(options: AddRouteDeclarationToNgMo
       options.routingModulePath,
       _buildRoute({
         ...options,
-        isFirstRoute: isRouteDeclarationExist(sourceText)
+        isFirstRoute: !isRouteDeclarationExist(sourceText)
       }),
     ) as InsertChange;
 
