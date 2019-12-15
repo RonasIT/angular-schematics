@@ -126,7 +126,7 @@ const NGRX_VERSION = '^8.5.2';
 export function createAppStoreFiles(host: Tree, options: InitProjectOptions): Rule {
   const appRootPath = getAppRootPath(host, options);
 
-  const templateSource = apply(url('./files_ngrx'), [
+  const templateSource = apply(url('./files/ngrx'), [
     template({
       ...options,
       ...strings

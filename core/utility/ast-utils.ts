@@ -120,6 +120,13 @@ export function addProviderToNgModule(options: AddSymbolToNgModuleOptions): Rule
   });
 }
 
+export function addImportToNgModule(options: AddSymbolToNgModuleOptions): Rule {
+  return _addSymbolToNgModuleMetadata({
+    ...options,
+    metadataField: 'imports'
+  });
+}
+
 export function upsertBarrelFile(options: UpsertBarrelFileOptions): Rule {
   return (host: Tree): Tree => {
     const barrelFile = join(options.path, 'index.ts');
