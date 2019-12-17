@@ -1,17 +1,18 @@
 import * as sortKeys from 'sort-keys';
 import * as stripJsonComments from 'strip-json-comments';
 import * as ts from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
-import { addRouteDeclarationToModule, addSymbolToNgModuleMetadata } from '@schematics/angular/utility/ast-utils';
 import {
+  AddImportToModuleOptions,
   AddRouteDeclarationToNgModuleOptions,
   AddSymbolToNgModuleMetadataOptions,
   AddSymbolToNgModuleOptions,
   BuildRouteOptions,
   UpsertBarrelFileOptions
 } from './interfaces';
+import { addRouteDeclarationToModule, addSymbolToNgModuleMetadata, insertImport } from '@schematics/angular/utility/ast-utils';
 import { buildRelativePath, MODULE_EXT } from '@schematics/angular/utility/find-module';
 import { InsertChange } from '@schematics/angular/utility/change';
-import { join, Path, strings, split } from '@angular-devkit/core';
+import { join, Path, strings } from '@angular-devkit/core';
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 import {
   Rule,
@@ -44,7 +45,7 @@ function _buildRoute(options: BuildRouteOptions): string {
 
 function _addSymbolToNgModuleMetadata(options: AddSymbolToNgModuleMetadataOptions): Rule {
   return (host: Tree) => {
-    if (!options.modulePath || !options.importPath) {
+    if (!options.modulePath) {
       return host;
     }
 
@@ -56,10 +57,12 @@ function _addSymbolToNgModuleMetadata(options: AddSymbolToNgModuleMetadataOption
     const sourceText = text.toString('utf-8');
     const source = ts.createSourceFile(options.modulePath, sourceText, ts.ScriptTarget.Latest, true);
 
-    const relativePath = buildRelativePath(options.modulePath, options.importPath);
-    const classifiedName = strings.classify(options.importName);
+    let relativeImportPath;
+    if (options.importPath) {
+      relativeImportPath = buildRelativePath(options.modulePath, options.importPath);
+    }
 
-    const changes = addSymbolToNgModuleMetadata(source, options.modulePath, options.metadataField, classifiedName, relativePath);
+    const changes = addSymbolToNgModuleMetadata(source, options.modulePath, options.metadataField, options.importName, relativeImportPath);
     const recorder = host.beginUpdate(options.modulePath);
     for (const change of changes) {
       if (change instanceof InsertChange) {
@@ -106,25 +109,48 @@ export function addRouteDeclarationToNgModule(options: AddRouteDeclarationToNgMo
   };
 }
 
-export function addDeclarationToNgModule(options: AddSymbolToNgModuleOptions): Rule {
+export function addDeclarationToNgModuleMetadata(options: AddSymbolToNgModuleOptions): Rule {
   return _addSymbolToNgModuleMetadata({
     ...options,
     metadataField: 'declarations'
   });
 }
 
-export function addProviderToNgModule(options: AddSymbolToNgModuleOptions): Rule {
+export function addProviderToNgModuleMetadata(options: AddSymbolToNgModuleOptions): Rule {
   return _addSymbolToNgModuleMetadata({
     ...options,
     metadataField: 'providers'
   });
 }
 
-export function addImportToNgModule(options: AddSymbolToNgModuleOptions): Rule {
+export function addImportToNgModuleMetadata(options: AddSymbolToNgModuleOptions): Rule {
   return _addSymbolToNgModuleMetadata({
     ...options,
     metadataField: 'imports'
   });
+}
+
+export function addImportToModule(options: AddImportToModuleOptions): Rule {
+  return (host: Tree) => {
+    if (!options.modulePath) {
+      return host;
+    }
+
+    const text = host.read(options.modulePath);
+    if (text === null) {
+      throw new SchematicsException(`File ${options.modulePath} does not exist.`);
+    }
+
+    const sourceText = text.toString('utf-8');
+    const source = ts.createSourceFile(options.modulePath, sourceText, ts.ScriptTarget.Latest, true);
+
+    const change = insertImport(source, options.modulePath, options.importName, options.importFrom) as InsertChange;
+    const recorder = host.beginUpdate(options.modulePath);
+    recorder.insertLeft(change.pos, change.toAdd);
+    host.commitUpdate(recorder);
+
+    return host;
+  };
 }
 
 export function upsertBarrelFile(options: UpsertBarrelFileOptions): Rule {

@@ -1,6 +1,6 @@
 import {
-  addDeclarationToNgModule,
-  addProviderToNgModule,
+  addDeclarationToNgModuleMetadata,
+  addProviderToNgModuleMetadata,
   BARREL_FILE,
   getProjectPath,
   parseLocation,
@@ -165,17 +165,17 @@ export default function (options: SharedModuleOptions): Rule {
     const rule = chain([
       mergeWith(templateSource, MergeStrategy.Overwrite),
       (hasPage && ['component', 'directive', 'pipe'].includes(options.type))
-        ? addDeclarationToNgModule({
+        ? addDeclarationToNgModuleMetadata({
           modulePath: getPageModulePath(options),
           importPath: getImportPathForPageModule(options),
-          importName: [options.section, options.parentPage, options.page, options.name, options.type].join(' ')
+          importName: strings.classify([options.section, options.parentPage, options.page, options.name, options.type].join(' '))
         })
         : noop(),
       (hasPage && options.type === 'service')
-        ? addProviderToNgModule({
+        ? addProviderToNgModuleMetadata({
           modulePath: getPageModulePath(options),
           importPath: getImportPathForPageModule(options),
-          importName: [options.name, 'Page', options.type].join(' ')
+          importName: strings.classify([options.name, 'Page', options.type].join(' '))
         })
         : noop(),
       (hasPage && ['directive', 'pipe', 'service'].includes(options.type))

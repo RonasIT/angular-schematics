@@ -1,5 +1,7 @@
 import {
   addDepsToPackageJson,
+  addImportToModule,
+  addImportToNgModuleMetadata,
   getAppRootPath,
   getProjectPath,
   getRootPath
@@ -10,7 +12,6 @@ import {
   MergeStrategy,
   mergeWith,
   move,
-  noop,
   Rule,
   template,
   Tree,
@@ -151,7 +152,59 @@ export function addNgRxToPackageJson(host: Tree, options: InitProjectOptions): R
 }
 
 export function addNgRxImportsToAppModule(host: Tree, options: InitProjectOptions): Rule {
-  return noop();
+  const projectPath = getProjectPath(host, options);
+  const appModulePath = normalize(`${projectPath}/app.module.ts`);
+
+  const imports = [
+    {
+      name: 'EffectsModule',
+      from: '@ngrx/effects',
+      declaration: 'EffectsModule.forRoot([])'
+    },
+    {
+      name: 'routerReducer',
+      from: '@ngrx/router-store',
+      declaration: null
+    },
+    {
+      name: 'StoreRouterConnectingModule',
+      from: '@ngrx/router-store',
+      declaration: 'StoreRouterConnectingModule.forRoot()'
+    },
+    {
+      name: 'StoreModule',
+      from: '@ngrx/store',
+      declaration: `StoreModule.forRoot({
+      router: routerReducer
+    })`
+    },
+    {
+      name: 'StoreDevtoolsModule',
+      from: '@ngrx/store-devtools',
+      declaration: `StoreDevtoolsModule.instrument({
+      maxAge: 30,
+      logOnly: false
+    })`
+    }
+  ];
+
+  const addImportToModuleRules = imports.map((item) => addImportToModule({
+    modulePath: appModulePath,
+    importName: item.name,
+    importFrom: item.from
+  }));
+
+  const addImportToNgModuleMetadataRules = imports
+    .filter((item) => item.declaration)
+    .map((item) => addImportToNgModuleMetadata({
+      modulePath: appModulePath,
+      importName: item.declaration!
+    }));
+
+  return chain([
+    ...addImportToModuleRules,
+    ...addImportToNgModuleMetadataRules
+  ]);
 }
 
 export default function (options: InitProjectOptions): Rule {
@@ -163,14 +216,13 @@ export default function (options: InitProjectOptions): Rule {
     ];
 
     if (options.ngrx) {
-      rules.push(...[
+      rules.push(
         createAppStoreFiles(host, options),
         addNgRxToPackageJson(host, options),
         addNgRxImportsToAppModule(host, options)
-      ]);
+      );
     }
 
     return chain(rules);
   };
 }
-

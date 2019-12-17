@@ -17,15 +17,21 @@ export interface AddRouteDeclarationToNgModuleOptions {
 
 export interface AddSymbolToNgModuleMetadataOptions {
   modulePath: Path;
-  importPath: Path;
+  importPath?: Path;
   importName: string;
   metadataField: 'bootstrap' | 'declarations' | 'entryComponents' | 'exports' | 'imports' | 'providers';
 }
 
 export interface AddSymbolToNgModuleOptions {
   modulePath: Path;
-  importPath: Path;
+  importPath?: Path;
   importName: string;
+}
+
+export interface AddImportToModuleOptions {
+  modulePath: Path;
+  importName: string;
+  importFrom: string;
 }
 
 export interface UpsertBarrelFileOptions {
