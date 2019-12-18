@@ -1,6 +1,6 @@
 import { Action, Store } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
-import { AppState } from 'src/app/shared/store';
+import { AppState } from '@shared/store';
 import { Injectable } from '@angular/core';
 
 @Injectable()

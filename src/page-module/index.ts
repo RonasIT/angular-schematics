@@ -21,7 +21,7 @@ import {
 import { join, Path, strings } from '@angular-devkit/core';
 import { MODULE_EXT } from '@schematics/angular/utility/find-module';
 import { Schema as PageModuleOptions } from './schema';
-import { findNodes } from '@schematics/angular/utility/ast-utils';
+import { findNodes, insertImport } from '@schematics/angular/utility/ast-utils';
 import ts = require('@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript');
 
 function getPageModulePath(options: PageModuleOptions): Path {
@@ -122,9 +122,15 @@ export default function (options: PageModuleOptions): Rule {
       const source = ts.createSourceFile(path, sourceText, ts.ScriptTarget.Latest, true);
 
       const lastPropertyDeclaration = findNodes(source, ts.SyntaxKind.PropertyDeclaration).pop();
+      const lastImportDeclaration = findNodes(source, ts.SyntaxKind.ImportDeclaration).pop();
+
+      const importPath = '@app/' + ((options.parent)
+      ? `${options.section}/${options.parent}/${options.name}/shared/store`
+      : `${options.section}/${options.name}/shared/store`);
 
       const recorder = host.beginUpdate(path);
       recorder.insertRight(lastPropertyDeclaration!.end, `\n  public ${page}?: ${state};`);
+      recorder.insertRight(lastImportDeclaration!.end, `\nimport { ${state} } from '${importPath}';`);
       host.commitUpdate(recorder);
 
       rules.push(

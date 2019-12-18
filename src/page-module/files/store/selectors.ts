@@ -1,4 +1,4 @@
-import { AppState } from 'src/app/shared/store';
+import { AppState } from '@shared/store';
 import { createSelector, MemoizedSelector } from '@ngrx/store';
 import { <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageState } from './state';
 
