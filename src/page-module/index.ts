@@ -142,34 +142,6 @@ function getStoreParts(host: Tree, options: PageModuleOptions, ): StoreParts {
   };
 }
 
-function getStoreModuleImports(storeParts: StoreParts): Array<{ name: string, from: string }> {
-  return [
-    {
-      name: 'StoreModule',
-      from: '@ngrx/store'
-    },
-    {
-      name: 'EffectsModule',
-      from: '@ngrx/effects'
-    },
-    {
-      name: `reducer as ${storeParts.reducer}`,
-      from: './shared/store'
-    },
-    {
-      name: storeParts.effects,
-      from: './shared/store'
-    }
-  ];
-}
-
-function getStoreMetadataImports(storeParts: StoreParts): Array<string> {
-  return [
-    `StoreModule.forFeature('${storeParts.appStateName}', ${storeParts.reducer})`,
-    `EffectsModule.forFeature([${storeParts.effects}])`
-  ];
-}
-
 function addStoreImports(host: Tree, options: PageModuleOptions): Array<Rule> {
   const storeParts = getStoreParts(host, options);
 
@@ -215,6 +187,34 @@ function getPageRoutingModulePath(host: Tree, options: PageModuleOptions): Path 
       ? `${options.section}/${options.parent}/${options.parent}.routing.ts`
       : `${options.section}/${options.section}.routing.ts`
   )
+}
+
+function getStoreModuleImports(storeParts: StoreParts): Array<{ name: string, from: string }> {
+  return [
+    {
+      name: 'StoreModule',
+      from: '@ngrx/store'
+    },
+    {
+      name: 'EffectsModule',
+      from: '@ngrx/effects'
+    },
+    {
+      name: `reducer as ${storeParts.reducer}`,
+      from: './shared/store'
+    },
+    {
+      name: storeParts.effects,
+      from: './shared/store'
+    }
+  ];
+}
+
+function getStoreMetadataImports(storeParts: StoreParts): Array<string> {
+  return [
+    `StoreModule.forFeature('${storeParts.appStateName}', ${storeParts.reducer})`,
+    `EffectsModule.forFeature([${storeParts.effects}])`
+  ];
 }
 
 export default function (options: PageModuleOptions): Rule {
