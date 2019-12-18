@@ -69,6 +69,13 @@ export function getRoutingModulePath(host: Tree, modulePath: string): Path {
   }
 }
 
+export function getAppStatePath(
+  host: Tree,
+  options: { project?: string | undefined; path?: string | undefined }
+): Path {
+  return join(getProjectPath(host, options), 'shared', 'store', 'state.ts');
+}
+
 export function isLib(
   host: Tree,
   options: { project?: string | undefined; path?: string | undefined }
