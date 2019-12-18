@@ -155,51 +155,53 @@ export function addNgRxImportsToAppModule(host: Tree, options: InitProjectOption
   const projectPath = getProjectPath(host, options);
   const appModulePath = normalize(`${projectPath}/app.module.ts`);
 
-  const imports = [
+  const moduleImports = [
     {
       name: 'EffectsModule',
-      from: '@ngrx/effects',
-      declaration: 'EffectsModule.forRoot([])'
+      from: '@ngrx/effects'
     },
     {
       name: 'routerReducer',
-      from: '@ngrx/router-store',
-      declaration: null
+      from: '@ngrx/router-store'
     },
     {
       name: 'StoreRouterConnectingModule',
-      from: '@ngrx/router-store',
-      declaration: 'StoreRouterConnectingModule.forRoot()'
+      from: '@ngrx/router-store'
     },
     {
       name: 'StoreModule',
-      from: '@ngrx/store',
-      declaration: `StoreModule.forRoot({
-      router: routerReducer
-    })`
+      from: '@ngrx/store'
     },
     {
       name: 'StoreDevtoolsModule',
-      from: '@ngrx/store-devtools',
-      declaration: `StoreDevtoolsModule.instrument({
-      maxAge: 30,
-      logOnly: false
-    })`
+      from: '@ngrx/store-devtools'
     }
   ];
 
-  const addImportToModuleRules = imports.map((item) => addImportToModule({
+  const metadataImports = [
+    'EffectsModule.forRoot([])',
+    'StoreRouterConnectingModule.forRoot()',
+    `StoreModule.forRoot({
+      router: routerReducer
+    })`,
+    `StoreDevtoolsModule.instrument({
+      maxAge: 30,
+      logOnly: false
+    })`
+  ];
+
+  const addImportToModuleRules = moduleImports.map((item) => addImportToModule({
     modulePath: appModulePath,
     importName: item.name,
     importFrom: item.from
   }));
 
-  const addImportToNgModuleMetadataRules = imports
-    .filter((item) => item.declaration)
-    .map((item) => addImportToNgModuleMetadata({
+  const addImportToNgModuleMetadataRules = metadataImports.map((metadataImport) => {
+    return addImportToNgModuleMetadata({
       modulePath: appModulePath,
-      importName: item.declaration!
-    }));
+      importName: metadataImport
+    });
+  });
 
   return chain([
     ...addImportToModuleRules,
