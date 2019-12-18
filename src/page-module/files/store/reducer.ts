@@ -4,11 +4,11 @@ import { <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name
 
 const initialState = new <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageState();
 
-const reducers = createReducer(
+const reducer = createReducer(
   initialState,
   on(<%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageActions.resetState, (state) => initialState)
 );
 
-export function reducer(state: <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageState | undefined, action: Action): <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageState {
-  return reducers(state, action);
+export function <%= camelize(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>Reducer(state: <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageState | undefined, action: Action): <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageState {
+  return reducer(state, action);
 }

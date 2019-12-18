@@ -198,7 +198,7 @@ function getStoreModuleImports(storeParts: StoreParts): Array<{ name: string, fr
       from: '@ngrx/effects'
     },
     {
-      name: `reducer as ${storeParts.reducer}`,
+      name: storeParts.reducer,
       from: './shared/store'
     },
     {
