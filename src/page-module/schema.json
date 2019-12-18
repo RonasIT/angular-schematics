@@ -33,6 +33,11 @@
       },
       "x-prompt": "What should be the name of the page?"
     },
+    "store": {
+      "type": "boolean",
+      "description": "When true, installs store for the page.",
+      "x-prompt": "Would you like to add store?"
+    },
     "path": {
       "type": "string",
       "format": "path",

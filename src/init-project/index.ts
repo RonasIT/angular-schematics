@@ -4,7 +4,8 @@ import {
   addImportToNgModuleMetadata,
   getAppRootPath,
   getProjectPath,
-  getRootPath
+  getRootPath,
+  updateJsonInTree
 } from '../../core';
 import {
   apply,
@@ -15,7 +16,8 @@ import {
   Rule,
   template,
   Tree,
-  url
+  url,
+  SchematicContext
 } from '@angular-devkit/schematics';
 import { fragment, normalize, strings } from '@angular-devkit/core';
 import { Schema as InitProjectOptions } from './schema';
@@ -122,6 +124,29 @@ export function replaceImportsInAppFiles(host: Tree, options: InitProjectOptions
   };
 }
 
+export function addAliasesToTsConfig(host: Tree, options: InitProjectOptions): Rule {
+  return (host: Tree) => {
+    return updateJsonInTree('tsconfig.json', (json, context: SchematicContext) => {
+      json.compilerOptions.paths = {
+        '@app/*': [
+          'src/app/*'
+        ],
+        '@shared/*': [
+          'src/app/shared/*'
+        ],
+        '@configurations': [
+          'src/configurations/index'
+        ],
+        '@tests/*': [
+          'src/tests/*'
+        ]
+      };
+  
+      return json;
+    });
+  };
+}
+
 const NGRX_VERSION = '^8.5.2';
 
 export function createAppStoreFiles(host: Tree, options: InitProjectOptions): Rule {
@@ -214,7 +239,8 @@ export default function (options: InitProjectOptions): Rule {
     const rules = [
       replaceEnvironments(host, options),
       renameAppFiles(host, options),
-      replaceImportsInAppFiles(host, options)
+      replaceImportsInAppFiles(host, options),
+      addAliasesToTsConfig(host, options)
     ];
 
     if (options.ngrx) {

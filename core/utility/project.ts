@@ -31,10 +31,6 @@ export function getProjectPath(
   host: Tree,
   options: { project?: string | undefined; path?: string | undefined }
 ): Path {
-  if (options && options.path !== undefined) {
-    return options.path as Path;
-  }
-
   const project = getProject(host, options);
   const projectDirName = project.projectType === 'application' ? 'app' : 'lib';
 
@@ -71,6 +67,13 @@ export function getRoutingModulePath(host: Tree, modulePath: string): Path {
   } else {
     throw new SchematicsException('Module does not exist');
   }
+}
+
+export function getAppStatePath(
+  host: Tree,
+  options: { project?: string | undefined; path?: string | undefined }
+): Path {
+  return join(getProjectPath(host, options), 'shared', 'store', 'state.ts');
 }
 
 export function isLib(

@@ -39,6 +39,13 @@ export interface UpsertBarrelFileOptions {
   exportFileName: string; 
 }
 
+export interface AddPropertyToClassOptions {
+  path: Path;
+  propertyName: string;
+  propertyType: string;
+  propertyTypePath?: Path | string;
+}
+
 export interface Location {
   name: string;
   path: Path;

@@ -3,13 +3,19 @@ import * as stripJsonComments from 'strip-json-comments';
 import * as ts from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
 import {
   AddImportToModuleOptions,
+  AddPropertyToClassOptions,
   AddRouteDeclarationToNgModuleOptions,
   AddSymbolToNgModuleMetadataOptions,
   AddSymbolToNgModuleOptions,
   BuildRouteOptions,
   UpsertBarrelFileOptions
 } from './interfaces';
-import { addRouteDeclarationToModule, addSymbolToNgModuleMetadata, insertImport } from '@schematics/angular/utility/ast-utils';
+import {
+  addRouteDeclarationToModule,
+  addSymbolToNgModuleMetadata,
+  findNodes,
+  insertImport
+} from '@schematics/angular/utility/ast-utils';
 import { buildRelativePath, MODULE_EXT } from '@schematics/angular/utility/find-module';
 import { InsertChange } from '@schematics/angular/utility/change';
 import { join, Path, strings } from '@angular-devkit/core';
@@ -147,6 +153,30 @@ export function addImportToModule(options: AddImportToModuleOptions): Rule {
     const change = insertImport(source, options.modulePath, options.importName, options.importFrom) as InsertChange;
     const recorder = host.beginUpdate(options.modulePath);
     recorder.insertLeft(change.pos, change.toAdd);
+    host.commitUpdate(recorder);
+
+    return host;
+  };
+}
+
+export function addPropertyToClass(options: AddPropertyToClassOptions): Rule {
+  return (host: Tree) => {
+    const text = host.read(options.path);
+    if (text === null) {
+      throw new SchematicsException(`File ${options.path} does not exist.`);
+    }
+
+    const sourceText = text!.toString('utf-8');
+    const source = ts.createSourceFile(options.path, sourceText, ts.ScriptTarget.Latest, true);
+
+    const lastPropertyDeclaration = findNodes(source, ts.SyntaxKind.PropertyDeclaration).pop();
+    const lastImportDeclaration = findNodes(source, ts.SyntaxKind.ImportDeclaration).pop();
+
+    const recorder = host.beginUpdate(options.path);
+    recorder.insertRight(lastPropertyDeclaration!.end, `\n  public ${options.propertyName}?: ${options.propertyType};`);
+    if (options.propertyTypePath) {
+      recorder.insertRight(lastImportDeclaration!.end, `\nimport { ${options.propertyType} } from '${options.propertyTypePath}';`);
+    }
     host.commitUpdate(recorder);
 
     return host;
