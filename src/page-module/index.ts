@@ -1,10 +1,10 @@
 import {
+  addImportToModule,
+  addImportToNgModuleMetadata,
   addRouteDeclarationToNgModule,
   getProjectPath,
   getRoutingModulePath,
-  parseLocation,
-  addImportToModule,
-  addImportToNgModuleMetadata
+  parseLocation
 } from '../../core';
 import {
   apply,
@@ -19,8 +19,10 @@ import {
   url
 } from '@angular-devkit/schematics';
 import { join, Path, strings } from '@angular-devkit/core';
-import { Schema as PageModuleOptions } from './schema';
 import { MODULE_EXT } from '@schematics/angular/utility/find-module';
+import { Schema as PageModuleOptions } from './schema';
+import { findNodes } from '@schematics/angular/utility/ast-utils';
+import ts = require('@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript');
 
 function getPageModulePath(options: PageModuleOptions): Path {
   return join(options.path as Path, strings.dasherize(options.name), strings.dasherize(options.name) + MODULE_EXT);
@@ -73,6 +75,7 @@ export default function (options: PageModuleOptions): Rule {
       const page = `${strings.camelize(options.section + ' ' + ((!!options.parent) ? (options.parent + ' ') : '') + options.name)}Page`;
       const reducer = `${page}Reducer`;
       const effects = `${strings.classify(options.section + ' ' + ((!!options.parent) ? (options.parent + ' ') : '') + options.name)}PageEffects`;
+      const state = `${strings.classify(options.section + ' ' + ((!!options.parent) ? (options.parent + ' ') : '') + options.name)}PageState`;
 
       const moduleImports = [
         {
@@ -105,13 +108,24 @@ export default function (options: PageModuleOptions): Rule {
         importName: item.name,
         importFrom: item.from
       }));
-    
+
       const addImportToNgModuleMetadataRules = metadataImports.map((metadataImport) => {
         return addImportToNgModuleMetadata({
           modulePath,
           importName: metadataImport
         });
       });
+
+      const path = join(getProjectPath(host, options), 'shared', 'store', 'state.ts');
+      const text = host.read(path);
+      const sourceText = text!.toString('utf-8');
+      const source = ts.createSourceFile(path, sourceText, ts.ScriptTarget.Latest, true);
+
+      const lastPropertyDeclaration = findNodes(source, ts.SyntaxKind.PropertyDeclaration).pop();
+
+      const recorder = host.beginUpdate(path);
+      recorder.insertRight(lastPropertyDeclaration!.end, `\n  public ${page}?: ${state};`);
+      host.commitUpdate(recorder);
 
       rules.push(
         mergeWith(

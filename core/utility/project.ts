@@ -31,10 +31,6 @@ export function getProjectPath(
   host: Tree,
   options: { project?: string | undefined; path?: string | undefined }
 ): Path {
-  if (options && options.path !== undefined) {
-    return options.path as Path;
-  }
-
   const project = getProject(host, options);
   const projectDirName = project.projectType === 'application' ? 'app' : 'lib';
 
