@@ -143,7 +143,7 @@ export function addAliasesToTsConfig(host: Tree, options: InitProjectOptions): R
       };
   
       return json;
-    })
+    });
   };
 }
 

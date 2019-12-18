@@ -6,10 +6,7 @@ const initialState = new <%= classify(section + ' ' + ((hasParent) ? (parent + '
 
 const reducers = createReducer(
   initialState,
-  on(<%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageActions.refreshState, (state) => ({
-    ...state,
-    ...initialState
-  }))
+  on(<%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageActions.resetState, (state) => initialState)
 );
 
 export function reducer(state: <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageState | undefined, action: Action): <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageState {

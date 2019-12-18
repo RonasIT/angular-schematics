@@ -14,7 +14,6 @@ import {
   MergeStrategy,
   mergeWith,
   move,
-  noop,
   Rule,
   Source,
   template,
@@ -83,7 +82,7 @@ function prepareStoreRules(host: Tree, options: PageModuleOptions): Array<Rule> 
     ];
   }
 
-  return [noop()];
+  return [];
 }
 
 function getPageModulePath(options: PageModuleOptions): Path {
@@ -111,11 +110,11 @@ function getStoreTemplateSource(host: Tree, options: PageModuleOptions): Source 
       hasParent: !!options.parent
     }),
     move(storePath)
-  ])
+  ]);
 }
 
 function getRouteModule(host: Tree, options: PageModuleOptions): string {
-  return options.section + ' ' + ((!!options.parent) ? (options.parent + ' ') : '') + options.name + 'Page'
+  return options.section + ' ' + ((!!options.parent) ? (options.parent + ' ') : '') + options.name + 'Page';
 }
 
 function getPagePath(host: Tree, options: PageModuleOptions): Path {
@@ -185,7 +184,7 @@ function getPageRoutingModulePath(host: Tree, options: PageModuleOptions): Path 
     (options.parent)
       ? `${options.section}/${options.parent}/${options.parent}.routing.ts`
       : `${options.section}/${options.section}.routing.ts`
-  )
+  );
 }
 
 function getStoreModuleImports(storeParts: StoreParts): Array<{ name: string, from: string }> {
