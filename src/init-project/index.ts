@@ -1,5 +1,7 @@
 import {
   addDepsToPackageJson,
+  addImportToModule,
+  addImportToNgModuleMetadata,
   getAppRootPath,
   getProjectPath,
   getRootPath
@@ -10,7 +12,6 @@ import {
   MergeStrategy,
   mergeWith,
   move,
-  noop,
   Rule,
   template,
   Tree,
@@ -151,7 +152,61 @@ export function addNgRxToPackageJson(host: Tree, options: InitProjectOptions): R
 }
 
 export function addNgRxImportsToAppModule(host: Tree, options: InitProjectOptions): Rule {
-  return noop();
+  const projectPath = getProjectPath(host, options);
+  const appModulePath = normalize(`${projectPath}/app.module.ts`);
+
+  const moduleImports = [
+    {
+      name: 'EffectsModule',
+      from: '@ngrx/effects'
+    },
+    {
+      name: 'routerReducer',
+      from: '@ngrx/router-store'
+    },
+    {
+      name: 'StoreRouterConnectingModule',
+      from: '@ngrx/router-store'
+    },
+    {
+      name: 'StoreModule',
+      from: '@ngrx/store'
+    },
+    {
+      name: 'StoreDevtoolsModule',
+      from: '@ngrx/store-devtools'
+    }
+  ];
+
+  const metadataImports = [
+    'EffectsModule.forRoot([])',
+    'StoreRouterConnectingModule.forRoot()',
+    `StoreModule.forRoot({
+      router: routerReducer
+    })`,
+    `StoreDevtoolsModule.instrument({
+      maxAge: 30,
+      logOnly: false
+    })`
+  ];
+
+  const addImportToModuleRules = moduleImports.map((item) => addImportToModule({
+    modulePath: appModulePath,
+    importName: item.name,
+    importFrom: item.from
+  }));
+
+  const addImportToNgModuleMetadataRules = metadataImports.map((metadataImport) => {
+    return addImportToNgModuleMetadata({
+      modulePath: appModulePath,
+      importName: metadataImport
+    });
+  });
+
+  return chain([
+    ...addImportToModuleRules,
+    ...addImportToNgModuleMetadataRules
+  ]);
 }
 
 export default function (options: InitProjectOptions): Rule {
@@ -163,14 +218,13 @@ export default function (options: InitProjectOptions): Rule {
     ];
 
     if (options.ngrx) {
-      rules.push(...[
+      rules.push(
         createAppStoreFiles(host, options),
         addNgRxToPackageJson(host, options),
         addNgRxImportsToAppModule(host, options)
-      ]);
+      );
     }
 
     return chain(rules);
   };
 }
-
