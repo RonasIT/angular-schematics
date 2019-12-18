@@ -52,7 +52,7 @@ function prepareOptionsType(options: SharedModuleOptions): void {
 }
 
 function prepareOptionsFlat(options: SharedModuleOptions): void {
-  options.flat = options.type !== 'component'
+  options.flat = options.type !== 'component';
 }
 
 function getFolderNameByType(options: SharedModuleOptions): string {
