@@ -6,7 +6,7 @@ const initialState = new <%= classify(section + ' ' + ((hasParent) ? (parent + '
 
 const reducer = createReducer(
   initialState,
-  on(<%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageActions.resetState, (state) => initialState)
+  on(<%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageActions.resetState, () => initialState)
 );
 
 export function <%= camelize(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>Reducer(state: <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageState | undefined, action: Action): <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageState {
