@@ -21,7 +21,6 @@ import {
   Tree,
   url
 } from '@angular-devkit/schematics';
-import { findNodes } from '@schematics/angular/utility/ast-utils';
 import { join, Path, strings } from '@angular-devkit/core';
 import { MODULE_EXT } from '@schematics/angular/utility/find-module';
 import { Schema as PageModuleOptions } from './schema';
@@ -120,7 +119,7 @@ function getRouteModule(host: Tree, options: PageModuleOptions): string {
 }
 
 function getPagePath(host: Tree, options: PageModuleOptions): Path {
-  return join(options.path as Path, (!!options.parent) ? strings.dasherize(options.parent) : '', strings.dasherize(options.name));
+  return join(options.path as Path, strings.dasherize(options.name));
 }
 
 function getStorePath(host: Tree, options: PageModuleOptions): string {
@@ -169,8 +168,8 @@ function addStoreImports(host: Tree, options: PageModuleOptions): Array<Rule> {
 
 function addPageStateToAppState(host: Tree, options: PageModuleOptions, storeParts: StoreParts): Rule {
   const propertyTypePath = '@app/' + ((options.parent)
-    ? `${options.section}/${options.parent}/${options.name}/shared/store`
-    : `${options.section}/${options.name}/shared/store`);
+    ? `${strings.dasherize(options.section)}/${strings.dasherize(options.parent)}/${strings.dasherize(options.name)}/shared/store`
+    : `${strings.dasherize(options.section)}/${strings.dasherize(options.name)}/shared/store`);
 
   return addPropertyToClass({
     path: getAppStatePath(host, options),
