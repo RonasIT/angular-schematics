@@ -228,7 +228,6 @@ function addLanguagesToConfigurationFiles(host: Tree, options: InitProjectOption
     const configurationFiles = ['configuration.ts', 'configuration.prod.ts'];
 
     return chain(configurationFiles.map((configurationFile) => {
-
       const path = join(appRootPath, 'configurations', configurationFile);
 
       return addTextToObject({
