@@ -1,7 +1,7 @@
-import { Action, Store } from '@ngrx/store';
 import { Actions } from '@ngrx/effects';
 import { AppState } from '@shared/store';
 import { Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
 
 @Injectable()
 export class <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageEffects {
