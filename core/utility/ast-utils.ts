@@ -170,11 +170,12 @@ export function addPropertyToClass(options: AddPropertyToClassOptions): Rule {
     const source = ts.createSourceFile(options.path, sourceText, ts.ScriptTarget.Latest, true);
 
     const lastPropertyDeclaration = findNodes(source, ts.SyntaxKind.PropertyDeclaration).pop();
-    const lastImportDeclaration = findNodes(source, ts.SyntaxKind.ImportDeclaration).pop();
 
     const recorder = host.beginUpdate(options.path);
     recorder.insertRight(lastPropertyDeclaration!.end, `\n  public ${options.propertyName}?: ${options.propertyType};`);
+
     if (options.propertyTypePath) {
+      const lastImportDeclaration = findNodes(source, ts.SyntaxKind.ImportDeclaration).pop();
       recorder.insertRight(lastImportDeclaration!.end, `\nimport { ${options.propertyType} } from '${options.propertyTypePath}';`);
     }
     host.commitUpdate(recorder);
@@ -205,9 +206,9 @@ export function upsertBarrelFile(options: UpsertBarrelFileOptions): Rule {
 let installTaskAdded = false;
 
 export function addDepsToPackageJson(
-  deps: any,
-  devDeps: any,
-  addInstallTask = true
+  deps: any = {},
+  devDeps: any = {},
+  addInstallTask: boolean = true
 ): Rule {
   return updateJsonInTree('package.json', (json, context: SchematicContext) => {
     json.dependencies = sortKeys({
