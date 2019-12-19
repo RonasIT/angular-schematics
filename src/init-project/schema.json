@@ -4,6 +4,11 @@
   "title": "Init Project Schema",
   "type": "object",
   "properties": {
+    "translate": {
+      "type": "boolean",
+      "description": "When true, installs ngx-translate for the initial project.",
+      "x-prompt": "Would you like to add ngx-translate?"
+    },
     "ngrx": {
       "type": "boolean",
       "description": "When true, installs NgRx for the initial project.",
