@@ -148,6 +148,7 @@ export function addAliasesToTsConfig(host: Tree, options: InitProjectOptions): R
 }
 
 const NGRX_VERSION = '^8.5.2';
+const NGRX_FORMS_VERSION = '^6.1.0';
 
 export function createAppStoreFiles(host: Tree, options: InitProjectOptions): Rule {
   const appRootPath = getAppRootPath(host, options);
@@ -168,7 +169,8 @@ export function addNgRxToPackageJson(host: Tree, options: InitProjectOptions): R
     {
       '@ngrx/effects': NGRX_VERSION,
       '@ngrx/router-store': NGRX_VERSION,
-      '@ngrx/store': NGRX_VERSION
+      '@ngrx/store': NGRX_VERSION,
+      'ngrx-forms': NGRX_FORMS_VERSION
     },
     {
       '@ngrx/store-devtools': NGRX_VERSION
