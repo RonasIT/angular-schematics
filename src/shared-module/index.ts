@@ -134,7 +134,7 @@ function getPageModulePath(options: SharedModuleOptions): Path {
   return join(fragments[0], ...fragments, strings.dasherize(options.page) + MODULE_EXT);
 }
 
-export function getImportPathForPageModule(options: SharedModuleOptions): Path {
+function getImportPathForPageModule(options: SharedModuleOptions): Path {
   return join(options.path as Path, (options.type === 'component') ? strings.dasherize(options.name) + '.component' : '');
 }
 

@@ -28,7 +28,7 @@ import {
   addTextToObject,
 } from '../../core';
 
-export function replaceEnvironmentsDirectory(host: Tree, options: InitProjectOptions): Rule {
+function replaceEnvironmentsDirectory(host: Tree, options: InitProjectOptions): Rule {
   return (host: Tree) => {
     const appRootPath = getAppRootPath(host, options);
     const environmentsDirectory = host.getDir(normalize(`${appRootPath}/environments`));
@@ -55,7 +55,7 @@ export function replaceEnvironmentsDirectory(host: Tree, options: InitProjectOpt
   };
 }
 
-export function replaceEnvironmentsInMainTs(host: Tree, options: InitProjectOptions): Rule {
+function replaceEnvironmentsInMainTs(host: Tree, options: InitProjectOptions): Rule {
   return (host: Tree) => {
     const appRootPath = getAppRootPath(host, options);
     const mainTsPath = normalize(`${appRootPath}/main.ts`);
@@ -69,7 +69,7 @@ export function replaceEnvironmentsInMainTs(host: Tree, options: InitProjectOpti
   };
 }
 
-export function replaceEnvironmentsInAngularJson(host: Tree, options: InitProjectOptions): Rule {
+function replaceEnvironmentsInAngularJson(host: Tree, options: InitProjectOptions): Rule {
   return (host: Tree) => {
     const rootPath = getRootPath(host, options);
     const configPath = normalize(`${rootPath}/angular.json`);
@@ -83,7 +83,7 @@ export function replaceEnvironmentsInAngularJson(host: Tree, options: InitProjec
   };
 }
 
-export function replaceEnvironments(host: Tree, options: InitProjectOptions): Rule {
+function replaceEnvironments(host: Tree, options: InitProjectOptions): Rule {
   return chain([
     replaceEnvironmentsDirectory(host, options),
     replaceEnvironmentsInMainTs(host, options),
@@ -91,7 +91,7 @@ export function replaceEnvironments(host: Tree, options: InitProjectOptions): Ru
   ]);
 }
 
-export function renameAppFiles(host: Tree, options: InitProjectOptions): Rule {
+function renameAppFiles(host: Tree, options: InitProjectOptions): Rule {
   return (host: Tree) => {
     const projectPath = getProjectPath(host, options);
 
@@ -112,7 +112,7 @@ export function renameAppFiles(host: Tree, options: InitProjectOptions): Rule {
   };
 }
 
-export function replaceImportsInAppFiles(host: Tree, options: InitProjectOptions): Rule {
+function replaceImportsInAppFiles(host: Tree, options: InitProjectOptions): Rule {
   return (host: Tree) => {
     const projectPath = getProjectPath(host, options);
 
@@ -130,7 +130,7 @@ export function replaceImportsInAppFiles(host: Tree, options: InitProjectOptions
   };
 }
 
-export function addAliasesToTsConfig(host: Tree, options: InitProjectOptions): Rule {
+function addAliasesToTsConfig(host: Tree, options: InitProjectOptions): Rule {
   return (host: Tree) => {
     return updateJsonInTree('tsconfig.json', (json, context: SchematicContext) => {
       json.compilerOptions.paths = {
@@ -242,7 +242,7 @@ function addLanguagesToConfigurationFiles(host: Tree, options: InitProjectOption
 
 const NGRX_VERSION = '^8.5.2';
 
-export function createAppStoreFiles(host: Tree, options: InitProjectOptions): Rule {
+function createAppStoreFiles(host: Tree, options: InitProjectOptions): Rule {
   const appRootPath = getAppRootPath(host, options);
 
   const templateSource = apply(url('./files/ngrx'), [
@@ -256,7 +256,7 @@ export function createAppStoreFiles(host: Tree, options: InitProjectOptions): Ru
   return mergeWith(templateSource, MergeStrategy.Overwrite);
 }
 
-export function addNgRxToPackageJson(host: Tree, options: InitProjectOptions): Rule {
+function addNgRxToPackageJson(host: Tree, options: InitProjectOptions): Rule {
   return addDepsToPackageJson(
     {
       '@ngrx/effects': NGRX_VERSION,
@@ -269,7 +269,7 @@ export function addNgRxToPackageJson(host: Tree, options: InitProjectOptions): R
   );
 }
 
-export function addNgRxImportsToAppModule(host: Tree, options: InitProjectOptions): Rule {
+function addNgRxImportsToAppModule(host: Tree, options: InitProjectOptions): Rule {
   const projectPath = getProjectPath(host, options);
   const appModulePath = normalize(`${projectPath}/app.module.ts`);
 
