@@ -1,26 +1,32 @@
 import {
-  addDepsToPackageJson,
-  addImportToModule,
-  addImportToNgModuleMetadata,
-  getAppRootPath,
-  getProjectPath,
-  getRootPath,
-  updateJsonInTree
-} from '../../core';
-import {
   apply,
   chain,
   MergeStrategy,
   mergeWith,
   move,
   Rule,
+  SchematicContext,
   template,
   Tree,
-  url,
-  SchematicContext
+  url
 } from '@angular-devkit/schematics';
-import { fragment, normalize, strings } from '@angular-devkit/core';
+import {
+  fragment,
+  join,
+  normalize,
+  strings
+} from '@angular-devkit/core';
 import { Schema as InitProjectOptions } from './schema';
+import {
+  addDepsToPackageJson,
+  addImportToModule,
+  addImportToNgModuleMetadata,
+  getAppRootPath,
+  getProjectPath,
+  getRootPath,
+  updateJsonInTree,
+  addTextToObject,
+} from '../../core';
 
 export function replaceEnvironmentsDirectory(host: Tree, options: InitProjectOptions): Rule {
   return (host: Tree) => {
@@ -141,9 +147,96 @@ export function addAliasesToTsConfig(host: Tree, options: InitProjectOptions): R
           'src/tests/*'
         ]
       };
-  
+
       return json;
     });
+  };
+}
+
+const NGX_TRANSLATE_VERSION = '^11.0.1';
+
+function createTranslateFiles(host: Tree, options: InitProjectOptions): Rule {
+  const appRootPath = getAppRootPath(host, options);
+
+  const templateSource = apply(url('./files/ngx-translate'), [
+    template({
+      ...options,
+      ...strings
+    }),
+    move(appRootPath)
+  ]);
+
+  return mergeWith(templateSource, MergeStrategy.Overwrite);
+}
+
+function addNgxTranslateToPackageJson(host: Tree, options: InitProjectOptions): Rule {
+  return addDepsToPackageJson({
+    '@ngx-translate/core': NGX_TRANSLATE_VERSION
+  });
+}
+
+function addNgxTranslateToAppModule(host: Tree, options: InitProjectOptions): Rule {
+  const projectPath = getProjectPath(host, options);
+  const appModulePath = normalize(`${projectPath}/app.module.ts`);
+
+  const moduleImports = [
+    {
+      name: 'TranslateLoader',
+      from: '@ngx-translate/core'
+    },
+    {
+      name: 'TranslateModule',
+      from: '@ngx-translate/core'
+    },
+    {
+      name: 'WebpackTranslateLoader',
+      from: './app.translate.loader'
+    }
+  ];
+
+  const metadataImports = [
+    `TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useClass: WebpackTranslateLoader
+      }
+    })`
+  ];
+
+  const addImportToModuleRules = moduleImports.map((item) => addImportToModule({
+    modulePath: appModulePath,
+    importName: item.name,
+    importFrom: item.from
+  }));
+
+  const addImportToNgModuleMetadataRules = metadataImports.map((metadataImport) => {
+    return addImportToNgModuleMetadata({
+      modulePath: appModulePath,
+      importName: metadataImport
+    });
+  });
+
+  return chain([
+    ...addImportToModuleRules,
+    ...addImportToNgModuleMetadataRules
+  ]);
+}
+
+function addLanguagesToConfigurationFiles(host: Tree, options: InitProjectOptions): Rule {
+  return (host: Tree) => {
+    const appRootPath = getAppRootPath(host, options);
+    const configurationFiles = ['configuration.ts', 'configuration.prod.ts'];
+
+    return chain(configurationFiles.map((configurationFile) => {
+
+      const path = join(appRootPath, 'configurations', configurationFile);
+
+      return addTextToObject({
+        path,
+        identifier: 'configuration',
+        text: `,\n  language: {\n    available: ['ru'],\n    default: 'ru'\n  }`
+      });
+    }));
   };
 }
 
@@ -242,6 +335,15 @@ export default function (options: InitProjectOptions): Rule {
       replaceImportsInAppFiles(host, options),
       addAliasesToTsConfig(host, options)
     ];
+
+    if (options.translate) {
+      rules.push(
+        createTranslateFiles(host, options),
+        addNgxTranslateToPackageJson(host, options),
+        addNgxTranslateToAppModule(host, options),
+        addLanguagesToConfigurationFiles(host, options)
+      );
+    }
 
     if (options.ngrx) {
       rules.push(

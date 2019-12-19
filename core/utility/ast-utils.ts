@@ -7,16 +7,19 @@ import {
   AddRouteDeclarationToNgModuleOptions,
   AddSymbolToNgModuleMetadataOptions,
   AddSymbolToNgModuleOptions,
+  AddTextToObjectOptions,
   BuildRouteOptions,
   UpsertBarrelFileOptions
 } from './interfaces';
 import {
   addRouteDeclarationToModule,
   addSymbolToNgModuleMetadata,
+  findNode,
   findNodes,
   insertImport
 } from '@schematics/angular/utility/ast-utils';
 import { buildRelativePath, MODULE_EXT } from '@schematics/angular/utility/find-module';
+import { createNode } from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
 import { InsertChange } from '@schematics/angular/utility/change';
 import { join, Path, strings } from '@angular-devkit/core';
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
@@ -178,6 +181,28 @@ export function addPropertyToClass(options: AddPropertyToClassOptions): Rule {
       const lastImportDeclaration = findNodes(source, ts.SyntaxKind.ImportDeclaration).pop();
       recorder.insertRight(lastImportDeclaration!.end, `\nimport { ${options.propertyType} } from '${options.propertyTypePath}';`);
     }
+    host.commitUpdate(recorder);
+
+    return host;
+  };
+}
+
+export function addTextToObject(options: AddTextToObjectOptions): Rule {
+  return (host: Tree) => {
+    const text = host.read(options.path);
+    if (text === null) {
+      throw new SchematicsException(`File ${options.path} does not exist.`);
+    }
+
+    const sourceText = text!.toString('utf-8');
+    const source = ts.createSourceFile(options.path, sourceText, ts.ScriptTarget.Latest, true);
+
+    const node = findNode(source, ts.SyntaxKind.Identifier, options.identifier) as ts.Identifier;
+    const objectLiteralExpression = node.parent.getChildren().find((child) => child.kind === ts.SyntaxKind.ObjectLiteralExpression) as ts.ObjectLiteralExpression;
+    const closeBrace = objectLiteralExpression.getChildren().find((child) => child.kind === ts.SyntaxKind.CloseBraceToken);
+
+    const recorder = host.beginUpdate(options.path);
+    recorder.insertRight(closeBrace!.pos, options.text);
     host.commitUpdate(recorder);
 
     return host;
