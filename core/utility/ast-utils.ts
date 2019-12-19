@@ -19,7 +19,6 @@ import {
   insertImport
 } from '@schematics/angular/utility/ast-utils';
 import { buildRelativePath, MODULE_EXT } from '@schematics/angular/utility/find-module';
-import { createNode } from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
 import { InsertChange } from '@schematics/angular/utility/change';
 import { join, Path, strings } from '@angular-devkit/core';
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
