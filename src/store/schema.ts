@@ -1,7 +1,7 @@
 export interface Schema {
   name: string;
   section: string;
-  parentPage: string;
+  parent: string;
   page: string;
   path: string;
 }

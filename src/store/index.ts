@@ -25,8 +25,8 @@ function prepareOptionsPath(host: Tree, options: StoreOptions): void {
       options.path = join(options.path as Path, strings.dasherize(options.section));
     }
 
-    if (options.parentPage) {
-      options.path = join(options.path as Path, strings.dasherize(options.parentPage));
+    if (options.parent) {
+      options.path = join(options.path as Path, strings.dasherize(options.parent));
     }
 
     if (options.page) {
@@ -48,7 +48,7 @@ function prepareOptionsPath(host: Tree, options: StoreOptions): void {
 
 function createStoreFiles(host: Tree, options: StoreOptions): Rule {
   const hasSection = !!options.section;
-  const hasParentPage = !!options.parentPage;
+  const hasParent = !!options.parent;
   const hasPage = !!options.page;
   const hasName = !!options.name;
 
@@ -57,7 +57,7 @@ function createStoreFiles(host: Tree, options: StoreOptions): Rule {
       ...options,
       ...strings,
       hasSection,
-      hasParentPage,
+      hasParent,
       hasPage,
       hasName
     }),
