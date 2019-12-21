@@ -30,7 +30,7 @@ interface StoreParts { appStateName: string, reducer: string, effects: string, s
 
 function prepareOptions(host: Tree, options: StoreOptions): void {
   prepareOptionsPath(host, options);
-  // prepareOptionsName(host, options);
+  prepareOptionsName(host, options);
 }
 
 function prepareOptionsPath(host: Tree, options: StoreOptions): void {
@@ -58,7 +58,7 @@ function prepareOptionsPath(host: Tree, options: StoreOptions): void {
 }
 
 function prepareOptionsName(host: Tree, options: StoreOptions): void {
-  const location = parseLocation(options.path, options.name);
+  const location = parseLocation(options.path, 'store');
 
   options.name = location.name;
   options.path = location.path;
