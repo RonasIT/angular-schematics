@@ -154,8 +154,7 @@ function getFullModuleName(host: Tree, options: StoreOptions, separator: string 
     options.section,
     options.parent,
     options.page,
-    (options.page) ? 'Page' : '',
-    (options.page) ? '' : options.name
+    (options.page) ? 'Page' : options.name
   ];
 
   return parts
@@ -164,15 +163,25 @@ function getFullModuleName(host: Tree, options: StoreOptions, separator: string 
 }
 
 function getPathToModuleStore(host: Tree, options: StoreOptions): string {
-  const parts = [
-    (options.section) ? '@app' : '@shared',
-    (options.section) ? strings.dasherize(options.section) : '',
-    (options.parent) ? strings.dasherize(options.parent) : '',
-    (options.page) ? strings.dasherize(options.page) : '',
-    (options.section) ? 'shared' : '',
-    (options.page) ? 'store' : strings.dasherize(options.name),
-    (options.page) ? '' : 'store'
-  ];
+  let parts;
+
+  if (options.section) {
+    parts = [
+      '@app',
+      (options.section) ? strings.dasherize(options.section) : '',
+      (options.parent) ? strings.dasherize(options.parent) : '',
+      (options.page) ? strings.dasherize(options.page) : '',
+      'shared',
+      (!options.page && options.name) ? strings.dasherize(options.name) : '',
+      'store'
+    ];
+  } else {
+    parts = [
+      '@shared',
+      (options.name) ? strings.dasherize(options.name) : '',
+      'store'
+    ];
+  }
 
   return parts
     .filter((part) => !!part)
