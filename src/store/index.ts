@@ -1,4 +1,6 @@
 import {
+  addImportToModule,
+  addImportToNgModuleMetadata,
   addPropertyToClass,
   getAppStatePath,
   getProjectPath,
@@ -10,13 +12,18 @@ import {
   MergeStrategy,
   mergeWith,
   move,
-  noop,
   Rule,
   template,
   Tree,
   url
 } from '@angular-devkit/schematics';
-import { join, Path, strings } from '@angular-devkit/core';
+import {
+  join,
+  Path,
+  split,
+  strings
+} from '@angular-devkit/core';
+import { MODULE_EXT } from '@schematics/angular/utility/find-module';
 import { Schema as StoreOptions } from './schema';
 
 interface StoreParts { appStateName: string, reducer: string, effects: string, state: string };
@@ -78,12 +85,68 @@ function createStoreFiles(host: Tree, options: StoreOptions): Rule {
   return mergeWith(templateSource, MergeStrategy.Overwrite);
 }
 
-function addEffectsToNgModule(host: Tree, options: StoreOptions): Rule {
-  return noop();
+function getStoreModuleImports(host: Tree, options: StoreOptions): Array<{ name: string, from: string }> {
+  const storeParts = getStoreParts(host, options);
+
+  return [
+    {
+      name: 'StoreModule',
+      from: '@ngrx/store'
+    },
+    {
+      name: 'EffectsModule',
+      from: '@ngrx/effects'
+    },
+    {
+      name: storeParts.reducer,
+      from: (options.page) ? './shared/store' : './store'
+    },
+    {
+      name: storeParts.effects,
+      from: (options.page) ? './shared/store' : './store'
+    }
+  ];
 }
 
-function addReducerToNgModule(host: Tree, options: StoreOptions): Rule {
-  return noop();
+function getStoreMetadataImports(host: Tree, options: StoreOptions): Array<string> {
+  const storeParts = getStoreParts(host, options);
+
+  return [
+    `StoreModule.forFeature('${storeParts.appStateName}', ${storeParts.reducer})`,
+    `EffectsModule.forFeature([${storeParts.effects}])`
+  ];
+}
+
+function getModulePath(options: StoreOptions): Path {
+  const fragments = split(options.path as Path);
+  const fragmentsToDelete = (!options.page && options.name) ? 1 : 2;
+  const moduleFileName = (!options.page && options.name) ? options.name : options.page;
+
+  fragments.splice(-fragmentsToDelete, fragmentsToDelete);
+
+  return join(fragments[0], ...fragments, moduleFileName + MODULE_EXT);
+}
+
+function addStoreImports(host: Tree, options: StoreOptions): Rule {
+  const moduleImports = getStoreModuleImports(host, options);
+  const metadataImports = getStoreMetadataImports(host, options);
+  const modulePath = getModulePath(options);
+
+  return chain([
+    ...moduleImports.map((item) =>
+      addImportToModule({
+        modulePath,
+        importName: item.name,
+        importFrom: item.from
+      })
+    ),
+    ...metadataImports.map((metadataImport) =>
+      addImportToNgModuleMetadata({
+        modulePath,
+        importName: metadataImport
+      })
+    )
+  ])
 }
 
 function getFullModuleName(host: Tree, options: StoreOptions, separator: string = ' '): string {
@@ -145,8 +208,7 @@ export default function (options: StoreOptions): Rule {
 
     return chain([
       createStoreFiles(host, options),
-      addEffectsToNgModule(host, options),
-      addReducerToNgModule(host, options),
+      addStoreImports(host, options),
       addStateToAppState(host, options)
     ]);
   };
