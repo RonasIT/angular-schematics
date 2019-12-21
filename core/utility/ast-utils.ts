@@ -150,10 +150,13 @@ export function addImportToModule(options: AddImportToModuleOptions): Rule {
     const sourceText = text.toString('utf-8');
     const source = ts.createSourceFile(options.modulePath, sourceText, ts.ScriptTarget.Latest, true);
 
-    const change = insertImport(source, options.modulePath, options.importName, options.importFrom) as InsertChange;
-    const recorder = host.beginUpdate(options.modulePath);
-    recorder.insertLeft(change.pos, change.toAdd);
-    host.commitUpdate(recorder);
+    const change = insertImport(source, options.modulePath, options.importName, options.importFrom);
+
+    if (change instanceof InsertChange) {
+      const recorder = host.beginUpdate(options.modulePath);
+      recorder.insertLeft(change.pos, change.toAdd);
+      host.commitUpdate(recorder);
+    }
 
     return host;
   };
