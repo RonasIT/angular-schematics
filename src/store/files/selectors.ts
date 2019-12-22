@@ -1,12 +1,12 @@
 import { AppState } from '@shared/store';
 import { createSelector, MemoizedSelector } from '@ngrx/store';
-import { <%= classify(((hasSection) ? (section + ' ') : '') + ((hasParent) ? (parent + ' ') : '') + ((hasPage) ? (page + ' ') : '') + ((hasPage) ? 'Page' : '') + ((!hasPage && hasName) ? name : '')) %>State } from './state';
+import { <%= classify(section, parent, page, (page) ? 'Page' : name) %>State } from './state';
 
-const selectFeature = (state: AppState) => state.<%= camelize(((hasSection) ? (section + ' ') : '') + ((hasParent) ? (parent + ' ') : '') + ((hasPage) ? (page + ' ') : '') + ((hasPage) ? 'Page' : '') + ((!hasPage && hasName) ? name : '')) %>;
+const selectFeature = (state: AppState) => state.<%= camelize(section, parent, page, (page) ? 'Page' : name) %>;
 
-export class <%= classify(((hasSection) ? (section + ' ') : '') + ((hasParent) ? (parent + ' ') : '') + ((hasPage) ? (page + ' ') : '') + ((hasPage) ? 'Page' : '') + ((!hasPage && hasName) ? name : '')) %>Selectors {
+export class <%= classify(section, parent, page, (page) ? 'Page' : name) %>Selectors {
   public static isLoading: MemoizedSelector<AppState, boolean> = createSelector(
     selectFeature,
-    (state: <%= classify(((hasSection) ? (section + ' ') : '') + ((hasParent) ? (parent + ' ') : '') + ((hasPage) ? (page + ' ') : '') + ((hasPage) ? 'Page' : '') + ((!hasPage && hasName) ? name : '')) %>State) => state.isLoading
+    (state: <%= classify(section, parent, page, (page) ? 'Page' : name) %>State) => state.isLoading
   );
 }

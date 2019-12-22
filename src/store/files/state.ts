@@ -1,4 +1,4 @@
-export class <%= classify(((hasSection) ? (section + ' ') : '') + ((hasParent) ? (parent + ' ') : '') + ((hasPage) ? (page + ' ') : '') + ((hasPage) ? 'Page' : '') + ((!hasPage && hasName) ? name : '')) %>State {
+export class <%= classify(section, parent, page, (page) ? 'Page' : name) %>State {
   public isLoading: boolean;
 
   constructor() {

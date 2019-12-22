@@ -2,6 +2,9 @@ import {
   addImportToModule,
   addImportToNgModuleMetadata,
   addPropertyToClass,
+  camelize,
+  classify,
+  dasherize,
   getAppStatePath,
   getProjectPath,
   parseLocation
@@ -20,8 +23,7 @@ import {
 import {
   join,
   Path,
-  split,
-  strings
+  split
 } from '@angular-devkit/core';
 import { MODULE_EXT } from '@schematics/angular/utility/find-module';
 import { Schema as StoreOptions } from './schema';
@@ -38,21 +40,21 @@ function prepareOptionsPath(host: Tree, options: StoreOptions): void {
     options.path = getProjectPath(host, options);
 
     if (options.section) {
-      options.path = join(options.path as Path, strings.dasherize(options.section));
+      options.path = join(options.path as Path, dasherize(options.section));
     }
 
     if (options.parent) {
-      options.path = join(options.path as Path, strings.dasherize(options.parent));
+      options.path = join(options.path as Path, dasherize(options.parent));
     }
 
     if (options.page) {
-      options.path = join(options.path as Path, strings.dasherize(options.page));
+      options.path = join(options.path as Path, dasherize(options.page));
     }
 
     if (options.page) {
       options.path = join(options.path as Path, 'shared', 'store');
     } else {
-      options.path = join(options.path as Path, 'shared', (options.name) ? strings.dasherize(options.name) : '', 'store');
+      options.path = join(options.path as Path, 'shared', dasherize(options.name), 'store');
     }
   }
 }
@@ -65,19 +67,12 @@ function prepareOptionsName(host: Tree, options: StoreOptions): void {
 }
 
 function createStoreFiles(host: Tree, options: StoreOptions): Rule {
-  const hasSection = !!options.section;
-  const hasParent = !!options.parent;
-  const hasPage = !!options.page;
-  const hasName = !!options.name;
-
   const templateSource = apply(url('./files'), [
     template({
       ...options,
-      ...strings,
-      hasSection,
-      hasParent,
-      hasPage,
-      hasName
+      camelize,
+      classify,
+      dasherize
     }),
     move(options.path)
   ]);
@@ -168,17 +163,17 @@ function getPathToModuleStore(host: Tree, options: StoreOptions): string {
   if (options.section) {
     parts = [
       '@app',
-      (options.section) ? strings.dasherize(options.section) : '',
-      (options.parent) ? strings.dasherize(options.parent) : '',
-      (options.page) ? strings.dasherize(options.page) : '',
+      dasherize(options.section),
+      dasherize(options.parent),
+      dasherize(options.page),
       'shared',
-      (!options.page && options.name) ? strings.dasherize(options.name) : '',
+      (!options.page) ? dasherize(options.name) : '',
       'store'
     ];
   } else {
     parts = [
       '@shared',
-      (options.name) ? strings.dasherize(options.name) : '',
+      dasherize(options.name),
       'store'
     ];
   }
@@ -192,10 +187,10 @@ function getStoreParts(host: Tree, options: StoreOptions): StoreParts {
   const fullModuleName = getFullModuleName(host, options);
 
   return {
-    appStateName: strings.camelize(fullModuleName),
-    reducer: `${strings.camelize(fullModuleName)}Reducer`,
-    effects: `${strings.classify(fullModuleName)}Effects`,
-    state: `${strings.classify(fullModuleName)}State`
+    appStateName: camelize(fullModuleName),
+    reducer: `${camelize(fullModuleName)}Reducer`,
+    effects: `${classify(fullModuleName)}Effects`,
+    state: `${classify(fullModuleName)}State`
   };
 }
 
