@@ -2,6 +2,9 @@
 src/**/*/*.js
 src/**/*/*.js.map
 src/**/*/*.d.ts
+!src/**/files/**/*.js
+!src/**/files/**/*.js.map
+!src/**/files/**/*.d.ts
 
 core/**/*/*.js
 core/**/*/*.js.map

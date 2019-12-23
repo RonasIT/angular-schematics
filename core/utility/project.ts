@@ -49,10 +49,10 @@ export function getAppRootPath(
 export function getRootPath(
   host: Tree,
   options: { project?: string | undefined; path?: string | undefined }
-) {
+): Path {
   const project = getProject(host, options);
 
-  return project.root;
+  return project.root as Path;
 }
 
 export function getRoutingModulePath(host: Tree, modulePath: string): Path {

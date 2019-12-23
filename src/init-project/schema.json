@@ -13,6 +13,11 @@
       "type": "boolean",
       "description": "When true, installs NgRx for the initial project.",
       "x-prompt": "Would you like to add NgRx?"
+    },
+    "testing": {
+      "type": "boolean",
+      "description": "When true, installs Jest + Cypress for the initial project.",
+      "x-prompt": "Would you like to add Jest and Cypress?"
     }
   },
   "required": []
