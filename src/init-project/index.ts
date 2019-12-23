@@ -8,8 +8,7 @@ import {
   SchematicContext,
   template,
   Tree,
-  url,
-  noop
+  url
 } from '@angular-devkit/schematics';
 import {
   fragment,
@@ -455,9 +454,14 @@ export default function (options: InitProjectOptions): Rule {
       replaceEnvironments(host, options),
       renameAppFiles(host, options),
       replaceImportsInAppFiles(host, options),
-      addAliasesToTsConfig(host, options),
-      replaceStandardTestingUtilitiesWithJestAndCypress(host, options)
+      addAliasesToTsConfig(host, options)
     ];
+
+    if (options.testing) {
+      rules.push(
+        replaceStandardTestingUtilitiesWithJestAndCypress(host, options)
+      );
+    }
 
     if (options.translate) {
       rules.push(
