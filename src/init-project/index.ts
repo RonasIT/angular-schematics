@@ -141,7 +141,7 @@ function addAliasesToTsConfig(host: Tree, options: InitProjectOptions): Rule {
           'src/app/shared/*'
         ],
         '@configurations': [
-          'src/configurations/index'
+          'src/configurations/configuration'
         ],
         '@tests/*': [
           'src/tests/*'
