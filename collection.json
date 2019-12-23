@@ -25,6 +25,11 @@
       "description": "Generate store",
       "factory": "./src/store",
       "schema": "./src/store/schema.json"
+    },
+    "ng-add": {
+      "factory": "./src/ng-add",
+      "schema": "./src/ng-add/schema.json",
+      "description": "Installs the Ronas IT Angular Schematics package"
     }
   }
 }
