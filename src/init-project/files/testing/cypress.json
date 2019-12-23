@@ -1,0 +1,5 @@
+{
+  "baseUrl": "http://localhost:5555",
+  "watchForFileChanges": false,
+  "video": false
+}

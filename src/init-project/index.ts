@@ -8,7 +8,8 @@ import {
   SchematicContext,
   template,
   Tree,
-  url
+  url,
+  noop
 } from '@angular-devkit/schematics';
 import {
   fragment,
@@ -151,6 +152,126 @@ function addAliasesToTsConfig(host: Tree, options: InitProjectOptions): Rule {
       return json;
     });
   };
+}
+
+function replaceStandardTestingUtilitiesWithJestAndCypress(host: Tree, options: InitProjectOptions): Rule {
+  return chain([
+    removeStandardTestingUtilitiesFromPackageJson(host, options),
+    removeStandardTestingFiles(host, options),
+    addJestAndCypressToPackageJson(host, options),
+    updateTestCommandsInPackageJson(host, options),
+    updateTsConfigSpec(host, options),
+    updateAngularJsonForTestingUtilities(host, options),
+    createTestingFiles(host, options)
+  ]);
+}
+
+function removeStandardTestingUtilitiesFromPackageJson(host: Tree, options: InitProjectOptions): Rule {
+  return (host: Tree) => {
+    return updateJsonInTree('package.json', (json, context: SchematicContext) => {
+      delete json.devDependencies['karma'];
+      delete json.devDependencies['karma-chrome-launcher'];
+      delete json.devDependencies['karma-coverage-istanbul-reporter'];
+      delete json.devDependencies['karma-jasmine'];
+      delete json.devDependencies['karma-jasmine-html-reporter'];
+      delete json.devDependencies['@types/jasmine'];
+      delete json.devDependencies['@types/jasminewd2'];
+      delete json.devDependencies['jasmine-core'];
+      delete json.devDependencies['jasmine-spec-reporter'];
+      delete json.devDependencies['protractor'];
+
+      return json;
+    });
+  };
+}
+
+function removeStandardTestingFiles(host: Tree, options: InitProjectOptions): Rule {
+  return (host: Tree) => {
+    const rootPath = getRootPath(host, options);
+    const appRootPath = getAppRootPath(host, options);
+
+    host.delete(join(rootPath, 'karma.conf.js'));
+    host.delete(join(rootPath, 'e2e'));
+    host.delete(join(appRootPath, 'test.ts'));
+  };
+}
+
+const JEST_VERSION = '^24.9.0';
+const TYPES_JEST_VERSION = '^24.0.24';
+const ANGULAR_BUILDERS_JEST_VERSION = '^8.3.2';
+const CYPRESS_VERSION = '^3.8.0';
+const CYPRESS_IMAGE_SNAPSHOT_VERSION = '^3.1.1';
+const START_SERVER_AND_TEST_VERSION = '^1.10.6';
+const TESTING_LIBRARY_ANGULAR_VERSION = '^8.2.0';
+const TESTING_LIBRARY_JEST_DOM_VERSION = '^4.2.4';
+const NGX_TRANSLATE_TESTING_VERSION = '^3.0.0';
+
+function addJestAndCypressToPackageJson(host: Tree, options: InitProjectOptions): Rule {
+  return addDepsToPackageJson({},
+    {
+      'jest': JEST_VERSION,
+      '@types/jest': TYPES_JEST_VERSION,
+      '@angular-builders/jest': ANGULAR_BUILDERS_JEST_VERSION,
+      'cypress': CYPRESS_VERSION,
+      'cypress-image-snapshot': CYPRESS_IMAGE_SNAPSHOT_VERSION,
+      'start-server-and-test': START_SERVER_AND_TEST_VERSION,
+      '@testing-library/angular': TESTING_LIBRARY_ANGULAR_VERSION,
+      '@testing-library/jest-dom': TESTING_LIBRARY_JEST_DOM_VERSION,
+      'ngx-translate-testing': NGX_TRANSLATE_TESTING_VERSION
+    }
+  );
+}
+
+function updateTestCommandsInPackageJson(host: Tree, options: InitProjectOptions): Rule {
+  return (host: Tree) => {
+    return updateJsonInTree('package.json', (json, context: SchematicContext) => {
+      json.scripts.test = 'jest --config jest.config.js --collect-coverage';
+
+      json.scripts['cypress'] = 'start-server-and-test cypress:frontend:serve http-get://127.0.0.1:5555 cypress:tests:run';
+      json.scripts['cypress:open'] = 'cypress open';
+      json.scripts['cypress:frontend:serve'] = 'ng serve --configuration=testing --port=5555';
+      json.scripts['cypress:tests:run'] = 'cypress run';
+
+      return json;
+    });
+  };
+}
+
+function updateTsConfigSpec(host: Tree, options: InitProjectOptions): Rule {
+  return (host: Tree) => {
+    return updateJsonInTree('tsconfig.spec.json', (json, context: SchematicContext) => {
+      json.compilerOptions.types = ['jest', 'node'];
+      json.compilerOptions.files = [
+        'src/polyfills.ts'
+      ];
+
+      return json;
+    });
+  };
+}
+
+function updateAngularJsonForTestingUtilities(host: Tree, options: InitProjectOptions): Rule {
+  return (host: Tree) => {
+    return updateJsonInTree('angular.json', (json, context: SchematicContext) => {
+      json.projects[Object.keys(json.projects)[0]].architect.test.builder = '@angular-builders/jest:run';
+
+      return json;
+    });
+  };
+}
+
+function createTestingFiles(host: Tree, options: InitProjectOptions): Rule {
+  const appRootPath = getRootPath(host, options);
+
+  const templateSource = apply(url('./files/testing'), [
+    template({
+      ...options,
+      ...strings
+    }),
+    move(appRootPath)
+  ]);
+
+  return mergeWith(templateSource, MergeStrategy.Overwrite);
 }
 
 const NGX_TRANSLATE_VERSION = '^11.0.1';
@@ -334,7 +455,8 @@ export default function (options: InitProjectOptions): Rule {
       replaceEnvironments(host, options),
       renameAppFiles(host, options),
       replaceImportsInAppFiles(host, options),
-      addAliasesToTsConfig(host, options)
+      addAliasesToTsConfig(host, options),
+      replaceStandardTestingUtilitiesWithJestAndCypress(host, options)
     ];
 
     if (options.translate) {
