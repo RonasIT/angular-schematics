@@ -1,5 +1,12 @@
+import {
+  chain,
+  noop,
+  Rule,
+  SchematicContext,
+  Tree
+} from '@angular-devkit/schematics';
 import { getWorkspace, getWorkspacePath, WorkspaceSchema } from '../../core';
-import { Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
+import { Schema as SchematicOptions } from './schema';
 
 function updateWorkspace(host: Tree, key: keyof WorkspaceSchema, value: any) {
   const workspace: any = getWorkspace(host);
@@ -18,8 +25,10 @@ function setAsDefaultSchematics() {
   };
 }
 
-export default function (options: {}): Rule {
+export default function (options: SchematicOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
-    return setAsDefaultSchematics();
+    return chain([
+      options && options.defaultCollection ? setAsDefaultSchematics() : noop(),
+    ])(host, context);
   };
 }
