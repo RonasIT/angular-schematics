@@ -65,13 +65,19 @@ function _addSymbolToNgModuleMetadata(options: AddSymbolToNgModuleMetadataOption
 
     const sourceText = text.toString('utf-8');
     const source = ts.createSourceFile(options.modulePath, sourceText, ts.ScriptTarget.Latest, true);
+    const isFirstSymbol = isMetadataFieldEmpty(sourceText, options.metadataField);
 
     let relativeImportPath;
     if (options.importPath) {
       relativeImportPath = buildRelativePath(options.modulePath, options.importPath);
     }
 
-    const changes = addSymbolToNgModuleMetadata(source, options.modulePath, options.metadataField, options.importName, relativeImportPath);
+    let importName = options.importName;
+    if (isFirstSymbol) {
+      importName = `\n    ${importName}\n  `;
+    }
+
+    const changes = addSymbolToNgModuleMetadata(source, options.modulePath, options.metadataField, importName, relativeImportPath);
     const recorder = host.beginUpdate(options.modulePath);
     for (const change of changes) {
       if (change instanceof InsertChange) {
@@ -84,6 +90,12 @@ function _addSymbolToNgModuleMetadata(options: AddSymbolToNgModuleMetadataOption
 
 export function isRouteDeclarationExist(sourceText: string): boolean {
   return sourceText.includes('loadChildren');
+}
+
+export function isMetadataFieldEmpty(sourceText: string, metadataField: string): boolean {
+  const emptyRegexp = new RegExp(`${metadataField}: \\[\\s*\\]`);
+
+  return emptyRegexp.test(sourceText);
 }
 
 export function addRouteDeclarationToNgModule(options: AddRouteDeclarationToNgModuleOptions): Rule {

@@ -21,6 +21,11 @@
       "factory": "./shared-module",
       "schema": "./shared-module/schema.json"
     },
+    "sentry": {
+      "description": "Generate sentry",
+      "factory": "./sentry",
+      "schema": "./sentry/schema.json"
+    },
     "store": {
       "description": "Generate store",
       "factory": "./store",
