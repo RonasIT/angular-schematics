@@ -31,7 +31,7 @@ module.exports = {
   moduleNameMapper: {
     '^@app/(.*)$': '<rootDir>/src/app/$1',
     '^@shared/(.*)$': '<rootDir>/src/app/shared/$1',
-    '^@configurations': '<rootDir>/src/configurations/index',
+    '^@configurations': '<rootDir>/src/configurations/configuration',
     '^@tests/(.*)$': '<rootDir>/src/tests/$1'
   }
 };
