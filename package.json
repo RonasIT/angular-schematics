@@ -14,7 +14,8 @@
   ],
   "author": "Ronas IT",
   "license": "MIT",
-  "schematics": "./collection.json",
+  "schematics": "./src/collection.json",
+  "files": ["core", "src"],
   "dependencies": {
     "@angular-devkit/core": "^8.3.19",
     "@angular-devkit/schematics": "^8.3.19",

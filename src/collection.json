@@ -1,0 +1,35 @@
+{
+  "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "init-project": {
+      "description": "Initialize project",
+      "factory": "./init-project",
+      "schema": "./init-project/schema.json"
+    },
+    "section-module": {
+      "description": "Generate section module",
+      "factory": "./section-module",
+      "schema": "./section-module/schema.json"
+    },
+    "page-module": {
+      "description": "Generate page module",
+      "factory": "./page-module",
+      "schema": "./page-module/schema.json"
+    },
+    "shared-module": {
+      "description": "Generate shared module",
+      "factory": "./shared-module",
+      "schema": "./shared-module/schema.json"
+    },
+    "store": {
+      "description": "Generate store",
+      "factory": "./store",
+      "schema": "./store/schema.json"
+    },
+    "ng-add": {
+      "factory": "./ng-add",
+      "schema": "./ng-add/schema.json",
+      "description": "Installs the Ronas IT Angular Schematics package"
+    }
+  }
+}
