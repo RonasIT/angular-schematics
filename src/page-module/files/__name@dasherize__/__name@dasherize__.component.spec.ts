@@ -20,6 +20,7 @@ describe('<%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + nam
     component = await render(<%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageComponent, {
       imports: [
         <% if (isNgxTranslateInstalled) {%>TranslateTestingModule.withTranslations(configuration.language.default, translation),<% } %>
+        <% if (store) { %>
         StoreModule.forRoot({}, {
           runtimeChecks: {
             strictStateImmutability: true,
@@ -29,6 +30,7 @@ describe('<%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + nam
         StoreModule.forFeature('<%= camelize(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>Page', <%= camelize(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageReducer),
         EffectsModule.forRoot([]),
         EffectsModule.forFeature([<%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageEffects])
+        <% } %>
       ],
       declarations: [
         <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageComponent
