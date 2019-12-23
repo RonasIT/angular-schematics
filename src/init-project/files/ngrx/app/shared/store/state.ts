@@ -1,5 +1,5 @@
-import * as fromRouter from '@ngrx/router-store';
+import { RouterReducerState } from '@ngrx/router-store';
 
 export class AppState {
-  public router: fromRouter.RouterReducerState<any>;
+  public router: RouterReducerState<any>;
 }

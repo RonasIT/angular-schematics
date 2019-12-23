@@ -46,6 +46,12 @@ export interface AddPropertyToClassOptions {
   propertyTypePath?: Path | string;
 }
 
+export interface AddTextToObjectOptions {
+  path: Path;
+  identifier: string;
+  text: string;
+}
+
 export interface Location {
   name: string;
   path: Path;

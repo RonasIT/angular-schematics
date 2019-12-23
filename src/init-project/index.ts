@@ -1,28 +1,34 @@
 import {
-  addDepsToPackageJson,
-  addImportToModule,
-  addImportToNgModuleMetadata,
-  getAppRootPath,
-  getProjectPath,
-  getRootPath,
-  updateJsonInTree
-} from '../../core';
-import {
   apply,
   chain,
   MergeStrategy,
   mergeWith,
   move,
   Rule,
+  SchematicContext,
   template,
   Tree,
-  url,
-  SchematicContext
+  url
 } from '@angular-devkit/schematics';
-import { fragment, normalize, strings } from '@angular-devkit/core';
+import {
+  fragment,
+  join,
+  normalize,
+  strings
+} from '@angular-devkit/core';
 import { Schema as InitProjectOptions } from './schema';
+import {
+  addDepsToPackageJson,
+  addImportToModule,
+  addImportToNgModuleMetadata,
+  getAppRootPath,
+  getProjectPath,
+  getRootPath,
+  updateJsonInTree,
+  addTextToObject,
+} from '../../core';
 
-export function replaceEnvironmentsDirectory(host: Tree, options: InitProjectOptions): Rule {
+function replaceEnvironmentsDirectory(host: Tree, options: InitProjectOptions): Rule {
   return (host: Tree) => {
     const appRootPath = getAppRootPath(host, options);
     const environmentsDirectory = host.getDir(normalize(`${appRootPath}/environments`));
@@ -49,7 +55,7 @@ export function replaceEnvironmentsDirectory(host: Tree, options: InitProjectOpt
   };
 }
 
-export function replaceEnvironmentsInMainTs(host: Tree, options: InitProjectOptions): Rule {
+function replaceEnvironmentsInMainTs(host: Tree, options: InitProjectOptions): Rule {
   return (host: Tree) => {
     const appRootPath = getAppRootPath(host, options);
     const mainTsPath = normalize(`${appRootPath}/main.ts`);
@@ -63,7 +69,7 @@ export function replaceEnvironmentsInMainTs(host: Tree, options: InitProjectOpti
   };
 }
 
-export function replaceEnvironmentsInAngularJson(host: Tree, options: InitProjectOptions): Rule {
+function replaceEnvironmentsInAngularJson(host: Tree, options: InitProjectOptions): Rule {
   return (host: Tree) => {
     const rootPath = getRootPath(host, options);
     const configPath = normalize(`${rootPath}/angular.json`);
@@ -77,7 +83,7 @@ export function replaceEnvironmentsInAngularJson(host: Tree, options: InitProjec
   };
 }
 
-export function replaceEnvironments(host: Tree, options: InitProjectOptions): Rule {
+function replaceEnvironments(host: Tree, options: InitProjectOptions): Rule {
   return chain([
     replaceEnvironmentsDirectory(host, options),
     replaceEnvironmentsInMainTs(host, options),
@@ -85,7 +91,7 @@ export function replaceEnvironments(host: Tree, options: InitProjectOptions): Ru
   ]);
 }
 
-export function renameAppFiles(host: Tree, options: InitProjectOptions): Rule {
+function renameAppFiles(host: Tree, options: InitProjectOptions): Rule {
   return (host: Tree) => {
     const projectPath = getProjectPath(host, options);
 
@@ -106,7 +112,7 @@ export function renameAppFiles(host: Tree, options: InitProjectOptions): Rule {
   };
 }
 
-export function replaceImportsInAppFiles(host: Tree, options: InitProjectOptions): Rule {
+function replaceImportsInAppFiles(host: Tree, options: InitProjectOptions): Rule {
   return (host: Tree) => {
     const projectPath = getProjectPath(host, options);
 
@@ -124,7 +130,7 @@ export function replaceImportsInAppFiles(host: Tree, options: InitProjectOptions
   };
 }
 
-export function addAliasesToTsConfig(host: Tree, options: InitProjectOptions): Rule {
+function addAliasesToTsConfig(host: Tree, options: InitProjectOptions): Rule {
   return (host: Tree) => {
     return updateJsonInTree('tsconfig.json', (json, context: SchematicContext) => {
       json.compilerOptions.paths = {
@@ -141,15 +147,102 @@ export function addAliasesToTsConfig(host: Tree, options: InitProjectOptions): R
           'src/tests/*'
         ]
       };
-  
+
       return json;
     });
   };
 }
 
-const NGRX_VERSION = '^8.5.2';
+const NGX_TRANSLATE_VERSION = '^11.0.1';
 
-export function createAppStoreFiles(host: Tree, options: InitProjectOptions): Rule {
+function createTranslateFiles(host: Tree, options: InitProjectOptions): Rule {
+  const appRootPath = getAppRootPath(host, options);
+
+  const templateSource = apply(url('./files/ngx-translate'), [
+    template({
+      ...options,
+      ...strings
+    }),
+    move(appRootPath)
+  ]);
+
+  return mergeWith(templateSource, MergeStrategy.Overwrite);
+}
+
+function addNgxTranslateToPackageJson(host: Tree, options: InitProjectOptions): Rule {
+  return addDepsToPackageJson({
+    '@ngx-translate/core': NGX_TRANSLATE_VERSION
+  });
+}
+
+function addNgxTranslateToAppModule(host: Tree, options: InitProjectOptions): Rule {
+  const projectPath = getProjectPath(host, options);
+  const appModulePath = normalize(`${projectPath}/app.module.ts`);
+
+  const moduleImports = [
+    {
+      name: 'TranslateLoader',
+      from: '@ngx-translate/core'
+    },
+    {
+      name: 'TranslateModule',
+      from: '@ngx-translate/core'
+    },
+    {
+      name: 'WebpackTranslateLoader',
+      from: './app.translate.loader'
+    }
+  ];
+
+  const metadataImports = [
+    `TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useClass: WebpackTranslateLoader
+      }
+    })`
+  ];
+
+  const addImportToModuleRules = moduleImports.map((item) => addImportToModule({
+    modulePath: appModulePath,
+    importName: item.name,
+    importFrom: item.from
+  }));
+
+  const addImportToNgModuleMetadataRules = metadataImports.map((metadataImport) => {
+    return addImportToNgModuleMetadata({
+      modulePath: appModulePath,
+      importName: metadataImport
+    });
+  });
+
+  return chain([
+    ...addImportToModuleRules,
+    ...addImportToNgModuleMetadataRules
+  ]);
+}
+
+function addLanguagesToConfigurationFiles(host: Tree, options: InitProjectOptions): Rule {
+  return (host: Tree) => {
+    const appRootPath = getAppRootPath(host, options);
+    const configurationFiles = ['configuration.ts', 'configuration.prod.ts'];
+
+    return chain(configurationFiles.map((configurationFile) => {
+      const path = join(appRootPath, 'configurations', configurationFile);
+
+      return addTextToObject({
+        path,
+        identifier: 'configuration',
+        text: `,\n  language: {\n    available: ['ru'],\n    default: 'ru'\n  }`
+      });
+    }));
+  };
+}
+
+const NGRX_VERSION = '^8.5.2';
+const NGRX_FORMS_VERSION = '^6.1.0';
+
+function createAppStoreFiles(host: Tree, options: InitProjectOptions): Rule {
   const appRootPath = getAppRootPath(host, options);
 
   const templateSource = apply(url('./files/ngrx'), [
@@ -163,12 +256,13 @@ export function createAppStoreFiles(host: Tree, options: InitProjectOptions): Ru
   return mergeWith(templateSource, MergeStrategy.Overwrite);
 }
 
-export function addNgRxToPackageJson(host: Tree, options: InitProjectOptions): Rule {
+function addNgRxToPackageJson(host: Tree, options: InitProjectOptions): Rule {
   return addDepsToPackageJson(
     {
       '@ngrx/effects': NGRX_VERSION,
       '@ngrx/router-store': NGRX_VERSION,
-      '@ngrx/store': NGRX_VERSION
+      '@ngrx/store': NGRX_VERSION,
+      'ngrx-forms': NGRX_FORMS_VERSION
     },
     {
       '@ngrx/store-devtools': NGRX_VERSION
@@ -176,7 +270,7 @@ export function addNgRxToPackageJson(host: Tree, options: InitProjectOptions): R
   );
 }
 
-export function addNgRxImportsToAppModule(host: Tree, options: InitProjectOptions): Rule {
+function addNgRxImportsToAppModule(host: Tree, options: InitProjectOptions): Rule {
   const projectPath = getProjectPath(host, options);
   const appModulePath = normalize(`${projectPath}/app.module.ts`);
 
@@ -242,6 +336,15 @@ export default function (options: InitProjectOptions): Rule {
       replaceImportsInAppFiles(host, options),
       addAliasesToTsConfig(host, options)
     ];
+
+    if (options.translate) {
+      rules.push(
+        createTranslateFiles(host, options),
+        addNgxTranslateToPackageJson(host, options),
+        addNgxTranslateToAppModule(host, options),
+        addLanguagesToConfigurationFiles(host, options)
+      );
+    }
 
     if (options.ngrx) {
       rules.push(

@@ -7,12 +7,14 @@ import {
   AddRouteDeclarationToNgModuleOptions,
   AddSymbolToNgModuleMetadataOptions,
   AddSymbolToNgModuleOptions,
+  AddTextToObjectOptions,
   BuildRouteOptions,
   UpsertBarrelFileOptions
 } from './interfaces';
 import {
   addRouteDeclarationToModule,
   addSymbolToNgModuleMetadata,
+  findNode,
   findNodes,
   insertImport
 } from '@schematics/angular/utility/ast-utils';
@@ -173,13 +175,36 @@ export function addPropertyToClass(options: AddPropertyToClassOptions): Rule {
     const source = ts.createSourceFile(options.path, sourceText, ts.ScriptTarget.Latest, true);
 
     const lastPropertyDeclaration = findNodes(source, ts.SyntaxKind.PropertyDeclaration).pop();
-    const lastImportDeclaration = findNodes(source, ts.SyntaxKind.ImportDeclaration).pop();
 
     const recorder = host.beginUpdate(options.path);
     recorder.insertRight(lastPropertyDeclaration!.end, `\n  public ${options.propertyName}?: ${options.propertyType};`);
+
     if (options.propertyTypePath) {
+      const lastImportDeclaration = findNodes(source, ts.SyntaxKind.ImportDeclaration).pop();
       recorder.insertRight(lastImportDeclaration!.end, `\nimport { ${options.propertyType} } from '${options.propertyTypePath}';`);
     }
+    host.commitUpdate(recorder);
+
+    return host;
+  };
+}
+
+export function addTextToObject(options: AddTextToObjectOptions): Rule {
+  return (host: Tree) => {
+    const text = host.read(options.path);
+    if (text === null) {
+      throw new SchematicsException(`File ${options.path} does not exist.`);
+    }
+
+    const sourceText = text!.toString('utf-8');
+    const source = ts.createSourceFile(options.path, sourceText, ts.ScriptTarget.Latest, true);
+
+    const node = findNode(source, ts.SyntaxKind.Identifier, options.identifier) as ts.Identifier;
+    const objectLiteralExpression = node.parent.getChildren().find((child) => child.kind === ts.SyntaxKind.ObjectLiteralExpression) as ts.ObjectLiteralExpression;
+    const closeBrace = objectLiteralExpression.getChildren().find((child) => child.kind === ts.SyntaxKind.CloseBraceToken);
+
+    const recorder = host.beginUpdate(options.path);
+    recorder.insertRight(closeBrace!.pos, options.text);
     host.commitUpdate(recorder);
 
     return host;
@@ -208,9 +233,9 @@ export function upsertBarrelFile(options: UpsertBarrelFileOptions): Rule {
 let installTaskAdded = false;
 
 export function addDepsToPackageJson(
-  deps: any,
-  devDeps: any,
-  addInstallTask = true
+  deps: any = {},
+  devDeps: any = {},
+  addInstallTask: boolean = true
 ): Rule {
   return updateJsonInTree('package.json', (json, context: SchematicContext) => {
     json.dependencies = sortKeys({
