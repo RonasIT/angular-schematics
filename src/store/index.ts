@@ -6,8 +6,7 @@ import {
   classify,
   dasherize,
   getAppStatePath,
-  getProjectPath,
-  parseLocation
+  getProjectPath
 } from '../../core';
 import {
   apply,
@@ -20,11 +19,7 @@ import {
   Tree,
   url
 } from '@angular-devkit/schematics';
-import {
-  join,
-  Path,
-  split
-} from '@angular-devkit/core';
+import { join, Path, split } from '@angular-devkit/core';
 import { MODULE_EXT } from '@schematics/angular/utility/find-module';
 import { Schema as StoreOptions } from './schema';
 
@@ -32,7 +27,6 @@ interface StoreParts { appStateName: string, reducer: string, effects: string, s
 
 function prepareOptions(host: Tree, options: StoreOptions): void {
   prepareOptionsPath(host, options);
-  // prepareOptionsName(host, options);
 }
 
 function prepareOptionsPath(host: Tree, options: StoreOptions): void {
@@ -57,13 +51,6 @@ function prepareOptionsPath(host: Tree, options: StoreOptions): void {
       options.path = join(options.path as Path, 'shared', dasherize(options.name), 'store');
     }
   }
-}
-
-function prepareOptionsName(host: Tree, options: StoreOptions): void {
-  const location = parseLocation(options.path, options.name);
-
-  options.name = location.name;
-  options.path = location.path;
 }
 
 function createStoreFiles(host: Tree, options: StoreOptions): Rule {
