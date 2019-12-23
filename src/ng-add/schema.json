@@ -3,15 +3,6 @@
   "id": "SchematicsRonasItAngularSchematics",
   "title": "Scaffolding library for Angular applications using Ronas IT libraries",
   "type": "object",
-  "properties": {
-    "defaultCollection": {
-      "type": "boolean",
-      "default": true,
-      "description": "Use @ronas-it/angular-schematics as the default collection",
-      "x-prompt":
-        "Do you want to use @ronas-it/angular-schematics as the default collection?",
-      "alias": "d"
-    }
-  },
+  "properties": {},
   "required": []
 }
