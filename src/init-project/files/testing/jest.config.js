@@ -19,8 +19,7 @@ module.exports = {
       astTransformers: [
         '<rootDir>/node_modules/jest-preset-angular/build/StripStylesTransformer',
         '<rootDir>/node_modules/jest-preset-angular/build/InlineFilesTransformer'
-      ],
-      
+      ]
     }
   },
   "coverageThreshold": {

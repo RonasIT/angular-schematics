@@ -206,7 +206,8 @@ const TESTING_LIBRARY_JEST_DOM_VERSION = '^4.2.4';
 const NGX_TRANSLATE_TESTING_VERSION = '^3.0.0';
 
 function addJestAndCypressToPackageJson(host: Tree, options: InitProjectOptions): Rule {
-  return addDepsToPackageJson({},
+  return addDepsToPackageJson(
+    {},
     {
       'jest': JEST_VERSION,
       '@types/jest': TYPES_JEST_VERSION,
