@@ -129,12 +129,12 @@ function getFullPageName(host: Tree, options: PageModuleOptions, separator: stri
   return options.section + separator + ((!!options.parent) ? (options.parent + separator) : '') + options.name;
 }
 
-function getStoreParts(host: Tree, options: PageModuleOptions, ): StoreParts {
+function getStoreParts(host: Tree, options: PageModuleOptions): StoreParts {
   const fullPageName = getFullPageName(host, options);
 
   return {
     appStateName: `${strings.camelize(fullPageName)}Page`,
-    reducer: `${strings.camelize(fullPageName)}Reducer`,
+    reducer: `${strings.camelize(fullPageName)}PageReducer`,
     effects: `${strings.classify(fullPageName)}PageEffects`,
     state: `${strings.classify(fullPageName)}PageState`
   };
