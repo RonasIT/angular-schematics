@@ -1,25 +1,25 @@
-<% if (isJestInstalled) { %>import { <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageComponent } from './<%= dasherize(name) %>.component';
-<% if (store) { %>import { <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageEffects, <%= camelize(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageReducer } from './shared/store';
+<% if (isJestInstalled) { %>import { <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageComponent } from './<%= dasherize(name) %>.component';<% if (store) { %>
+import { <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageEffects, <%= camelize(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageReducer } from './shared/store';
 import { AppState } from '@shared/store/state';
 import { EffectsModule } from '@ngrx/effects';
-import { Store, StoreModule } from '@ngrx/store';<% } %>
-import { render, RenderResult } from '@testing-library/angular';
-import { TestBed } from '@angular/core/testing';
-<% if (isNgxTranslateInstalled) {%>import { configuration } from '@configurations';
+import { Store, StoreModule } from '@ngrx/store';
+import { TestBed } from '@angular/core/testing';<% } %>
+import { render, RenderResult } from '@testing-library/angular';<% if (isNgxTranslateInstalled) {%>
+import { configuration } from '@configurations';
 import { TranslateTestingModule } from 'ngx-translate-testing';<% } %>
 
 describe('<%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageComponent', () => {
   let component: RenderResult<<%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageComponent>;
-  let componentInstance: <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageComponent;
-  let store: Store<AppState>;
+  let componentInstance: <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageComponent;<% if (store) { %>
+  let store: Store<AppState>;<% } %>
 <% if (isNgxTranslateInstalled) {%>
   const translation = require(`../../../<%= (hasParent) ? '../' : '' %>assets/i18n/${configuration.language.default}.json`);
 <% } %>
   beforeEach(async () => {
     component = await render(<%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageComponent, {
       imports: [
-        <% if (isNgxTranslateInstalled) {%>TranslateTestingModule.withTranslations(configuration.language.default, translation),<% } %>
-        <% if (store) { %>StoreModule.forRoot({}, {
+        <% if (isNgxTranslateInstalled) {%>TranslateTestingModule.withTranslations(configuration.language.default, translation),<% } %><% if (store) { %>
+        StoreModule.forRoot({}, {
           runtimeChecks: {
             strictStateImmutability: true,
             strictActionImmutability: true
@@ -36,16 +36,15 @@ describe('<%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + nam
       providers: []
     });
 
-    componentInstance = component.fixture.componentInstance;
-    store = TestBed.get(Store);
+    componentInstance = component.fixture.componentInstance;<% if (store) { %>
+    store = TestBed.get(Store);<% } %>
   });
 
   it('should create', async () => {
     expect(component).toBeDefined();
   });
 });
-<% } else { %>
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+<% } else { %>import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageComponent } from './<%= dasherize(name) %>.component';
 
 describe('<%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageComponent', () => {
@@ -70,5 +69,4 @@ describe('<%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + nam
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-});
-<% } %>
+});<% } %>
