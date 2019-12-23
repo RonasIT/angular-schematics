@@ -6,7 +6,8 @@ import {
   getAppStatePath,
   getProjectPath,
   getRoutingModulePath,
-  parseLocation
+  parseLocation,
+  isThereDependencyInPackageJson
 } from '../../core';
 import {
   apply,
@@ -90,11 +91,16 @@ function getPageModulePath(options: PageModuleOptions): Path {
 }
 
 function getPageTemplateSource(host: Tree, options: PageModuleOptions): Source {
+  const isJestInstalled = isThereDependencyInPackageJson(host, 'jest');
+  const isNgxTranslateInstalled = isThereDependencyInPackageJson(host, '@ngx-translate/core');
+
   return apply(url('./files/page'), [
     template({
       ...options,
       ...strings,
-      hasParent: !!options.parent
+      hasParent: !!options.parent,
+      isJestInstalled,
+      isNgxTranslateInstalled
     }),
     move(options.path)
   ]);

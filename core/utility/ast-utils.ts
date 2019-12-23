@@ -29,6 +29,7 @@ import {
   Tree
 } from '@angular-devkit/schematics';
 import { serializeJson } from './file-utils';
+import { getRootPath } from './project';
 
 function _buildRoute(options: BuildRouteOptions): string {
   const routePath = strings.dasherize(options.routePath);
@@ -269,6 +270,13 @@ export function updateJsonInTree<T = any, O = T>(
     );
     return host;
   };
+}
+
+export function isThereDependencyInPackageJson(host: Tree, dependency: string): boolean {
+  const path = join(getRootPath(host, {}), 'package.json');
+  const json = readJsonInTree(host, path);
+
+  return json.dependencies.hasOwnProperty(dependency) || json.devDependencies.hasOwnProperty(dependency);
 }
 
 export function readJsonInTree<T = any>(host: Tree, path: string): T {
