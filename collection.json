@@ -20,6 +20,11 @@
       "description": "Generate shared module",
       "factory": "./src/shared-module",
       "schema": "./src/shared-module/schema.json"
+    },
+    "store": {
+      "description": "Generate store",
+      "factory": "./src/store",
+      "schema": "./src/store/schema.json"
     }
   }
 }
