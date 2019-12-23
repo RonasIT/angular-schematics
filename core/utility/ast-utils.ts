@@ -93,9 +93,9 @@ export function isRouteDeclarationExist(sourceText: string): boolean {
 }
 
 export function isMetadataFieldEmpty(sourceText: string, metadataField: string): boolean {
-  const emptyRegexp = new RegExp(`${metadataField}: \\[\\s*\\]`);
+  const regexp = new RegExp(`${metadataField}: \\[\\s*\\]`);
 
-  return emptyRegexp.test(sourceText);
+  return regexp.test(sourceText);
 }
 
 export function addRouteDeclarationToNgModule(options: AddRouteDeclarationToNgModuleOptions): Rule {
