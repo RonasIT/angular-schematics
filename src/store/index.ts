@@ -200,7 +200,7 @@ export default function (options: StoreOptions): Rule {
       return schematic('store-section', options);
     }
 
-    if (!options.intoSection && !options.name) {
+    if ((!options.intoSection || !options.page) && !options.name) {
       return schematic('store-shared-module', options);
     }
 
