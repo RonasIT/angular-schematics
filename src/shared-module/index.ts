@@ -3,6 +3,7 @@ import {
   addProviderToNgModuleMetadata,
   BARREL_FILE,
   getProjectPath,
+  isThereDependencyInPackageJson,
   parseLocation,
   upsertBarrelFile
 } from '../../core';
@@ -18,7 +19,8 @@ import {
   SchematicContext,
   template,
   Tree,
-  url
+  url,
+  schematic
 } from '@angular-devkit/schematics';
 import {
   join,
@@ -140,11 +142,16 @@ function getImportPathForPageModule(options: SharedModuleOptions): Path {
 
 export default function (options: SharedModuleOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
+    if (options.intoSection && !options.section) {
+      return schematic('shared-module-section', options);
+    }
+
     prepareOptions(host, options);
 
     const hasSection = !!options.section;
     const hasParentPage = !!options.parentPage;
     const hasPage = !!options.page;
+    const isNgxTranslateInstalled = isThereDependencyInPackageJson(host, '@ngx-translate/core');
 
     const templatesPath = getTemplatesPath(options);
     const templateSource = apply(url(templatesPath), [
@@ -157,7 +164,8 @@ export default function (options: SharedModuleOptions): Rule {
         'with-suffix': (s: string) => (!hasPage || (hasPage && options.type === 'component')) ? `${s}.${options.type}` : s,
         hasSection,
         hasParentPage,
-        hasPage
+        hasPage,
+        isNgxTranslateInstalled
       }),
       move(options.path)
     ]);

@@ -16,10 +16,35 @@
       "factory": "./page-module",
       "schema": "./page-module/schema.json"
     },
+    "page-module-parent": {
+      "description": "Generate page module parent",
+      "factory": "./page-module-parent",
+      "schema": "./page-module-parent/schema.json"
+    },
     "shared-module": {
       "description": "Generate shared module",
       "factory": "./shared-module",
       "schema": "./shared-module/schema.json"
+    },
+    "shared-module-section": {
+      "description": "Generate shared section module",
+      "factory": "./shared-module-section",
+      "schema": "./shared-module-section/schema.json"
+    },
+    "shared-module-page": {
+      "description": "Generate shared page module",
+      "factory": "./shared-module-page",
+      "schema": "./shared-module-page/schema.json"
+    },
+    "shared-module-parent-page": {
+      "description": "Generate shared parent page module",
+      "factory": "./shared-module-parent-page",
+      "schema": "./shared-module-parent-page/schema.json"
+    },
+    "sentry": {
+      "description": "Generate sentry",
+      "factory": "./sentry",
+      "schema": "./sentry/schema.json"
     },
     "store": {
       "description": "Generate store",

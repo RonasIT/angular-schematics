@@ -14,15 +14,6 @@
       },
       "x-prompt": "What is the name of the section?"
     },
-    "parent": {
-      "type": "string",
-      "description": "The name of the parent page.",
-      "optional": true,
-      "$default": {
-        "$source": "argv",
-        "index": 2
-      }
-    },
     "name": {
       "description": "The name of the page.",
       "type": "string",
@@ -37,6 +28,20 @@
       "type": "boolean",
       "description": "When true, installs store for the page.",
       "x-prompt": "Would you like to add store?"
+    },
+    "intoParent": {
+      "type": "boolean",
+      "description": "When true, generates page into parent page.",
+      "x-prompt": "Does this page have a parent page?"
+    },
+    "parent": {
+      "type": "string",
+      "description": "The name of the parent page.",
+      "optional": true,
+      "$default": {
+        "$source": "argv",
+        "index": 2
+      }
     },
     "path": {
       "type": "string",

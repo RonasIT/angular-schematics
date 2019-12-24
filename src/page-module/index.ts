@@ -113,6 +113,10 @@ function getPageRoutingModulePath(host: Tree, options: PageModuleOptions): Path 
 
 export default function (options: PageModuleOptions): Rule {
   return (host: Tree) => {
+    if (options.intoParent && !options.parent) {
+      return schematic('page-module-parent', options);
+    }
+
     prepareOptions(host, options);
 
     return chain(prepareRules(host, options));

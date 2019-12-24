@@ -1,13 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { <%= classify(((hasSection) ? (section + ' '): '') + ((hasSection && hasParentPage) ? (parentPage + ' ') : '') + ((hasSection && hasPage) ? (page + ' ') : '') + name) %>Component } from './<%= dasherize(name) %>.component';
+import { <%= classify(((hasSection) ? (section + ' '): '') + ((hasSection && hasParentPage) ? (parentPage + ' ') : '') + ((hasSection && hasPage) ? (page + ' ') : '') + name) %>Component } from './<%= dasherize(name) %>.component';<% if (isNgxTranslateInstalled) { %>
+import { TranslateModule } from '@ngx-translate/core';<% } %>
 
 @NgModule({
   declarations: [
     <%= classify(((hasSection) ? (section + ' '): '') + ((hasSection && hasParentPage) ? (parentPage + ' ') : '') + ((hasSection && hasPage) ? (page + ' ') : '') + name) %>Component
   ],
   imports: [
-    CommonModule
+    CommonModule<% if (isNgxTranslateInstalled) { %>,
+    TranslateModule<% } %>
   ],
   providers: [],
   exports: [

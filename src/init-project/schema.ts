@@ -3,4 +3,5 @@ export interface Schema {
   translate: boolean;
   ngrx: boolean;
   testing: boolean;
+  sentry: boolean;
 }
