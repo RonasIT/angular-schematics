@@ -29,6 +29,11 @@
       },
       "x-prompt": "What should be the name of the shared module?"
     },
+    "intoSection": {
+      "type": "boolean",
+      "description": "When true, generates shared module into section.",
+      "x-prompt": "Would you like to generate this shared module into section?"
+    },
     "section": {
       "type": "string",
       "description": "The name of the section."

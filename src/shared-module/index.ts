@@ -19,7 +19,8 @@ import {
   SchematicContext,
   template,
   Tree,
-  url
+  url,
+  schematic
 } from '@angular-devkit/schematics';
 import {
   join,
@@ -141,6 +142,10 @@ function getImportPathForPageModule(options: SharedModuleOptions): Path {
 
 export default function (options: SharedModuleOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
+    if (options.intoSection) {
+      return schematic('shared-module-section', options);
+    }
+
     prepareOptions(host, options);
 
     const hasSection = !!options.section;
