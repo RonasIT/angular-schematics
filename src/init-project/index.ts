@@ -1,10 +1,21 @@
 import {
+  addDepsToPackageJson,
+  addImportToModule,
+  addImportToNgModuleMetadata,
+  addTextToObject,
+  getAppRootPath,
+  getProjectPath,
+  getRootPath,
+  updateJsonInTree
+} from '../../core';
+import {
   apply,
   chain,
   MergeStrategy,
   mergeWith,
   move,
   Rule,
+  schematic,
   SchematicContext,
   template,
   Tree,
@@ -17,16 +28,6 @@ import {
   strings
 } from '@angular-devkit/core';
 import { Schema as InitProjectOptions } from './schema';
-import {
-  addDepsToPackageJson,
-  addImportToModule,
-  addImportToNgModuleMetadata,
-  getAppRootPath,
-  getProjectPath,
-  getRootPath,
-  updateJsonInTree,
-  addTextToObject,
-} from '../../core';
 
 function replaceEnvironmentsDirectory(host: Tree, options: InitProjectOptions): Rule {
   return (host: Tree) => {
@@ -478,6 +479,12 @@ export default function (options: InitProjectOptions): Rule {
         createAppStoreFiles(host, options),
         addNgRxToPackageJson(host, options),
         addNgRxImportsToAppModule(host, options)
+      );
+    }
+
+    if (options.sentry) {
+      rules.push(
+        schematic('sentry', {})
       );
     }
 
