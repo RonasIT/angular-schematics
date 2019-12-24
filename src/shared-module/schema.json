@@ -32,7 +32,7 @@
     "intoSection": {
       "type": "boolean",
       "description": "When true, generates shared module into section.",
-      "x-prompt": "Would you like to generate this shared module into section?"
+      "x-prompt": "Would you like to generate this shared module inside a section?"
     },
     "section": {
       "type": "string",

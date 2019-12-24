@@ -8,40 +8,29 @@
       "description": "The name of the section.",
       "type": "string",
       "minLength": 1,
-      "$default": {
-        "$source": "argv",
-        "index": 0
-      },
-      "x-prompt": "What is the name of the section?"
+      "x-prompt": "What is the section name that should contain the generated page?"
     },
     "name": {
       "description": "The name of the page.",
       "type": "string",
       "minLength": 1,
-      "$default": {
-        "$source": "argv",
-        "index": 1
-      },
       "x-prompt": "What should be the name of the page?"
     },
     "store": {
       "type": "boolean",
       "description": "When true, installs store for the page.",
-      "x-prompt": "Would you like to add store?"
+      "x-prompt": "Would you like to add store for the page?"
     },
     "intoParent": {
       "type": "boolean",
-      "description": "When true, generates page into parent page.",
-      "x-prompt": "Does this page have a parent page?"
+      "description": "When true, generates page inside parent page.",
+      "x-prompt": "Does this page have a parent page?",
+      "default": false
     },
     "parent": {
       "type": "string",
       "description": "The name of the parent page.",
-      "optional": true,
-      "$default": {
-        "$source": "argv",
-        "index": 2
-      }
+      "optional": true
     },
     "path": {
       "type": "string",

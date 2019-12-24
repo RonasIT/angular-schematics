@@ -17,7 +17,7 @@
     },
     "intoParent": {
       "type": "boolean",
-      "description": "When true, generates page into parent page.",
+      "description": "When true, generates page inside parent page."
     },
     "name": {
       "description": "The name of the page.",

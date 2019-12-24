@@ -21,7 +21,7 @@
     },
     "intoSection": {
       "type": "boolean",
-      "description": "When true, generates shared module into section."
+      "description": "When true, generates shared module inside section."
     },
     "section": {
       "type": "string",
