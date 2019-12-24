@@ -35,7 +35,7 @@ ng g section-module
 ### Generate page module
 
 ```bash
-ng g section-module
+ng g page-module
 ```
 
 ### Generate store
