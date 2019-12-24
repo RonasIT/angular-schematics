@@ -4,7 +4,7 @@
   "title": "Page Module Parent Schema",
   "type": "object",
   "properties": {
-    "name": {
+    "parent": {
       "description": "The name of the parent page.",
       "type": "string",
       "minLength": 1,
@@ -19,7 +19,7 @@
       "type": "boolean",
       "description": "When true, generates page into parent page.",
     },
-    "pageName": {
+    "name": {
       "description": "The name of the page.",
       "minLength": 1,
       "type": "string"
@@ -36,9 +36,9 @@
     }
   },
   "required": [
-    "name",
+    "parent",
     "section",
-    "pageName",
+    "name",
     "store"
   ]
 }
