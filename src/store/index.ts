@@ -15,6 +15,7 @@ import {
   mergeWith,
   move,
   Rule,
+  schematic,
   template,
   Tree,
   url
@@ -195,6 +196,14 @@ function addStateToAppState(host: Tree, options: StoreOptions): Rule {
 
 export default function (options: StoreOptions): Rule {
   return (host: Tree) => {
+    if (options.intoSection && !options.section) {
+      return schematic('store-section', options);
+    }
+
+    if (!options.intoSection && !options.name) {
+      return schematic('store-shared-module', options);
+    }
+
     prepareOptions(host, options);
 
     return chain([

@@ -51,6 +51,26 @@
       "factory": "./store",
       "schema": "./store/schema.json"
     },
+    "store-shared-module": {
+      "description": "Generate shared module store",
+      "factory": "./store-shared-module",
+      "schema": "./store-shared-module/schema.json"
+    },
+    "store-section": {
+      "description": "Generate section store",
+      "factory": "./store-section",
+      "schema": "./store-section/schema.json"
+    },
+    "store-page": {
+      "description": "Generate page store",
+      "factory": "./store-page",
+      "schema": "./store-page/schema.json"
+    },
+    "store-parent-page": {
+      "description": "Generate parent page store",
+      "factory": "./store-parent-page",
+      "schema": "./store-parent-page/schema.json"
+    },
     "ng-add": {
       "factory": "./ng-add",
       "schema": "./ng-add/schema.json",
