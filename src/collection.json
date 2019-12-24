@@ -16,6 +16,11 @@
       "factory": "./page-module",
       "schema": "./page-module/schema.json"
     },
+    "page-module-parent": {
+      "description": "Generate page module parent",
+      "factory": "./page-module-parent",
+      "schema": "./page-module-parent/schema.json"
+    },
     "shared-module": {
       "description": "Generate shared module",
       "factory": "./shared-module",
