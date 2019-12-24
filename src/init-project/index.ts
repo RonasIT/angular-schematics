@@ -154,6 +154,206 @@ function addAliasesToTsConfig(host: Tree, options: InitProjectOptions): Rule {
   };
 }
 
+function updateTsLint(host: Tree, options: InitProjectOptions): Rule {
+  return chain([
+    updateTsLintRules(host, options),
+    updateTsLintConfig(host, options)
+  ]);
+}
+
+const CODELYZER_VERSION = '^5.2.1';
+const TSLINT_VERSION = '^5.20.1';
+const RONAS_IT_TSLINT_RULES_VERSION = '^1.0.3';
+const TS_NODE_VERSION = '^8.5.4';
+
+function updateTsLintRules(host: Tree, options: InitProjectOptions): Rule {
+  return addDepsToPackageJson(
+    {},
+    {
+      'codelyzer': CODELYZER_VERSION,
+      'tslint': TSLINT_VERSION,
+      '@ronas-it/tslint-rules': RONAS_IT_TSLINT_RULES_VERSION,
+      'ts-node': TS_NODE_VERSION
+    }
+  );
+}
+
+function updateTsLintConfig(host: Tree, options: InitProjectOptions): Rule {
+  return (host: Tree) => {
+    return updateJsonInTree('tslint.json', (json, context: SchematicContext) => {
+      return {
+        'rulesDirectory': [
+          'node_modules/codelyzer',
+          'node_modules/@ronas-it/tslint-rules'
+        ],
+        'rules': {
+          'member-access-except-decorators': true,
+          'encoding': true,
+          'no-boolean-literal-compare': true,
+          'newline-before-return': true,
+          'deprecation': true,
+          'new-parens': true,
+          'binary-expression-operand-order': true,
+          'array-type': [
+            true,
+            'generic'
+          ],
+          'arrow-parens': true,
+          'no-duplicate-imports': true,
+          'max-classes-per-file': [
+            true,
+            1,
+            'exclude-class-expressions'
+          ],
+          'linebreak-style': [
+            true,
+            'LF'
+          ],
+          'prefer-object-spread': true,
+          'arrow-return-shorthand': true,
+          'callable-types': true,
+          'class-name': true,
+          'comment-format': [
+            true,
+            'check-space'
+          ],
+          'curly': true,
+          'eofline': true,
+          'import-blacklist': [
+            true,
+            'rxjs/Rx'
+          ],
+          'import-spacing': true,
+          'indent': [
+            true,
+            'spaces',
+            2
+          ],
+          'interface-over-type-literal': true,
+          'label-position': true,
+          'max-line-length': [
+            true,
+            {
+              'limit': 120,
+              'ignore-pattern': '[^import|^export]'
+            }
+          ],
+          'typedef': [
+            true,
+            'call-signature',
+            'parameter',
+            'member-variable-declaration'
+          ],
+          'member-ordering': [
+            true,
+            {
+              'order': [
+                'public-static-field',
+                'protected-static-field',
+                'private-static-field',
+                'public-instance-field',
+                'protected-instance-field',
+                'private-instance-field',
+                'public-constructor',
+                'protected-constructor',
+                'private-constructor',
+                'public-static-method',
+                'public-instance-method',
+                'protected-static-method',
+                'protected-instance-method',
+                'private-static-method',
+                'private-instance-method'
+              ]
+            }
+          ],
+          'no-arg': true,
+          'no-console': [
+            true,
+            'debug',
+            'log',
+            'info',
+            'time',
+            'timeEnd',
+            'trace'
+          ],
+          'only-arrow-functions': [
+            true,
+            'allow-named-functions'
+          ],
+          'no-duplicate-variable': [
+            true,
+            'check-parameters'
+          ],
+          'no-return-await': true,
+          'prefer-for-of': true,
+          'no-reference': true,
+          'no-namespace': true,
+          'no-construct': true,
+          'no-debugger': true,
+          'no-duplicate-super': true,
+          'no-empty-interface': true,
+          'no-eval': true,
+          'no-misused-new': true,
+          'no-non-null-assertion': true,
+          'no-string-literal': false,
+          'no-string-throw': true,
+          'no-switch-case-fall-through': true,
+          'no-trailing-whitespace': true,
+          'no-unnecessary-initializer': true,
+          'no-unused-expression': true,
+          'no-var-keyword': true,
+          'object-literal-sort-keys': false,
+          'one-line': [
+            true,
+            'check-open-brace',
+            'check-catch',
+            'check-else',
+            'check-whitespace'
+          ],
+          'prefer-const': true,
+          'quotemark': [
+            true,
+            'single'
+          ],
+          'semicolon': [
+            true,
+            'always'
+          ],
+          'triple-equals': true,
+          'typedef-whitespace': [
+            true,
+            {
+              'call-signature': 'nospace',
+              'index-signature': 'nospace',
+              'parameter': 'nospace',
+              'property-declaration': 'nospace',
+              'variable-declaration': 'nospace'
+            }
+          ],
+          'unified-signatures': true,
+          'variable-name': false,
+          'whitespace': [
+            true,
+            'check-branch',
+            'check-decl',
+            'check-operator',
+            'check-separator',
+            'check-type'
+          ],
+          'no-inputs-metadata-property': true,
+          'no-outputs-metadata-property': true,
+          'no-host-metadata-property': true,
+          'use-lifecycle-interface': true,
+          'use-pipe-transform-interface': true,
+          'component-class-suffix': true,
+          'directive-class-suffix': true,
+          'no-attribute-decorator': true
+        }
+      };
+    });
+  };
+}
+
 function replaceStandardTestingUtilitiesWithJestAndCypress(host: Tree, options: InitProjectOptions): Rule {
   return chain([
     removeStandardTestingUtilitiesFromPackageJson(host, options),
@@ -456,7 +656,8 @@ export default function (options: InitProjectOptions): Rule {
       replaceEnvironments(host, options),
       renameAppFiles(host, options),
       replaceImportsInAppFiles(host, options),
-      addAliasesToTsConfig(host, options)
+      addAliasesToTsConfig(host, options),
+      updateTsLint(host, options)
     ];
 
     if (options.testing) {
