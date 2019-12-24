@@ -142,7 +142,7 @@ function getImportPathForPageModule(options: SharedModuleOptions): Path {
 
 export default function (options: SharedModuleOptions): Rule {
   return (host: Tree, context: SchematicContext) => {
-    if (options.intoSection) {
+    if (options.intoSection && !options.section) {
       return schematic('shared-module-section', options);
     }
 
