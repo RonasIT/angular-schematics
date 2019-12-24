@@ -2,6 +2,7 @@ export interface Schema {
   name: string;
   type: 'component' | 'directive' | 'pipe' | 'service';
   intoSection: boolean;
+  intoPage: boolean;
   component: string;
   directive: string;
   pipe: string;

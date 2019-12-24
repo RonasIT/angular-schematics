@@ -1,46 +1,45 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "id": "SchematicsSharedModule",
-  "title": "Shared Module Schema",
+  "id": "SchematicsSharedModulePage",
+  "title": "Shared Module Page Schema",
   "type": "object",
   "properties": {
     "type": {
       "description": "The type of shared module.",
       "type": "string",
-      "$default": {
-        "$source": "argv",
-        "index": 0
-      },
       "enum": [
         "component",
         "directive",
         "pipe",
         "service"
-      ],
-      "x-prompt": "Which type of shared module would you like to generate?"
+      ]
     },
     "name": {
       "description": "The name of the shared module.",
       "type": "string",
-      "minLength": 1,
-      "$default": {
-        "$source": "argv",
-        "index": 1
-      },
-      "x-prompt": "What should be the name of the shared module?"
+      "minLength": 1
     },
     "intoSection": {
       "type": "boolean",
-      "description": "When true, generates shared module into section.",
-      "x-prompt": "Would you like to generate this shared module into section?"
+      "description": "When true, generates shared module into section."
     },
     "section": {
       "type": "string",
       "description": "The name of the section."
     },
+    "intoParentPage": {
+      "type": "boolean",
+      "description": "When true, generates shared module into parent page."
+    },
     "parentPage": {
       "type": "string",
-      "description": "The name of the parent page."
+      "description": "The name of the parent page.",
+      "minLength": 1,
+      "x-prompt": "What is the name of the parent page?"
+    },
+    "intoPage": {
+      "type": "boolean",
+      "description": "When true, generates shared module into section."
     },
     "page": {
       "type": "string",
@@ -55,6 +54,12 @@
   },
   "required": [
     "name",
-    "type"
+    "type",
+    "intoSection",
+    "intoPage",
+    "intoParentPage",
+    "section",
+    "page",
+    "parentPage"
   ]
 }
