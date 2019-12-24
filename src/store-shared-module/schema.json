@@ -1,17 +1,17 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "id": "SchematicsStore",
-  "title": "Store Schema",
+  "id": "SchematicsSharedModuleStore",
+  "title": "Store Shared Module Schema",
   "type": "object",
   "properties": {
     "name": {
       "description": "The name of the shared module.",
-      "type": "string"
+      "type": "string",
+      "x-prompt": "What is the name of the shared module?"
     },
     "intoSection": {
       "type": "boolean",
-      "description": "When true, generates store into section.",
-      "x-prompt": "Would you like to generate store into section?"
+      "description": "When true, generates store into section."
     },
     "section": {
       "description": "The name of the section.",
@@ -32,5 +32,8 @@
       "visible": false
     }
   },
-  "required": []
+  "required": [
+    "name",
+    "intoSection"
+  ]
 }
