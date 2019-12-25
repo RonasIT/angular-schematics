@@ -21,16 +21,16 @@
     },
     "intoSection": {
       "type": "boolean",
-      "description": "When true, generates shared module inside section."
+      "description": "When true, generates shared module inside a section."
     },
     "section": {
       "type": "string",
-      "description": "The name of the section.",
-      "x-prompt": "What is the section name that should contain the generated shared module?"
+      "description": "The name of the section in which the shared module will be generated.",
+      "x-prompt": "What is the section name that should contain this shared module?"
     },
     "parentPage": {
       "type": "string",
-      "description": "The name of the parent page."
+      "description": "The name of the parent page in which the shared module will be generated."
     },
     "intoPage": {
       "type": "boolean",
@@ -39,7 +39,7 @@
     },
     "page": {
       "type": "string",
-      "description": "The name of the page."
+      "description": "The name of the page in which the shared module will be generated."
     },
     "path": {
       "type": "string",

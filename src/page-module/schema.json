@@ -5,13 +5,13 @@
   "type": "object",
   "properties": {
     "section": {
-      "description": "The name of the section.",
+      "description": "The name of the section in which the page will be generated.",
       "type": "string",
       "minLength": 1,
-      "x-prompt": "What is the section name that should contain the generated page?"
+      "x-prompt": "What is the section name that should contain the page?"
     },
     "name": {
-      "description": "The name of the page.",
+      "description": "The name of the new page.",
       "type": "string",
       "minLength": 1,
       "x-prompt": "What should be the name of the page?"
@@ -19,11 +19,12 @@
     "store": {
       "type": "boolean",
       "description": "When true, installs store for the page.",
-      "x-prompt": "Would you like to add store for the page?"
+      "x-prompt": "Will you use the store on this page?",
+      "default": true
     },
     "intoParent": {
       "type": "boolean",
-      "description": "When true, generates page inside parent page.",
+      "description": "When true, generates page inside a parent page.",
       "x-prompt": "Does this page have a parent page?",
       "default": false
     },

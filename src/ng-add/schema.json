@@ -7,7 +7,7 @@
     "defaultCollection": {
       "type": "boolean",
       "default": true,
-      "description": "Use @ronasit/angular-schematics as the default collection",
+      "description": "When true, set @ronasit/angular-schematics as the default collection",
       "x-prompt":
         "Do you want to use @ronasit/angular-schematics as the default collection?",
       "alias": "d"

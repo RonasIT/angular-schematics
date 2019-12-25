@@ -8,11 +8,7 @@
       "description": "The name of the section.",
       "type": "string",
       "minLength": 1,
-      "$default": {
-        "$source": "argv",
-        "index": 0
-      },
-      "x-prompt": "What should be the name of the section?"
+      "x-prompt": "What should be the name of the page?"
     },
     "path": {
       "type": "string",

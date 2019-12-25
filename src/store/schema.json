@@ -10,19 +10,19 @@
     },
     "intoSection": {
       "type": "boolean",
-      "description": "When true, generates store into section.",
+      "description": "When true, generates store inside a section.",
       "x-prompt": "Would you like to generate the store inside a section?"
     },
     "section": {
-      "description": "The name of the section.",
+      "description": "The name of the section in which the store will be generated.",
       "type": "string"
     },
     "parent": {
-      "description": "The name of the parent page.",
+      "description": "The name of the parent page in which the store will be generated..",
       "type": "string"
     },
     "page": {
-      "description": "The name of the page.",
+      "description": "The name of the page in which the store will be generated.",
       "type": "string"
     },
     "path": {

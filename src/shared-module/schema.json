@@ -7,10 +7,6 @@
     "type": {
       "description": "The type of shared module.",
       "type": "string",
-      "$default": {
-        "$source": "argv",
-        "index": 0
-      },
       "enum": [
         "component",
         "directive",
@@ -23,28 +19,24 @@
       "description": "The name of the shared module.",
       "type": "string",
       "minLength": 1,
-      "$default": {
-        "$source": "argv",
-        "index": 1
-      },
       "x-prompt": "What should be the name of the shared module?"
     },
     "intoSection": {
       "type": "boolean",
-      "description": "When true, generates shared module into section.",
+      "description": "When true, generates shared module into a section.",
       "x-prompt": "Would you like to generate this shared module inside a section?"
     },
     "section": {
       "type": "string",
-      "description": "The name of the section."
+      "description": "The name of the section in which the shared module will be generated."
     },
     "parentPage": {
       "type": "string",
-      "description": "The name of the parent page."
+      "description": "The name of the parent page in which the shared module will be generated."
     },
     "page": {
       "type": "string",
-      "description": "The name of the page."
+      "description": "The name of the page in which the shared module will be generated."
     },
     "path": {
       "type": "string",

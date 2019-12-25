@@ -16,7 +16,7 @@
     },
     "testing": {
       "type": "boolean",
-      "description": "When true, installs Jest + Cypress for the initial project.",
+      "description": "When true, installs Jest and Cypress for the initial project.",
       "x-prompt": "Would you like to add Jest and Cypress?"
     },
     "sentry": {

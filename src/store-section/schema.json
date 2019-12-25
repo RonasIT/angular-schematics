@@ -23,8 +23,8 @@
     },
     "intoPage": {
       "type": "boolean",
-      "description": "When true, generates store into page.",
-      "x-prompt": "Would you like to generate store into page?"
+      "description": "When true, generates store inside a page.",
+      "x-prompt": "Would you like to generate store inside a page?"
     },
     "page": {
       "description": "The name of the page.",
