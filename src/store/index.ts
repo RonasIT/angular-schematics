@@ -103,7 +103,10 @@ function getStoreMetadataImports(host: Tree, options: StoreOptions): Array<strin
 function getModulePath(options: StoreOptions): Path {
   const fragments = split(options.path as Path);
   const fragmentsToDelete = (!options.page && options.name) ? 1 : 2;
-  const moduleFileName = (!options.page && options.name) ? options.name : options.page;
+
+  const moduleFileName = (!options.page && options.name)
+    ? dasherize(options.name)
+    : dasherize(options.page);
 
   fragments.splice(-fragmentsToDelete, fragmentsToDelete);
 
@@ -196,12 +199,8 @@ function addStateToAppState(host: Tree, options: StoreOptions): Rule {
 
 export default function (options: StoreOptions): Rule {
   return (host: Tree) => {
-    if (options.intoSection && !options.section) {
-      return schematic('store-section', options);
-    }
-
-    if ((!options.intoSection || !options.page) && !options.name) {
-      return schematic('store-shared-module', options);
+    if (!options.section && !options.name) {
+      return schematic('store-into-section', options);
     }
 
     prepareOptions(host, options);

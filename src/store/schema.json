@@ -8,11 +8,6 @@
       "description": "The name of the shared module.",
       "type": "string"
     },
-    "intoSection": {
-      "type": "boolean",
-      "description": "When true, generates store inside a section.",
-      "x-prompt": "Would you like to generate the store inside a section?"
-    },
     "section": {
       "description": "The name of the section in which the store will be generated.",
       "type": "string"

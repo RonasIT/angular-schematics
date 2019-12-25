@@ -8,10 +8,6 @@
       "description": "The name of the shared module.",
       "type": "string"
     },
-    "intoSection": {
-      "type": "boolean",
-      "description": "When true, generates store inside a section."
-    },
     "section": {
       "description": "The name of the section in which the store will be generated.",
       "type": "string"
@@ -19,10 +15,6 @@
     "parent": {
       "description": "The name of the parent page in which the store will be generated.",
       "type": "string"
-    },
-    "intoPage": {
-      "type": "boolean",
-      "description": "When true, generates store into page in which the store will be generated."
     },
     "page": {
       "type": "string",
@@ -43,8 +35,6 @@
     }
   },
   "required": [
-    "intoSection",
-    "intoPage",
     "intoParentPage",
     "section",
     "page"

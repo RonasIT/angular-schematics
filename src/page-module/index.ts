@@ -71,7 +71,6 @@ function prepareStoreRules(host: Tree, options: PageModuleOptions): Array<Rule> 
     return [
       schematic('store', {
         path: `${options.path}/${options.name}/shared/store`,
-        intoSection: true,
         section: options.section,
         parent: options.parent,
         page: options.name,

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "id": "SchematicsParentPageStore",
+  "id": "SchematicsStoreParentPage",
   "title": "Store Parent Page Schema",
   "type": "object",
   "properties": {
@@ -8,27 +8,15 @@
       "description": "The name of the shared module.",
       "type": "string"
     },
-    "intoSection": {
-      "type": "boolean",
-      "description": "When true, generates store into section."
-    },
     "section": {
       "description": "The name of the section.",
       "type": "string"
-    },
-    "intoParentPage": {
-      "type": "boolean",
-      "description": "When true, generates store into parent page."
     },
     "parent": {
       "description": "The name of the parent page.",
       "type": "string",
       "minLength": 1,
       "x-prompt": "What is the name of the parent page?"
-    },
-    "intoPage": {
-      "type": "boolean",
-      "description": "When true, generates store into page."
     },
     "page": {
       "description": "The name of the page.",
@@ -42,9 +30,6 @@
     }
   },
   "required": [
-    "intoSection",
-    "intoPage",
-    "intoParentPage",
     "section",
     "page",
     "parent"
