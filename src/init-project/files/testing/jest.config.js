@@ -9,8 +9,14 @@ module.exports = {
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',
     '<rootDir>/dist/',
-    '<rootDir>/src/test.ts',
-    '<rootDir>/global-mocks.ts'
+    '<rootDir>/src/test.ts'
+  ],
+  coveragePathIgnorePatterns: [
+    '<rootDir>/global-mocks.ts',
+    '<rootDir>/src/configurations/',
+    '<rootDir>/src/tests/',
+    '<rootDir>/src/main.ts',
+    '<rootDir>/src/polyfills.ts'
   ],
   globals: {
     'ts-jest': {
@@ -22,9 +28,9 @@ module.exports = {
       ]
     }
   },
-  "coverageThreshold": {
-    "global": {
-      "statements": 70
+  coverageThreshold: {
+    global: {
+      statements: 80
     }
   },
   moduleNameMapper: {
