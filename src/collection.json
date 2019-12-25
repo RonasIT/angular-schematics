@@ -51,6 +51,11 @@
       "factory": "./store",
       "schema": "./store/schema.json"
     },
+    "store-into-section": {
+      "description": "Generate store into section",
+      "factory": "./store-into-section",
+      "schema": "./store-into-section/schema.json"
+    },
     "store-shared-module": {
       "description": "Generate shared module store",
       "factory": "./store-shared-module",
