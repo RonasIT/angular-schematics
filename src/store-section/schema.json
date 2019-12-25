@@ -15,6 +15,7 @@
     "section": {
       "description": "The name of the section.",
       "type": "string",
+      "minLength": 1,
       "x-prompt": "What is the name of the section?"
     },
     "parent": {

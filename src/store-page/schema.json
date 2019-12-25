@@ -27,6 +27,7 @@
     "page": {
       "type": "string",
       "description": "The name of the page in which the store will be generated.",
+      "minLength": 1,
       "x-prompt": "What is the name of the page?"
     },
     "intoParentPage": {
