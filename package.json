@@ -1,6 +1,6 @@
 {
   "name": "@ronas-it/angular-schematics",
-  "version": "1.0.0-rc.9",
+  "version": "1.0.0-rc.10",
   "description": "Ronas IT Angular Schematics",
   "scripts": {
     "build": "tsc -p tsconfig.json"
