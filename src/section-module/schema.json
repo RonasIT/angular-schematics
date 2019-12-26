@@ -8,7 +8,7 @@
       "description": "The name of the section.",
       "type": "string",
       "minLength": 1,
-      "x-prompt": "What should be the name of the page?"
+      "x-prompt": "What should be the name of the section?"
     },
     "path": {
       "type": "string",
