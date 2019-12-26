@@ -358,7 +358,7 @@ function replaceStandardTestingUtilitiesWithJestAndCypress(host: Tree, options: 
   return chain([
     removeStandardTestingUtilitiesFromPackageJson(host, options),
     removeStandardTestingFiles(host, options),
-    addJestAndCypressToPackageJson(host, options),
+    addJestAndCypressDependenciesToPackageJson(host, options),
     updateTestCommandsInPackageJson(host, options),
     updateTsConfigSpec(host, options),
     updateAngularJsonForTestingUtilities(host, options),
@@ -405,8 +405,11 @@ const START_SERVER_AND_TEST_VERSION = '^1.10.6';
 const TESTING_LIBRARY_ANGULAR_VERSION = '^8.2.0';
 const TESTING_LIBRARY_JEST_DOM_VERSION = '^4.2.4';
 const NGX_TRANSLATE_TESTING_VERSION = '^3.0.0';
+const NRWL_BUILDERS_VERSION = '^7.8.7';
+const NRWL_CYPRESS_VERSION = '^8.9.0';
+const NRWL_WORKSPACE = '^8.9.0';
 
-function addJestAndCypressToPackageJson(host: Tree, options: InitProjectOptions): Rule {
+function addJestAndCypressDependenciesToPackageJson(host: Tree, options: InitProjectOptions): Rule {
   return addDepsToPackageJson(
     {},
     {
@@ -418,7 +421,10 @@ function addJestAndCypressToPackageJson(host: Tree, options: InitProjectOptions)
       'start-server-and-test': START_SERVER_AND_TEST_VERSION,
       '@testing-library/angular': TESTING_LIBRARY_ANGULAR_VERSION,
       '@testing-library/jest-dom': TESTING_LIBRARY_JEST_DOM_VERSION,
-      'ngx-translate-testing': NGX_TRANSLATE_TESTING_VERSION
+      'ngx-translate-testing': NGX_TRANSLATE_TESTING_VERSION,
+      '@nrwl/builders': NRWL_BUILDERS_VERSION,
+      '@nrwl/cypress': NRWL_CYPRESS_VERSION,
+      '@nrwl/workspace': NRWL_WORKSPACE
     }
   );
 }
@@ -455,6 +461,11 @@ function updateAngularJsonForTestingUtilities(host: Tree, options: InitProjectOp
   return (host: Tree) => {
     return updateJsonInTree('angular.json', (json, context: SchematicContext) => {
       json.projects[Object.keys(json.projects)[0]].architect.test.builder = '@angular-builders/jest:run';
+
+      json.projects[Object.keys(json.projects)[0]].architect.e2e.builder = '@nrwl/cypress:cypress';
+      json.projects[Object.keys(json.projects)[0]].architect.e2e.options.cypressConfig = 'cypress.json';
+      json.projects[Object.keys(json.projects)[0]].architect.e2e.options.tsConfig = 'tsconfig.json';
+      delete json.projects[Object.keys(json.projects)[0]].architect.e2e.options.protractorConfig;
 
       return json;
     });
