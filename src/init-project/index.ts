@@ -397,6 +397,7 @@ function removeStandardTestingFiles(host: Tree, options: InitProjectOptions): Ru
 }
 
 const JEST_VERSION = '^24.9.0';
+const JEST_PRESET_ANGULAR_VERSION = '^8.0.0';
 const TYPES_JEST_VERSION = '^24.0.24';
 const ANGULAR_BUILDERS_JEST_VERSION = '^8.3.2';
 const CYPRESS_VERSION = '^3.8.0';
@@ -414,6 +415,7 @@ function addJestAndCypressDependenciesToPackageJson(host: Tree, options: InitPro
     {},
     {
       'jest': JEST_VERSION,
+      'jest-preset-angular': JEST_PRESET_ANGULAR_VERSION,
       '@types/jest': TYPES_JEST_VERSION,
       '@angular-builders/jest': ANGULAR_BUILDERS_JEST_VERSION,
       'cypress': CYPRESS_VERSION,
