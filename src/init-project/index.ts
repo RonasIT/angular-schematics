@@ -135,11 +135,11 @@ function addAliasesToTsConfig(host: Tree, options: InitProjectOptions): Rule {
   return (host: Tree) => {
     return updateJsonInTree('tsconfig.json', (json, context: SchematicContext) => {
       json.compilerOptions.paths = {
-        '@app/*': [
-          'src/app/*'
-        ],
         '@shared/*': [
           'src/app/shared/*'
+        ],
+        '@app/*': [
+          'src/app/*'
         ],
         '@configurations': [
           'src/configurations/configuration'
