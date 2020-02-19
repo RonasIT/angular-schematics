@@ -451,10 +451,13 @@ function updateTestCommandsInPackageJson(host: Tree, options: InitProjectOptions
 function updateTsConfigSpec(host: Tree, options: InitProjectOptions): Rule {
   return (host: Tree) => {
     return updateJsonInTree('tsconfig.spec.json', (json, context: SchematicContext) => {
-      json.compilerOptions.types = ['jest', 'node'];
-      json.compilerOptions.files = [
-        'src/polyfills.ts'
-      ];
+      json.compilerOptions.esModuleInterop = true;
+      json.compilerOptions.allowSyntheticDefaultImports = true;
+      json.compilerOptions.emitDecoratorMetadata = true;
+      json.compilerOptions.types = ['node', 'jest'];
+      json.compilerOptions.allowJs = true;
+
+      json.include.push('global.d.ts');
 
       return json;
     });

@@ -10,6 +10,7 @@ module.exports = {
     '<rootDir>/node_modules/',
     '<rootDir>/dist/',
     '<rootDir>/src/test.ts',
+    '<rootDir>/cypress',
     '/cache/'
   ],
   transform: {
