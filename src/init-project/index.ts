@@ -7,7 +7,8 @@ import {
   getProjectPath,
   getRootPath,
   updateJsonInTree,
-  addImportToComponent
+  addImportToComponent,
+  addChangeDetectionToComponent
 } from '../../core';
 import {
   apply,
@@ -667,13 +668,17 @@ function addNgRxImportsToAppModule(host: Tree, options: InitProjectOptions): Rul
 function addOnPushStrategyToAppComponent(host: Tree, options: InitProjectOptions): Rule {
   const projectPath = getProjectPath(host, options);
   const appComponentPath = normalize(`${projectPath}/app.component.ts`);
-  const addImportToComponentRule =  addImportToComponent({
+  const addImportToComponentRule = addImportToComponent({
     componentPath: appComponentPath,
     importName: 'ChangeDetectionStrategy',
     importFrom: '@angular/core'
   });
+  const addChangeDetectionToComponentRule = addChangeDetectionToComponent({ componentPath: appComponentPath });
 
-  return chain([addImportToComponentRule])
+  return chain([
+    addImportToComponentRule,
+    addChangeDetectionToComponentRule
+  ]);
 }
 
 export default function (options: InitProjectOptions): Rule {

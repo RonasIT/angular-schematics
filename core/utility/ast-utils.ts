@@ -209,14 +209,13 @@ export function addChangeDetectionToComponent(options: addChangeDetectionToCompo
 
     const sourceText = text.toString('utf-8');
     const source = ts.createSourceFile(options.componentPath, sourceText, ts.ScriptTarget.Latest, true);
-    const insertProperty = ',\nchangeDetection: ChangeDetectionStrategy.OnPush';
+    const insertProperty = ',\n  changeDetection: ChangeDetectionStrategy.OnPush';
 
     const classDecorator = findNodes(source, ts.SyntaxKind.Decorator)[0];
     if (!classDecorator) {
       throw new SchematicsException(`File ${options.componentPath} does not have a decorator.`);
     }
-    const lastPropertyDecorator = findNodes(classDecorator, ts.SyntaxKind.PropertyAssignment).pop()
-
+    const lastPropertyDecorator = findNodes(classDecorator, ts.SyntaxKind.PropertyAssignment).pop();
     const recorder = host.beginUpdate(options.componentPath);
     recorder.insertRight(lastPropertyDecorator!.end, insertProperty);
     host.commitUpdate(recorder);
