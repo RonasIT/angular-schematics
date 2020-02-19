@@ -46,9 +46,13 @@ export interface AddImportToComponentOptions {
   importFrom: string;
 }
 
+export interface addChangeDetectionToComponentOptions {
+  componentPath: Path;
+}
+
 export interface UpsertBarrelFileOptions {
   path: Path;
-  exportFileName: string; 
+  exportFileName: string;
 }
 
 export interface AddPropertyToClassOptions {

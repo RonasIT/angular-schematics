@@ -11,7 +11,8 @@ import {
   BuildRouteOptions,
   UpsertBarrelFileOptions,
   AddImportToComponentOptions,
-  AddImportToFileOptions
+  AddImportToFileOptions,
+  addChangeDetectionToComponentOptions
 } from './interfaces';
 import {
   addRouteDeclarationToModule,
@@ -193,6 +194,35 @@ export function addImportToComponent(options: AddImportToComponentOptions): Rule
     importName: options.importName,
     importFrom: options.importFrom
   });
+}
+
+export function addChangeDetectionToComponent(options: addChangeDetectionToComponentOptions): Rule {
+  return (host: Tree) => {
+    if (!options.componentPath) {
+      return host;
+    }
+
+    const text = host.read(options.componentPath);
+    if (text === null) {
+      throw new SchematicsException(`File ${options.componentPath} does not exist.`);
+    }
+
+    const sourceText = text.toString('utf-8');
+    const source = ts.createSourceFile(options.componentPath, sourceText, ts.ScriptTarget.Latest, true);
+    const insertProperty = ',\nchangeDetection: ChangeDetectionStrategy.OnPush';
+
+    const classDecorator = findNodes(source, ts.SyntaxKind.Decorator)[0];
+    if (!classDecorator) {
+      throw new SchematicsException(`File ${options.componentPath} does not have a decorator.`);
+    }
+    const lastPropertyDecorator = findNodes(classDecorator, ts.SyntaxKind.PropertyAssignment).pop()
+
+    const recorder = host.beginUpdate(options.componentPath);
+    recorder.insertRight(lastPropertyDecorator!.end, insertProperty);
+    host.commitUpdate(recorder);
+
+    return host;
+  };
 }
 
 export function addPropertyToClass(options: AddPropertyToClassOptions): Rule {
