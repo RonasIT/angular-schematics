@@ -34,5 +34,8 @@
   "devDependencies": {
     "@angular-devkit/schematics-cli": "^0.900.2",
     "@types/node": "^13.7.2"
+  },
+  "ng-add": {
+    "save": "devDependencies"
   }
 }
