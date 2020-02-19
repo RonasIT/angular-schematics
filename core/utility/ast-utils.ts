@@ -10,7 +10,8 @@ import {
   AddTextToObjectOptions,
   BuildRouteOptions,
   UpsertBarrelFileOptions,
-  AddImportToComponentOptions
+  AddImportToComponentOptions,
+  AddImportToFileOptions
 } from './interfaces';
 import {
   addRouteDeclarationToModule,
@@ -89,6 +90,32 @@ function _addSymbolToNgModuleMetadata(options: AddSymbolToNgModuleMetadataOption
   };
 }
 
+function _addImportToFile(options: AddImportToFileOptions): Rule {
+  return (host: Tree) => {
+    if (!options.filePath) {
+      return host;
+    }
+
+    const text = host.read(options.filePath);
+    if (text === null) {
+      throw new SchematicsException(`File ${options.filePath} does not exist.`);
+    }
+
+    const sourceText = text.toString('utf-8');
+    const source = ts.createSourceFile(options.filePath, sourceText, ts.ScriptTarget.Latest, true);
+
+    const change = insertImport(source, options.filePath, options.importName, options.importFrom);
+
+    if (change instanceof InsertChange) {
+      const recorder = host.beginUpdate(options.filePath);
+      recorder.insertLeft(change.pos, change.toAdd);
+      host.commitUpdate(recorder);
+    }
+
+    return host;
+  };
+}
+
 export function isRouteDeclarationExist(sourceText: string): boolean {
   return sourceText.includes('loadChildren');
 }
@@ -153,55 +180,19 @@ export function addImportToNgModuleMetadata(options: AddSymbolToNgModuleOptions)
 }
 
 export function addImportToModule(options: AddImportToModuleOptions): Rule {
-  return (host: Tree) => {
-    if (!options.modulePath) {
-      return host;
-    }
-
-    const text = host.read(options.modulePath);
-    if (text === null) {
-      throw new SchematicsException(`File ${options.modulePath} does not exist.`);
-    }
-
-    const sourceText = text.toString('utf-8');
-    const source = ts.createSourceFile(options.modulePath, sourceText, ts.ScriptTarget.Latest, true);
-
-    const change = insertImport(source, options.modulePath, options.importName, options.importFrom);
-
-    if (change instanceof InsertChange) {
-      const recorder = host.beginUpdate(options.modulePath);
-      recorder.insertLeft(change.pos, change.toAdd);
-      host.commitUpdate(recorder);
-    }
-
-    return host;
-  };
+  return _addImportToFile({
+    filePath: options.modulePath,
+    importName: options.importName,
+    importFrom: options.importFrom
+  });
 }
 
 export function addImportToComponent(options: AddImportToComponentOptions): Rule {
-  return (host: Tree) => {
-    if (!options.componentPath) {
-      return host;
-    }
-
-    const text = host.read(options.componentPath);
-    if (text === null) {
-      throw new SchematicsException(`File ${options.componentPath} does not exist.`);
-    }
-
-    const sourceText = text.toString('utf-8');
-    const source = ts.createSourceFile(options.componentPath, sourceText, ts.ScriptTarget.Latest, true);
-
-    const change = insertImport(source, options.componentPath, options.importName, options.importFrom);
-
-    if (change instanceof InsertChange) {
-      const recorder = host.beginUpdate(options.componentPath);
-      recorder.insertLeft(change.pos, change.toAdd);
-      host.commitUpdate(recorder);
-    }
-
-    return host;
-  };
+  return _addImportToFile({
+    filePath: options.componentPath,
+    importName: options.importName,
+    importFrom: options.importFrom
+  });
 }
 
 export function addPropertyToClass(options: AddPropertyToClassOptions): Rule {

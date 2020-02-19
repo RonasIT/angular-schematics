@@ -28,6 +28,12 @@ export interface AddSymbolToNgModuleOptions {
   importName: string;
 }
 
+export interface AddImportToFileOptions {
+  filePath: Path;
+  importName: string;
+  importFrom: string;
+}
+
 export interface AddImportToModuleOptions {
   modulePath: Path;
   importName: string;
