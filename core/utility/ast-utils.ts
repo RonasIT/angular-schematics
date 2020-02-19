@@ -9,7 +9,8 @@ import {
   AddSymbolToNgModuleOptions,
   AddTextToObjectOptions,
   BuildRouteOptions,
-  UpsertBarrelFileOptions
+  UpsertBarrelFileOptions,
+  AddImportToComponentOptions
 } from './interfaces';
 import {
   addRouteDeclarationToModule,
@@ -169,6 +170,32 @@ export function addImportToModule(options: AddImportToModuleOptions): Rule {
 
     if (change instanceof InsertChange) {
       const recorder = host.beginUpdate(options.modulePath);
+      recorder.insertLeft(change.pos, change.toAdd);
+      host.commitUpdate(recorder);
+    }
+
+    return host;
+  };
+}
+
+export function addImportToComponent(options: AddImportToComponentOptions): Rule {
+  return (host: Tree) => {
+    if (!options.componentPath) {
+      return host;
+    }
+
+    const text = host.read(options.componentPath);
+    if (text === null) {
+      throw new SchematicsException(`File ${options.componentPath} does not exist.`);
+    }
+
+    const sourceText = text.toString('utf-8');
+    const source = ts.createSourceFile(options.componentPath, sourceText, ts.ScriptTarget.Latest, true);
+
+    const change = insertImport(source, options.componentPath, options.importName, options.importFrom);
+
+    if (change instanceof InsertChange) {
+      const recorder = host.beginUpdate(options.componentPath);
       recorder.insertLeft(change.pos, change.toAdd);
       host.commitUpdate(recorder);
     }

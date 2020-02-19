@@ -34,6 +34,12 @@ export interface AddImportToModuleOptions {
   importFrom: string;
 }
 
+export interface AddImportToComponentOptions {
+  componentPath: Path;
+  importName: string;
+  importFrom: string;
+}
+
 export interface UpsertBarrelFileOptions {
   path: Path;
   exportFileName: string; 
