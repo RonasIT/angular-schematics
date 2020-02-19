@@ -61,7 +61,8 @@ function preparePageRules(host: Tree, options: PageModuleOptions): Array<Rule> {
       routeModule: getRouteModule(host, options),
       routingModulePath: getPageRoutingModulePath(host, options),
       routePath: options.name,
-      path: options.path
+      path: options.path,
+      isChildren: true
     })
   ];
 }
