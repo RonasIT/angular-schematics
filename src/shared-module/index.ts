@@ -152,6 +152,8 @@ export default function (options: SharedModuleOptions): Rule {
     const hasParentPage = !!options.parentPage;
     const hasPage = !!options.page;
     const isNgxTranslateInstalled = isThereDependencyInPackageJson(host, '@ngx-translate/core');
+    const isNgrxInstalled = isThereDependencyInPackageJson(host, '@ngrx/store');
+    const hasNotRoot = hasSection || hasParentPage || hasPage;
 
     const templatesPath = getTemplatesPath(options);
     const templateSource = apply(url(templatesPath), [
@@ -165,7 +167,9 @@ export default function (options: SharedModuleOptions): Rule {
         hasSection,
         hasParentPage,
         hasPage,
-        isNgxTranslateInstalled
+        isNgxTranslateInstalled,
+        isNgrxInstalled,
+        hasNotRoot
       }),
       move(options.path)
     ]);

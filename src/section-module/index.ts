@@ -2,7 +2,8 @@ import {
   addRouteDeclarationToNgModule,
   getProjectPath,
   getRoutingModulePath,
-  parseLocation
+  parseLocation,
+  isThereDependencyInPackageJson
 } from '../../core';
 import {
   apply,
@@ -24,6 +25,7 @@ export default function (options: SectionModuleOptions): Rule {
     options.path = getProjectPath(host, options);
 
     const location = parseLocation(options.path, options.name);
+    const isNgrxInstalled = isThereDependencyInPackageJson(host, '@ngrx/store');
 
     options.name = location.name;
     options.path = location.path;
@@ -33,6 +35,7 @@ export default function (options: SectionModuleOptions): Rule {
         ...options,
         classify: strings.classify,
         dasherize: strings.dasherize,
+        isNgrxInstalled
       }),
       move(options.path)
     ]);
