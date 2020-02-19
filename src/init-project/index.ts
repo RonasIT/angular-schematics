@@ -162,9 +162,9 @@ function updateTsLint(host: Tree, options: InitProjectOptions): Rule {
 }
 
 const CODELYZER_VERSION = '^5.2.1';
-const TSLINT_VERSION = '^5.20.1';
+const TSLINT_VERSION = '^6.0.0';
 const RONAS_IT_TSLINT_RULES_VERSION = '^1.0.3';
-const TS_NODE_VERSION = '^8.5.4';
+const TS_NODE_VERSION = '^8.6.2';
 
 function updateTsLintRules(host: Tree, options: InitProjectOptions): Rule {
   return addDepsToPackageJson(
@@ -396,20 +396,20 @@ function removeStandardTestingFiles(host: Tree, options: InitProjectOptions): Ru
   };
 }
 
-const JEST_VERSION = '^24.9.0';
+const JEST_VERSION = '^25.1.0';
 const JEST_PRESET_ANGULAR_VERSION = '^8.0.0';
 const BABEL_JEST_VERSION = '^25.1.0';
-const TYPES_JEST_VERSION = '^24.0.24';
+const TYPES_JEST_VERSION = '^25.1.2';
 const ANGULAR_BUILDERS_JEST_VERSION = '^8.3.2';
-const CYPRESS_VERSION = '^3.8.0';
+const CYPRESS_VERSION = '^4.0.2';
 const CYPRESS_IMAGE_SNAPSHOT_VERSION = '^3.1.1';
-const START_SERVER_AND_TEST_VERSION = '^1.10.6';
+const START_SERVER_AND_TEST_VERSION = '^1.10.8';
 const TESTING_LIBRARY_ANGULAR_VERSION = '^8.2.0';
-const TESTING_LIBRARY_JEST_DOM_VERSION = '^4.2.4';
+const TESTING_LIBRARY_JEST_DOM_VERSION = '^5.1.1';
 const NGX_TRANSLATE_TESTING_VERSION = '^3.0.0';
 const NRWL_BUILDERS_VERSION = '^7.8.7';
-const NRWL_CYPRESS_VERSION = '^8.9.0';
-const NRWL_WORKSPACE = '^8.9.0';
+const NRWL_CYPRESS_VERSION = '^9.0.1';
+const NRWL_WORKSPACE = '^9.0.1';
 
 function addJestAndCypressDependenciesToPackageJson(host: Tree, options: InitProjectOptions): Rule {
   return addDepsToPackageJson(
@@ -493,7 +493,7 @@ function createTestingFiles(host: Tree, options: InitProjectOptions): Rule {
   return mergeWith(templateSource, MergeStrategy.Overwrite);
 }
 
-const NGX_TRANSLATE_VERSION = '^11.0.1';
+const NGX_TRANSLATE_VERSION = '^12.1.1';
 
 function createTranslateFiles(host: Tree, options: InitProjectOptions): Rule {
   const appRootPath = getAppRootPath(host, options);
@@ -579,7 +579,7 @@ function addLanguagesToConfigurationFiles(host: Tree, options: InitProjectOption
   };
 }
 
-const NGRX_VERSION = '^8.5.2';
+const NGRX_VERSION = '^8.6.0';
 const NGRX_FORMS_VERSION = '^6.1.0';
 
 function createAppStoreFiles(host: Tree, options: InitProjectOptions): Rule {
