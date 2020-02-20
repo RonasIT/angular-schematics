@@ -12,7 +12,7 @@ import {
   UpsertBarrelFileOptions,
   AddImportToComponentOptions,
   AddImportToFileOptions,
-  addChangeDetectionToComponentOptions
+  AddChangeDetectionToComponentOptions
 } from './interfaces';
 import {
   addRouteDeclarationToModule,
@@ -91,7 +91,7 @@ function _addSymbolToNgModuleMetadata(options: AddSymbolToNgModuleMetadataOption
   };
 }
 
-function _addImportToFile(options: AddImportToFileOptions): Rule {
+function addImportToFile(options: AddImportToFileOptions): Rule {
   return (host: Tree) => {
     if (!options.filePath) {
       return host;
@@ -181,7 +181,7 @@ export function addImportToNgModuleMetadata(options: AddSymbolToNgModuleOptions)
 }
 
 export function addImportToModule(options: AddImportToModuleOptions): Rule {
-  return _addImportToFile({
+  return addImportToFile({
     filePath: options.modulePath,
     importName: options.importName,
     importFrom: options.importFrom
@@ -189,14 +189,14 @@ export function addImportToModule(options: AddImportToModuleOptions): Rule {
 }
 
 export function addImportToComponent(options: AddImportToComponentOptions): Rule {
-  return _addImportToFile({
+  return addImportToFile({
     filePath: options.componentPath,
     importName: options.importName,
     importFrom: options.importFrom
   });
 }
 
-export function addChangeDetectionToComponent(options: addChangeDetectionToComponentOptions): Rule {
+export function addChangeDetectionToComponent(options: AddChangeDetectionToComponentOptions): Rule {
   return (host: Tree) => {
     if (!options.componentPath) {
       return host;
@@ -211,7 +211,7 @@ export function addChangeDetectionToComponent(options: addChangeDetectionToCompo
     const source = ts.createSourceFile(options.componentPath, sourceText, ts.ScriptTarget.Latest, true);
     const insertProperty = ',\n  changeDetection: ChangeDetectionStrategy.OnPush';
 
-    const classDecorator = findNodes(source, ts.SyntaxKind.Decorator)[0];
+    const classDecorator = findNodes(source, ts.SyntaxKind.Decorator).find((item) => item.getText().includes('@Component'));
     if (!classDecorator) {
       throw new SchematicsException(`File ${options.componentPath} does not have a decorator.`);
     }

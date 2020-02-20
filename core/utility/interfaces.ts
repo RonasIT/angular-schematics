@@ -46,7 +46,7 @@ export interface AddImportToComponentOptions {
   importFrom: string;
 }
 
-export interface addChangeDetectionToComponentOptions {
+export interface AddChangeDetectionToComponentOptions {
   componentPath: Path;
 }
 
