@@ -40,21 +40,23 @@ function _buildRoute(options: BuildRouteOptions): string {
 
   const loadChildren = `() => import('${relativeRouteModulePath}').then((module) => module.${routeModule}Module)`;
 
-  let route = (options.isChildren)
-    ? (options.isFirstRoute)
-      ? `    {\n        path: '${routePath}',\n        loadChildren: ${loadChildren}\n      }\n    `
-      : `    {\n        path: '${routePath}',\n        loadChildren: ${loadChildren}\n      }`
-    : `{\n    path: '${routePath}',\n    loadChildren: ${loadChildren}\n  }`;
-
-  if (options.isFirstRoute && !options.isChildren) {
-    route = `\n  ${route}\n`;
+  if (options.isChildren && options.isFirstRoute) {
+    return `    {\n        path: '${routePath}',\n        loadChildren: ${loadChildren}\n      }\n    `;
   }
 
-  return route;
+  if (options.isChildren) {
+    return `    {\n        path: '${routePath}',\n        loadChildren: ${loadChildren}\n      }`;
+  }
+
+  if (options.isFirstRoute) {
+    return `\n  {\n    path: '${routePath}',\n    loadChildren: ${loadChildren}\n  }\n`;
+  }
+
+  return `{\n    path: '${routePath}',\n    loadChildren: ${loadChildren}\n  }`;
 }
 
-function _removeStartComma(_str: string): string {
-  return _str.slice(1);
+function _removeStartComma(str: string): string {
+  return (str[0] === ',') ? str.slice(1) : str;
 }
 
 function _addSymbolToNgModuleMetadata(options: AddSymbolToNgModuleMetadataOptions): Rule {
