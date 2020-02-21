@@ -1,9 +1,13 @@
 {
   "name": "@ronas-it/angular-schematics",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "Ronas IT Angular Schematics",
   "scripts": {
     "build": "tsc -p tsconfig.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RonasIT/angular-schematics.git"
   },
   "keywords": [
     "schematics",
@@ -20,15 +24,18 @@
     "src"
   ],
   "dependencies": {
-    "@angular-devkit/core": "^8.3.19",
-    "@angular-devkit/schematics": "^8.3.19",
-    "@schematics/angular": "^8.3.19",
+    "@angular-devkit/core": "^9.0.2",
+    "@angular-devkit/schematics": "^9.0.2",
+    "@schematics/angular": "^9.0.2",
     "sort-keys": "^4.0.0",
     "strip-json-comments": "^3.0.1",
-    "typescript": "~3.7.2"
+    "typescript": "~3.7.5"
   },
   "devDependencies": {
-    "@angular-devkit/schematics-cli": "^0.803.19",
-    "@types/node": "^12.12.8"
+    "@angular-devkit/schematics-cli": "^0.900.2",
+    "@types/node": "^13.7.2"
+  },
+  "ng-add": {
+    "save": "devDependencies"
   }
 }

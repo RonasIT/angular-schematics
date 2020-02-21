@@ -6,6 +6,7 @@ export interface BuildRouteOptions {
   routingModulePath: Path;
   isFirstRoute: boolean;
   path: string | Path;
+  isChildren?: boolean;
 }
 
 export interface AddRouteDeclarationToNgModuleOptions {
@@ -13,6 +14,7 @@ export interface AddRouteDeclarationToNgModuleOptions {
   routePath: string;
   routingModulePath: Path;
   path: string | Path;
+  isChildren?: boolean;
 }
 
 export interface AddSymbolToNgModuleMetadataOptions {

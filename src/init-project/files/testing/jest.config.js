@@ -9,14 +9,30 @@ module.exports = {
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',
     '<rootDir>/dist/',
-    '<rootDir>/src/test.ts'
+    '<rootDir>/src/test.ts',
+    '<rootDir>/cypress',
+    '/cache/'
+  ],
+  transform: {
+    '^.+\\.(ts|html)$': 'ts-jest',
+    '^.+\\.js$': 'babel-jest'
+  },
+  collectCoverageFrom: [
+    '<rootDir>/src/app/**/*.{ts,html}'
   ],
   coveragePathIgnorePatterns: [
     '<rootDir>/global-mocks.ts',
     '<rootDir>/src/configurations/',
     '<rootDir>/src/tests/',
     '<rootDir>/src/main.ts',
-    '<rootDir>/src/polyfills.ts'
+    '<rootDir>/src/polyfills.ts',
+    '<rootDir>/src/app/shared/store/state.ts',
+    '<rootDir>/src/app/(.*).module.ts',
+    '<rootDir>/src/app/(.*).routing.ts',
+    '<rootDir>/src/app/(.*).error-handler.ts',
+    '<rootDir>/src/app/(.*).translate.loader.ts',
+    '<rootDir>/src/app/(.*)/shared/forms/(.*).ts',
+    '<rootDir>/src/app/(.*)/index.ts'
   ],
   globals: {
     'ts-jest': {
@@ -34,8 +50,8 @@ module.exports = {
     }
   },
   moduleNameMapper: {
-    '^@app/(.*)$': '<rootDir>/src/app/$1',
     '^@shared/(.*)$': '<rootDir>/src/app/shared/$1',
+    '^@app/(.*)$': '<rootDir>/src/app/$1',
     '^@configurations': '<rootDir>/src/configurations/configuration',
     '^@tests/(.*)$': '<rootDir>/src/tests/$1'
   }

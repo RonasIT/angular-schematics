@@ -31,7 +31,7 @@ function createSentryFiles(host: Tree, options: SentryOptions): Rule {
   return mergeWith(templateSource, MergeStrategy.Overwrite);
 }
 
-const SENTRY_BROWSER_VERSION = '^5.10.2';
+const SENTRY_BROWSER_VERSION = '^5.12.4';
 
 function addSentryToPackageJson(host: Tree, options: SentryOptions): Rule {
   return addDepsToPackageJson({
