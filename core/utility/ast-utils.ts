@@ -40,16 +40,23 @@ function _buildRoute(options: BuildRouteOptions): string {
 
   const loadChildren = `() => import('${relativeRouteModulePath}').then((module) => module.${routeModule}Module)`;
 
-  let route = `{
-    path: '${routePath}',
-    loadChildren: ${loadChildren}
-  }`;
-
-  if (options.isFirstRoute) {
-    route = `\n  ${route}\n`;
+  if (options.isChildren && options.isFirstRoute) {
+    return `    {\n        path: '${routePath}',\n        loadChildren: ${loadChildren}\n      }\n    `;
   }
 
-  return route;
+  if (options.isChildren) {
+    return `    {\n        path: '${routePath}',\n        loadChildren: ${loadChildren}\n      }`;
+  }
+
+  if (options.isFirstRoute) {
+    return `\n  {\n    path: '${routePath}',\n    loadChildren: ${loadChildren}\n  }\n`;
+  }
+
+  return `{\n    path: '${routePath}',\n    loadChildren: ${loadChildren}\n  }`;
+}
+
+function _removeStartComma(str: string): string {
+  return (str[0] === ',') ? str.slice(1) : str;
 }
 
 function _addSymbolToNgModuleMetadata(options: AddSymbolToNgModuleMetadataOptions): Rule {
@@ -88,6 +95,26 @@ function _addSymbolToNgModuleMetadata(options: AddSymbolToNgModuleMetadataOption
   };
 }
 
+function _getChildrenRoutesPosition(source: ts.SourceFile): number | null {
+  const routes = findNodes(source, ts.SyntaxKind.VariableDeclarationList).find((item) => item.getText().includes('const routes: Routes'));
+  if (routes === undefined) {
+    return null;
+  }
+  const childrenRoutes = findNodes(routes, ts.SyntaxKind.PropertyAssignment).find((item) => item.getText().includes('children:'));
+  if (childrenRoutes === undefined) {
+    return null;
+  }
+
+  if (childrenRoutes.getText().includes('loadChildren: () =>')) {
+    const lastChildrenRoute = findNodes(childrenRoutes, ts.SyntaxKind.ObjectLiteralExpression)
+      .filter((item) => item.getText().includes('loadChildren: () =>'))
+      .pop();
+    return lastChildrenRoute?.end || null;
+  }
+
+  return childrenRoutes.end - 1;
+}
+
 export function isRouteDeclarationExist(sourceText: string): boolean {
   return sourceText.includes('loadChildren');
 }
@@ -113,17 +140,25 @@ export function addRouteDeclarationToNgModule(options: AddRouteDeclarationToNgMo
     }
 
     const sourceText = text.toString();
+    const source = ts.createSourceFile(options.routingModulePath, sourceText, ts.ScriptTarget.Latest, true);
+    const isFirstRoute = !isRouteDeclarationExist(sourceText);
     const addDeclaration = addRouteDeclarationToModule(
-      ts.createSourceFile(options.routingModulePath, sourceText, ts.ScriptTarget.Latest, true),
+      source,
       options.routingModulePath,
       _buildRoute({
         ...options,
-        isFirstRoute: !isRouteDeclarationExist(sourceText)
+        isFirstRoute
       }),
     ) as InsertChange;
-
+    const position = (options.isChildren) ? _getChildrenRoutesPosition(source) : addDeclaration.pos
+    if (position === null) {
+      throw new SchematicsException(`File ${options.routingModulePath} does not have routes.`);
+    }
     const recorder = host.beginUpdate(options.routingModulePath);
-    recorder.insertLeft(addDeclaration.pos, addDeclaration.toAdd);
+    recorder.insertLeft(
+      position,
+      (options.isChildren && isFirstRoute) ? _removeStartComma(addDeclaration.toAdd) : addDeclaration.toAdd
+    );
     host.commitUpdate(recorder);
 
     return host;
