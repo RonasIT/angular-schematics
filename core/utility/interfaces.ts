@@ -30,10 +30,14 @@ export interface AddSymbolToNgModuleOptions {
   importName: string;
 }
 
-export interface AddImportToModuleOptions {
-  modulePath: Path;
+export interface AddImportToFileOptions {
+  filePath: Path;
   importName: string;
   importFrom: string;
+}
+
+export interface AddChangeDetectionToComponentOptions {
+  componentPath: Path;
 }
 
 export interface UpsertBarrelFileOptions {

@@ -86,6 +86,7 @@ function prepareStoreRules(host: Tree, options: PageModuleOptions): Array<Rule> 
 function getPageTemplateSource(host: Tree, options: PageModuleOptions): Source {
   const isJestInstalled = isThereDependencyInPackageJson(host, 'jest');
   const isNgxTranslateInstalled = isThereDependencyInPackageJson(host, '@ngx-translate/core');
+  const isNgrxInstalled = isThereDependencyInPackageJson(host, '@ngrx/store');
 
   return apply(url('./files'), [
     template({
@@ -93,7 +94,8 @@ function getPageTemplateSource(host: Tree, options: PageModuleOptions): Source {
       ...strings,
       hasParent: !!options.parent,
       isJestInstalled,
-      isNgxTranslateInstalled
+      isNgxTranslateInstalled,
+      isNgrxInstalled
     }),
     move(options.path)
   ]);

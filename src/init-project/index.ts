@@ -1,12 +1,13 @@
 import {
   addDepsToPackageJson,
-  addImportToModule,
   addImportToNgModuleMetadata,
   addTextToObject,
   getAppRootPath,
   getProjectPath,
   getRootPath,
-  updateJsonInTree
+  updateJsonInTree,
+  addChangeDetectionToComponent,
+  addImportToFile
 } from '../../core';
 import {
   apply,
@@ -543,8 +544,8 @@ function addNgxTranslateToAppModule(host: Tree, options: InitProjectOptions): Ru
     })`
   ];
 
-  const addImportToModuleRules = moduleImports.map((item) => addImportToModule({
-    modulePath: appModulePath,
+  const addImportToModuleRules = moduleImports.map((item) => addImportToFile({
+    filePath: appModulePath,
     importName: item.name,
     importFrom: item.from
   }));
@@ -649,8 +650,8 @@ function addNgRxImportsToAppModule(host: Tree, options: InitProjectOptions): Rul
     })`
   ];
 
-  const addImportToModuleRules = moduleImports.map((item) => addImportToModule({
-    modulePath: appModulePath,
+  const addImportToModuleRules = moduleImports.map((item) => addImportToFile({
+    filePath: appModulePath,
     importName: item.name,
     importFrom: item.from
   }));
@@ -665,6 +666,22 @@ function addNgRxImportsToAppModule(host: Tree, options: InitProjectOptions): Rul
   return chain([
     ...addImportToModuleRules,
     ...addImportToNgModuleMetadataRules
+  ]);
+}
+
+function addOnPushStrategyToAppComponent(host: Tree, options: InitProjectOptions): Rule {
+  const projectPath = getProjectPath(host, options);
+  const appComponentPath = normalize(`${projectPath}/app.component.ts`);
+  const addImportToComponentRule = addImportToFile({
+    filePath: appComponentPath,
+    importName: 'ChangeDetectionStrategy',
+    importFrom: '@angular/core'
+  });
+  const addChangeDetectionToComponentRule = addChangeDetectionToComponent({ componentPath: appComponentPath });
+
+  return chain([
+    addImportToComponentRule,
+    addChangeDetectionToComponentRule
   ]);
 }
 
@@ -697,7 +714,8 @@ export default function (options: InitProjectOptions): Rule {
       rules.push(
         createAppStoreFiles(host, options),
         addNgRxToPackageJson(host, options),
-        addNgRxImportsToAppModule(host, options)
+        addNgRxImportsToAppModule(host, options),
+        addOnPushStrategyToAppComponent(host, options)
       );
     }
 

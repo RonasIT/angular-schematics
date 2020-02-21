@@ -1,10 +1,10 @@
 import {
   addDepsToPackageJson,
-  addImportToModule,
   addProviderToNgModuleMetadata,
   addTextToObject,
   getAppRootPath,
-  getProjectPath
+  getProjectPath,
+  addImportToFile
 } from '../../core';
 import {
   apply,
@@ -78,8 +78,8 @@ function addErrorHandlerProviderToAppModule(host: Tree, options: SentryOptions):
     }`
   ];
 
-  const addImportToModuleRules = moduleImports.map((item) => addImportToModule({
-    modulePath: appModulePath,
+  const addImportToModuleRules = moduleImports.map((item) => addImportToFile({
+    filePath: appModulePath,
     importName: item.name,
     importFrom: item.from
   }));

@@ -1,12 +1,12 @@
 import {
-  addImportToModule,
   addImportToNgModuleMetadata,
   addPropertyToClass,
   camelize,
   classify,
   dasherize,
   getAppStatePath,
-  getProjectPath
+  getProjectPath,
+  addImportToFile
 } from '../../core';
 import {
   apply,
@@ -120,8 +120,8 @@ function addStoreImports(host: Tree, options: StoreOptions): Rule {
 
   return chain([
     ...moduleImports.map((item) =>
-      addImportToModule({
-        modulePath,
+      addImportToFile({
+        filePath: modulePath,
         importName: item.name,
         importFrom: item.from
       })

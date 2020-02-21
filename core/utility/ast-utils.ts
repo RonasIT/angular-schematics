@@ -2,14 +2,15 @@ import * as sortKeys from 'sort-keys';
 import * as stripJsonComments from 'strip-json-comments';
 import * as ts from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
 import {
-  AddImportToModuleOptions,
   AddPropertyToClassOptions,
   AddRouteDeclarationToNgModuleOptions,
   AddSymbolToNgModuleMetadataOptions,
   AddSymbolToNgModuleOptions,
   AddTextToObjectOptions,
   BuildRouteOptions,
-  UpsertBarrelFileOptions
+  UpsertBarrelFileOptions,
+  AddImportToFileOptions,
+  AddChangeDetectionToComponentOptions
 } from './interfaces';
 import {
   addRouteDeclarationToModule,
@@ -55,7 +56,7 @@ function _buildRoute(options: BuildRouteOptions): string {
   return `{\n    path: '${routePath}',\n    loadChildren: ${loadChildren}\n  }`;
 }
 
-function _removeStartComma(str: string): string {
+function removeStartComma(str: string): string {
   return (str[0] === ',') ? str.slice(1) : str;
 }
 
@@ -95,7 +96,33 @@ function _addSymbolToNgModuleMetadata(options: AddSymbolToNgModuleMetadataOption
   };
 }
 
-function _getChildrenRoutesPosition(source: ts.SourceFile): number | null {
+export function addImportToFile(options: AddImportToFileOptions): Rule {
+  return (host: Tree) => {
+    if (!options.filePath) {
+      return host;
+    }
+
+    const text = host.read(options.filePath);
+    if (text === null) {
+      throw new SchematicsException(`File ${options.filePath} does not exist.`);
+    }
+
+    const sourceText = text.toString('utf-8');
+    const source = ts.createSourceFile(options.filePath, sourceText, ts.ScriptTarget.Latest, true);
+
+    const change = insertImport(source, options.filePath, options.importName, options.importFrom);
+
+    if (change instanceof InsertChange) {
+      const recorder = host.beginUpdate(options.filePath);
+      recorder.insertLeft(change.pos, change.toAdd);
+      host.commitUpdate(recorder);
+    }
+
+    return host;
+  };
+}
+
+function getChildrenRoutesPosition(source: ts.SourceFile): number | null {
   const routes = findNodes(source, ts.SyntaxKind.VariableDeclarationList).find((item) => item.getText().includes('const routes: Routes'));
   if (routes === undefined) {
     return null;
@@ -150,14 +177,14 @@ export function addRouteDeclarationToNgModule(options: AddRouteDeclarationToNgMo
         isFirstRoute
       }),
     ) as InsertChange;
-    const position = (options.isChildren) ? _getChildrenRoutesPosition(source) : addDeclaration.pos
+    const position = (options.isChildren) ? getChildrenRoutesPosition(source) : addDeclaration.pos
     if (position === null) {
       throw new SchematicsException(`File ${options.routingModulePath} does not have routes.`);
     }
     const recorder = host.beginUpdate(options.routingModulePath);
     recorder.insertLeft(
       position,
-      (options.isChildren && isFirstRoute) ? _removeStartComma(addDeclaration.toAdd) : addDeclaration.toAdd
+      (options.isChildren && isFirstRoute) ? removeStartComma(addDeclaration.toAdd) : addDeclaration.toAdd
     );
     host.commitUpdate(recorder);
 
@@ -186,27 +213,29 @@ export function addImportToNgModuleMetadata(options: AddSymbolToNgModuleOptions)
   });
 }
 
-export function addImportToModule(options: AddImportToModuleOptions): Rule {
+export function addChangeDetectionToComponent(options: AddChangeDetectionToComponentOptions): Rule {
   return (host: Tree) => {
-    if (!options.modulePath) {
+    if (!options.componentPath) {
       return host;
     }
 
-    const text = host.read(options.modulePath);
+    const text = host.read(options.componentPath);
     if (text === null) {
-      throw new SchematicsException(`File ${options.modulePath} does not exist.`);
+      throw new SchematicsException(`File ${options.componentPath} does not exist.`);
     }
 
     const sourceText = text.toString('utf-8');
-    const source = ts.createSourceFile(options.modulePath, sourceText, ts.ScriptTarget.Latest, true);
+    const source = ts.createSourceFile(options.componentPath, sourceText, ts.ScriptTarget.Latest, true);
+    const insertProperty = ',\n  changeDetection: ChangeDetectionStrategy.OnPush';
 
-    const change = insertImport(source, options.modulePath, options.importName, options.importFrom);
-
-    if (change instanceof InsertChange) {
-      const recorder = host.beginUpdate(options.modulePath);
-      recorder.insertLeft(change.pos, change.toAdd);
-      host.commitUpdate(recorder);
+    const classDecorator = findNodes(source, ts.SyntaxKind.Decorator).find((item) => item.getText().includes('@Component'));
+    if (!classDecorator) {
+      throw new SchematicsException(`File ${options.componentPath} does not have a decorator.`);
     }
+    const lastDecoratorProperty = findNodes(classDecorator, ts.SyntaxKind.PropertyAssignment).pop();
+    const recorder = host.beginUpdate(options.componentPath);
+    recorder.insertRight(lastDecoratorProperty!.end, insertProperty);
+    host.commitUpdate(recorder);
 
     return host;
   };
