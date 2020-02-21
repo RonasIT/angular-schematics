@@ -34,18 +34,6 @@ export interface AddImportToFileOptions {
   importFrom: string;
 }
 
-export interface AddImportToModuleOptions {
-  modulePath: Path;
-  importName: string;
-  importFrom: string;
-}
-
-export interface AddImportToComponentOptions {
-  componentPath: Path;
-  importName: string;
-  importFrom: string;
-}
-
 export interface AddChangeDetectionToComponentOptions {
   componentPath: Path;
 }

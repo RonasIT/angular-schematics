@@ -2,7 +2,6 @@ import * as sortKeys from 'sort-keys';
 import * as stripJsonComments from 'strip-json-comments';
 import * as ts from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
 import {
-  AddImportToModuleOptions,
   AddPropertyToClassOptions,
   AddRouteDeclarationToNgModuleOptions,
   AddSymbolToNgModuleMetadataOptions,
@@ -10,7 +9,6 @@ import {
   AddTextToObjectOptions,
   BuildRouteOptions,
   UpsertBarrelFileOptions,
-  AddImportToComponentOptions,
   AddImportToFileOptions,
   AddChangeDetectionToComponentOptions
 } from './interfaces';
@@ -91,7 +89,7 @@ function _addSymbolToNgModuleMetadata(options: AddSymbolToNgModuleMetadataOption
   };
 }
 
-function addImportToFile(options: AddImportToFileOptions): Rule {
+export function addImportToFile(options: AddImportToFileOptions): Rule {
   return (host: Tree) => {
     if (!options.filePath) {
       return host;
@@ -180,22 +178,6 @@ export function addImportToNgModuleMetadata(options: AddSymbolToNgModuleOptions)
   });
 }
 
-export function addImportToModule(options: AddImportToModuleOptions): Rule {
-  return addImportToFile({
-    filePath: options.modulePath,
-    importName: options.importName,
-    importFrom: options.importFrom
-  });
-}
-
-export function addImportToComponent(options: AddImportToComponentOptions): Rule {
-  return addImportToFile({
-    filePath: options.componentPath,
-    importName: options.importName,
-    importFrom: options.importFrom
-  });
-}
-
 export function addChangeDetectionToComponent(options: AddChangeDetectionToComponentOptions): Rule {
   return (host: Tree) => {
     if (!options.componentPath) {
@@ -215,9 +197,9 @@ export function addChangeDetectionToComponent(options: AddChangeDetectionToCompo
     if (!classDecorator) {
       throw new SchematicsException(`File ${options.componentPath} does not have a decorator.`);
     }
-    const lastPropertyDecorator = findNodes(classDecorator, ts.SyntaxKind.PropertyAssignment).pop();
+    const lastDecoratorProperty = findNodes(classDecorator, ts.SyntaxKind.PropertyAssignment).pop();
     const recorder = host.beginUpdate(options.componentPath);
-    recorder.insertRight(lastPropertyDecorator!.end, insertProperty);
+    recorder.insertRight(lastDecoratorProperty!.end, insertProperty);
     host.commitUpdate(recorder);
 
     return host;

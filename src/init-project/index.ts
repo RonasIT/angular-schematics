@@ -1,14 +1,13 @@
 import {
   addDepsToPackageJson,
-  addImportToModule,
   addImportToNgModuleMetadata,
   addTextToObject,
   getAppRootPath,
   getProjectPath,
   getRootPath,
   updateJsonInTree,
-  addImportToComponent,
-  addChangeDetectionToComponent
+  addChangeDetectionToComponent,
+  addImportToFile
 } from '../../core';
 import {
   apply,
@@ -540,8 +539,8 @@ function addNgxTranslateToAppModule(host: Tree, options: InitProjectOptions): Ru
     })`
   ];
 
-  const addImportToModuleRules = moduleImports.map((item) => addImportToModule({
-    modulePath: appModulePath,
+  const addImportToModuleRules = moduleImports.map((item) => addImportToFile({
+    filePath: appModulePath,
     importName: item.name,
     importFrom: item.from
   }));
@@ -646,8 +645,8 @@ function addNgRxImportsToAppModule(host: Tree, options: InitProjectOptions): Rul
     })`
   ];
 
-  const addImportToModuleRules = moduleImports.map((item) => addImportToModule({
-    modulePath: appModulePath,
+  const addImportToModuleRules = moduleImports.map((item) => addImportToFile({
+    filePath: appModulePath,
     importName: item.name,
     importFrom: item.from
   }));
@@ -668,8 +667,8 @@ function addNgRxImportsToAppModule(host: Tree, options: InitProjectOptions): Rul
 function addOnPushStrategyToAppComponent(host: Tree, options: InitProjectOptions): Rule {
   const projectPath = getProjectPath(host, options);
   const appComponentPath = normalize(`${projectPath}/app.component.ts`);
-  const addImportToComponentRule = addImportToComponent({
-    componentPath: appComponentPath,
+  const addImportToComponentRule = addImportToFile({
+    filePath: appComponentPath,
     importName: 'ChangeDetectionStrategy',
     importFrom: '@angular/core'
   });
