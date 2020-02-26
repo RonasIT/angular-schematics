@@ -41,7 +41,7 @@ function _buildRoute(options: BuildRouteOptions): string {
 
   const loadChildren = `() => import('${relativeRouteModulePath}').then((module) => module.${routeModule}Module)`;
 
-  if (options.isChildren && options.isFirstRoute) {
+  if (options.isChildren && options.isFirstChildrenRoute) {
     return `    {\n        path: '${routePath}',\n        loadChildren: ${loadChildren}\n      }\n    `;
   }
 
@@ -143,6 +143,10 @@ function getChildrenRoutesPosition(source: ts.SourceFile): number | null {
 }
 
 export function isRouteDeclarationExist(sourceText: string): boolean {
+  return sourceText.includes('path: \'');
+}
+
+export function isChildrenRouteDeclarationExist(sourceText: string): boolean {
   return sourceText.includes('loadChildren');
 }
 
@@ -169,12 +173,14 @@ export function addRouteDeclarationToNgModule(options: AddRouteDeclarationToNgMo
     const sourceText = text.toString();
     const source = ts.createSourceFile(options.routingModulePath, sourceText, ts.ScriptTarget.Latest, true);
     const isFirstRoute = !isRouteDeclarationExist(sourceText);
+    const isFirstChildrenRoute = !isChildrenRouteDeclarationExist(sourceText);
     const addDeclaration = addRouteDeclarationToModule(
       source,
       options.routingModulePath,
       _buildRoute({
         ...options,
-        isFirstRoute
+        isFirstRoute,
+        isFirstChildrenRoute
       }),
     ) as InsertChange;
     const position = (options.isChildren) ? getChildrenRoutesPosition(source) : addDeclaration.pos
@@ -184,7 +190,7 @@ export function addRouteDeclarationToNgModule(options: AddRouteDeclarationToNgMo
     const recorder = host.beginUpdate(options.routingModulePath);
     recorder.insertLeft(
       position,
-      (options.isChildren && isFirstRoute) ? removeStartComma(addDeclaration.toAdd) : addDeclaration.toAdd
+      (options.isChildren && isFirstChildrenRoute) ? removeStartComma(addDeclaration.toAdd) : addDeclaration.toAdd
     );
     host.commitUpdate(recorder);
 

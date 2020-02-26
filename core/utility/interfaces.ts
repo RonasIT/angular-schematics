@@ -5,6 +5,7 @@ export interface BuildRouteOptions {
   routePath: string;
   routingModulePath: Path;
   isFirstRoute: boolean;
+  isFirstChildrenRoute: boolean;
   path: string | Path;
   isChildren?: boolean;
 }
