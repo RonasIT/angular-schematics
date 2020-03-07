@@ -1,13 +1,14 @@
 import {
+  addChangeDetectionToComponent,
   addDepsToPackageJson,
+  addImportToFile,
   addImportToNgModuleMetadata,
   addTextToObject,
   getAppRootPath,
   getProjectPath,
   getRootPath,
-  updateJsonInTree,
-  addChangeDetectionToComponent,
-  addImportToFile
+  isThereDependencyInPackageJson,
+  updateJsonInTree
 } from '../../core';
 import {
   apply,
@@ -93,6 +94,27 @@ function replaceEnvironments(host: Tree, options: InitProjectOptions): Rule {
   ]);
 }
 
+function replaceStandardFiles(host: Tree, options: InitProjectOptions): Rule {
+  const appRootPath = getAppRootPath(host, options);
+  const isNgrxInstalled = isThereDependencyInPackageJson(host, '@ngrx/store');
+
+  host.delete(join(appRootPath, 'main.ts'));
+  host.delete(join(appRootPath, 'app', 'app.component.html'));
+  host.delete(join(appRootPath, 'app', 'app.component.spec.ts'));
+  host.delete(join(appRootPath, 'app', 'app.component.ts'));
+
+  const templateSource = apply(url('./files/init'), [
+    template({
+      ...options,
+      ...strings,
+      isNgrxInstalled
+    }),
+    move(appRootPath)
+  ]);
+
+  return mergeWith(templateSource, MergeStrategy.Overwrite);
+}
+
 function renameAppFiles(host: Tree, options: InitProjectOptions): Rule {
   return (host: Tree) => {
     const projectPath = getProjectPath(host, options);
@@ -100,11 +122,6 @@ function renameAppFiles(host: Tree, options: InitProjectOptions): Rule {
     host.rename(
       normalize(`${projectPath}/app-routing.module.ts`),
       normalize(`${projectPath}/app.routing.ts`)
-    );
-
-    host.rename(
-      normalize(`${projectPath}/app.component.html`),
-      normalize(`${projectPath}/app.html`)
     );
 
     host.rename(
@@ -470,6 +487,11 @@ function updateAngularJsonForTestingUtilities(host: Tree, options: InitProjectOp
     return updateJsonInTree('angular.json', (json, context: SchematicContext) => {
       json.projects[Object.keys(json.projects)[0]].architect.test.builder = '@angular-builders/jest:run';
 
+      json.projects[Object.keys(json.projects)[0]].architect.lint.options.tsConfig = [
+        'tsconfig.app.json',
+        'tsconfig.spec.json'
+      ];
+
       json.projects[Object.keys(json.projects)[0]].architect.e2e.builder = '@nrwl/cypress:cypress';
       json.projects[Object.keys(json.projects)[0]].architect.e2e.options.cypressConfig = 'cypress.json';
       json.projects[Object.keys(json.projects)[0]].architect.e2e.options.tsConfig = 'tsconfig.json';
@@ -689,6 +711,7 @@ export default function (options: InitProjectOptions): Rule {
   return (host: Tree) => {
     const rules = [
       replaceEnvironments(host, options),
+      replaceStandardFiles(host, options),
       renameAppFiles(host, options),
       replaceImportsInAppFiles(host, options),
       addAliasesToTsConfig(host, options),

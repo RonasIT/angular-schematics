@@ -37,7 +37,7 @@ describe('<%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + nam
     });
 
     componentInstance = component.fixture.componentInstance;<% if (store) { %>
-    store = TestBed.get(Store);<% } %>
+    store = TestBed.inject(Store);<% } %>
   });
 
   it('should create', async () => {
