@@ -418,11 +418,11 @@ const JEST_VERSION = '^25.1.0';
 const JEST_PRESET_ANGULAR_VERSION = '^8.0.0';
 const BABEL_JEST_VERSION = '^25.1.0';
 const TYPES_JEST_VERSION = '^25.1.2';
-const ANGULAR_BUILDERS_JEST_VERSION = '^8.3.2';
+const ANGULAR_BUILDERS_JEST_VERSION = '^9.0.0';
 const CYPRESS_VERSION = '^4.0.2';
 const CYPRESS_IMAGE_SNAPSHOT_VERSION = '^3.1.1';
 const START_SERVER_AND_TEST_VERSION = '^1.10.8';
-const TESTING_LIBRARY_ANGULAR_VERSION = '^8.2.0';
+const TESTING_LIBRARY_ANGULAR_VERSION = '^9.0.0';
 const TESTING_LIBRARY_JEST_DOM_VERSION = '^5.1.1';
 const NGX_TRANSLATE_TESTING_VERSION = '^3.0.0';
 const NRWL_BUILDERS_VERSION = '^7.8.7';
@@ -602,7 +602,7 @@ function addLanguagesToConfigurationFiles(host: Tree, options: InitProjectOption
   };
 }
 
-const NGRX_VERSION = '^8.6.0';
+const NGRX_VERSION = '^9.0.0';
 const NGRX_FORMS_VERSION = '^6.1.0';
 
 function createAppStoreFiles(host: Tree, options: InitProjectOptions): Rule {
