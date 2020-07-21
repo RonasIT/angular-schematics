@@ -1,3 +1,4 @@
+import { Schema as InitProjectOptions } from './schema';
 import {
   addChangeDetectionToComponent,
   addDepsToPackageJson,
@@ -23,13 +24,7 @@ import {
   Tree,
   url
 } from '@angular-devkit/schematics';
-import {
-  fragment,
-  join,
-  normalize,
-  strings
-} from '@angular-devkit/core';
-import { Schema as InitProjectOptions } from './schema';
+import { fragment, join, normalize, strings } from '@angular-devkit/core';
 
 function replaceEnvironmentsDirectory(host: Tree, options: InitProjectOptions): Rule {
   return (host: Tree) => {
@@ -151,7 +146,7 @@ function replaceImportsInAppFiles(host: Tree, options: InitProjectOptions): Rule
 
 function addAliasesToTsConfig(host: Tree, options: InitProjectOptions): Rule {
   return (host: Tree) => {
-    return updateJsonInTree('tsconfig.json', (json, context: SchematicContext) => {
+    return updateJsonInTree('tsconfig.base.json', (json, context: SchematicContext) => {
       json.compilerOptions.paths = {
         '@shared/*': [
           'src/app/shared/*'
@@ -179,10 +174,10 @@ function updateTsLint(host: Tree, options: InitProjectOptions): Rule {
   ]);
 }
 
-const CODELYZER_VERSION = '^5.2.1';
+const CODELYZER_VERSION = '^6.0.0';
 const TSLINT_VERSION = '^6.0.0';
 const RONAS_IT_TSLINT_RULES_VERSION = '^1.0.3';
-const TS_NODE_VERSION = '^8.6.2';
+const TS_NODE_VERSION = '^8.10.2';
 
 function updateTsLintRules(host: Tree, options: InitProjectOptions): Rule {
   return addDepsToPackageJson(
@@ -414,20 +409,20 @@ function removeStandardTestingFiles(host: Tree, options: InitProjectOptions): Ru
   };
 }
 
-const JEST_VERSION = '^25.1.0';
+const JEST_VERSION = '^26.1.0';
 const JEST_PRESET_ANGULAR_VERSION = '^8.0.0';
-const BABEL_JEST_VERSION = '^25.1.0';
-const TYPES_JEST_VERSION = '^25.1.2';
+const BABEL_JEST_VERSION = '^26.1.0';
+const TYPES_JEST_VERSION = '^26.0.5';
 const ANGULAR_BUILDERS_JEST_VERSION = '^9.0.0';
 const CYPRESS_VERSION = '^4.0.2';
 const CYPRESS_IMAGE_SNAPSHOT_VERSION = '^3.1.1';
 const START_SERVER_AND_TEST_VERSION = '^1.10.8';
-const TESTING_LIBRARY_ANGULAR_VERSION = '^9.0.0';
+const TESTING_LIBRARY_ANGULAR_VERSION = '^10.0.0';
 const TESTING_LIBRARY_JEST_DOM_VERSION = '^5.1.1';
-const NGX_TRANSLATE_TESTING_VERSION = '^4.0.0';
+const NGX_TRANSLATE_TESTING_VERSION = '^5.0.0';
 const NRWL_BUILDERS_VERSION = '^7.8.7';
-const NRWL_CYPRESS_VERSION = '^9.0.1';
-const NRWL_WORKSPACE = '^9.0.1';
+const NRWL_CYPRESS_VERSION = '^10.0.1';
+const NRWL_WORKSPACE = '^10.0.1';
 
 function addJestAndCypressDependenciesToPackageJson(host: Tree, options: InitProjectOptions): Rule {
   return addDepsToPackageJson(
@@ -516,7 +511,7 @@ function createTestingFiles(host: Tree, options: InitProjectOptions): Rule {
   return mergeWith(templateSource, MergeStrategy.Overwrite);
 }
 
-const NGX_TRANSLATE_VERSION = '^12.1.1';
+const NGX_TRANSLATE_VERSION = '^13.0.0';
 
 function createTranslateFiles(host: Tree, options: InitProjectOptions): Rule {
   const appRootPath = getAppRootPath(host, options);
