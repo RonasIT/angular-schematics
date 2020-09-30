@@ -146,7 +146,7 @@ function replaceImportsInAppFiles(host: Tree, options: InitProjectOptions): Rule
 
 function addAliasesToTsConfig(host: Tree, options: InitProjectOptions): Rule {
   return (host: Tree) => {
-    return updateJsonInTree('tsconfig.base.json', (json, context: SchematicContext) => {
+    return updateJsonInTree('tsconfig.json', (json, context: SchematicContext) => {
       json.compilerOptions.paths = {
         '@shared/*': [
           'src/app/shared/*'
@@ -177,7 +177,7 @@ function updateTsLint(host: Tree, options: InitProjectOptions): Rule {
 const CODELYZER_VERSION = '^6.0.0';
 const TSLINT_VERSION = '^6.0.0';
 const RONAS_IT_TSLINT_RULES_VERSION = '^1.0.3';
-const TS_NODE_VERSION = '^8.10.2';
+const TS_NODE_VERSION = '^9.0.0';
 
 function updateTsLintRules(host: Tree, options: InitProjectOptions): Rule {
   return addDepsToPackageJson(
@@ -413,8 +413,8 @@ const JEST_VERSION = '^26.1.0';
 const JEST_PRESET_ANGULAR_VERSION = '^8.0.0';
 const BABEL_JEST_VERSION = '^26.1.0';
 const TYPES_JEST_VERSION = '^26.0.5';
-const ANGULAR_BUILDERS_JEST_VERSION = '^9.0.0';
-const CYPRESS_VERSION = '^4.0.2';
+const ANGULAR_BUILDERS_JEST_VERSION = '^10.0.1';
+const CYPRESS_VERSION = '^5.3.0';
 const CYPRESS_IMAGE_SNAPSHOT_VERSION = '^3.1.1';
 const START_SERVER_AND_TEST_VERSION = '^1.10.8';
 const TESTING_LIBRARY_ANGULAR_VERSION = '^10.0.0';
@@ -597,7 +597,7 @@ function addLanguagesToConfigurationFiles(host: Tree, options: InitProjectOption
   };
 }
 
-const NGRX_VERSION = '^9.0.0';
+const NGRX_VERSION = '^10.0.0';
 const NGRX_FORMS_VERSION = '^6.1.0';
 
 function createAppStoreFiles(host: Tree, options: InitProjectOptions): Rule {
