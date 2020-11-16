@@ -591,7 +591,7 @@ function addLanguagesToConfigurationFiles(host: Tree, options: InitProjectOption
       return addTextToObject({
         path,
         identifier: 'configuration',
-        text: `,\n  language: {\n    available: ['ru'],\n    default: 'ru'\n  }`
+        text: `,\n  language: {\n    available: ['en'],\n    default: 'en'\n  }`
       });
     }));
   };
