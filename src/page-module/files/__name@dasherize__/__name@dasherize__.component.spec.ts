@@ -44,14 +44,14 @@ describe('<%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + nam
     expect(component).toBeDefined();
   });
 });
-<% } else { %>import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+<% } else { %>import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageComponent } from './<%= dasherize(name) %>.component';
 
 describe('<%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageComponent', () => {
   let component: <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageComponent;
   let fixture: ComponentFixture<<%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageComponent
