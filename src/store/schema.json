@@ -13,7 +13,7 @@
       "type": "string"
     },
     "parent": {
-      "description": "The name of the parent page in which the store will be generated..",
+      "description": "The name of the parent page in which the store will be generated.",
       "type": "string"
     },
     "page": {
