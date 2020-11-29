@@ -604,11 +604,17 @@ function addApiToConfigurationFiles(host: Tree, options: InitProjectOptions): Ru
     const configurationFiles = ['configuration.ts', 'configuration.prod.ts'];
 
     return chain(configurationFiles.map((configurationFile) => {
-      const filePath = join(appRootPath, 'configurations', configurationFile);
+      const path = join(appRootPath, 'configurations', configurationFile);
 
-      return addTextIntoBeginningOfFile({
-        filePath,
-        text: `const apiDomain = 'localhost';\nconst apiURL = 'http://' + apiDomain;`
+      addTextIntoBeginningOfFile({
+        path,
+        text: `const apiDomain = 'localhost';\nconst apiURL = 'http://' + apiDomain;\n`
+      });
+
+      return addTextToObject({
+        path,
+        identifier: 'configuration',
+        text: `,\n  api: {\n    url: apiURL,\n    allowed_domains: [\n      apiDomain\n    ],\n    disallowed_routes: [\n    ]\n  }`
       });
     }));
   };

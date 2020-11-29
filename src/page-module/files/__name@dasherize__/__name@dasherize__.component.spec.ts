@@ -6,7 +6,8 @@ import { Store, StoreModule } from '@ngrx/store';
 import { TestBed } from '@angular/core/testing';<% } %>
 import { render, RenderResult } from '@testing-library/angular';<% if (isNgxTranslateInstalled) {%>
 import { configuration } from '@configurations';
-import { TranslateTestingModule } from 'ngx-translate-testing';<% } %>
+import { TranslateTestingModule } from 'ngx-translate-testing';<% } %><% if (facade) {%>
+import { <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageFacade } from './<%= dasherize(name) %>.facade';<% } %>
 
 describe('<%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageComponent', () => {
   let component: RenderResult<<%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageComponent>;
@@ -33,7 +34,7 @@ describe('<%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + nam
         <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageComponent
       ],
       routes: [],
-      providers: []
+      providers: [<% if (facade) {%><%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageFacade<% } %>]
     });
 
     componentInstance = component.fixture.componentInstance;<% if (store) { %>

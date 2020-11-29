@@ -379,19 +379,19 @@ export function readJsonInTree<T = any>(host: Tree, path: string): T {
 
 export function addTextIntoBeginningOfFile(options: TextOptions): Rule {
   return (host: Tree) => {
-    if (!options.filePath) {
+    if (!options.path) {
       return host;
     }
 
-    const text = host.read(options.filePath);
+    const text = host.read(options.path);
     if (text === null) {
-      throw new SchematicsException(`File ${options.filePath} does not exist.`);
+      throw new SchematicsException(`File ${options.path} does not exist.`);
     }
 
     const sourceText = text.toString('utf-8');
-    ts.createSourceFile(options.filePath, sourceText, ts.ScriptTarget.Latest, true);
+    ts.createSourceFile(options.path, sourceText, ts.ScriptTarget.Latest, true);
 
-    const recorder = host.beginUpdate(options.filePath);
+    const recorder = host.beginUpdate(options.path);
     recorder.insertRight(0, options.text);
     host.commitUpdate(recorder);
 

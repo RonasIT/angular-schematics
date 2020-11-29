@@ -3,6 +3,7 @@ export interface Schema {
   parent: string;
   name: string;
   store: boolean;
+  facade: boolean;
   intoParent: boolean;
   path: string;
 }

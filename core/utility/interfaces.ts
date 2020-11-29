@@ -66,7 +66,7 @@ export interface Location {
 
 export interface TextOptions {
   text: string;
-  filePath: Path;
+  path: Path;
 }
 
 export const BARREL_FILE = 'index.ts';

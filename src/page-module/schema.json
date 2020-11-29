@@ -22,6 +22,12 @@
       "x-prompt": "Will you use the store on this page?",
       "default": true
     },
+    "facade": {
+      "type": "boolean",
+      "description": "When true, create a facade file.",
+      "x-prompt": "Will you use the facade file on this page?",
+      "default": true
+    },
     "intoParent": {
       "type": "boolean",
       "description": "When true, generates page inside a parent page.",
