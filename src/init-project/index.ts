@@ -4,6 +4,7 @@ import {
   addDepsToPackageJson,
   addImportToFile,
   addImportToNgModuleMetadata,
+  addTextIntoBeginningOfFile,
   addTextToObject,
   getAppRootPath,
   getProjectPath,
@@ -597,6 +598,22 @@ function addLanguagesToConfigurationFiles(host: Tree, options: InitProjectOption
   };
 }
 
+function addApiToConfigurationFiles(host: Tree, options: InitProjectOptions): Rule {
+  return (host: Tree) => {
+    const appRootPath = getAppRootPath(host, options);
+    const configurationFiles = ['configuration.ts', 'configuration.prod.ts'];
+
+    return chain(configurationFiles.map((configurationFile) => {
+      const filePath = join(appRootPath, 'configurations', configurationFile);
+
+      return addTextIntoBeginningOfFile({
+        filePath,
+        text: `const apiDomain = 'localhost';\nconst apiURL = 'http://' + apiDomain;`
+      });
+    }));
+  };
+}
+
 const NGRX_VERSION = '^10.0.0';
 const NGRX_FORMS_VERSION = '^6.1.0';
 
@@ -652,13 +669,17 @@ function addNgRxImportsToAppModule(host: Tree, options: InitProjectOptions): Rul
     {
       name: 'StoreDevtoolsModule',
       from: '@ngrx/store-devtools'
+    },
+    {
+      name: 'AppState',
+      from: '@shared/store'
     }
   ];
 
   const metadataImports = [
     'EffectsModule.forRoot([])',
     'StoreRouterConnectingModule.forRoot()',
-    `StoreModule.forRoot({
+    `StoreModule.forRoot<AppState>({
       router: routerReducer
     })`,
     `StoreDevtoolsModule.instrument({
@@ -724,7 +745,8 @@ export default function (options: InitProjectOptions): Rule {
         createTranslateFiles(host, options),
         addNgxTranslateToPackageJson(host, options),
         addNgxTranslateToAppModule(host, options),
-        addLanguagesToConfigurationFiles(host, options)
+        addLanguagesToConfigurationFiles(host, options),
+        addApiToConfigurationFiles(host, options),
       );
     }
 

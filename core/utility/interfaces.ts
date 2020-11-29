@@ -64,5 +64,10 @@ export interface Location {
   path: Path;
 }
 
+export interface TextOptions {
+  text: string;
+  filePath: Path;
+}
+
 export const BARREL_FILE = 'index.ts';
 export const ROUTING_MODULE_EXT = '.routing.ts';
