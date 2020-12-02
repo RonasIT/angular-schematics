@@ -28,6 +28,12 @@
       "type": "boolean",
       "description": "When true, installs store for the page."
     },
+    "facade": {
+      "type": "boolean",
+      "description": "When true, create a facade file.",
+      "x-prompt": "Will you use the facade file on this page?",
+      "default": true
+    },
     "path": {
       "type": "string",
       "format": "path",

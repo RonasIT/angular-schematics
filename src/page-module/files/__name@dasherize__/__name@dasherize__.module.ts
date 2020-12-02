@@ -3,8 +3,7 @@ import { NgModule } from '@angular/core';
 import { <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageComponent } from './<%= dasherize(name) %>.component';
 import { <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageRoutingModule } from './<%= dasherize(name) %>.routing';
 import { RouterModule } from '@angular/router';<% if (isNgxTranslateInstalled) { %>
-import { TranslateModule } from '@ngx-translate/core';<% } %><% if (facade) { %>
-import { <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageFacade } from './<%= dasherize(name) %>.facade';<% } %>
+import { TranslateModule } from '@ngx-translate/core';<% } %>
 
 @NgModule({
   declarations: [
@@ -16,6 +15,6 @@ import { <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name
     TranslateModule,<% } %>
     <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageRoutingModule
   ],
-  providers: [<% if (facade) { %><%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageFacade<% } %>]
+  providers: []
 })
 export class <%= classify(section + ' ' + ((hasParent) ? (parent + ' ') : '') + name) %>PageModule { }

@@ -87,10 +87,7 @@ function prepareStoreRules(host: Tree, options: PageModuleOptions): Array<Rule> 
 function prepareFacadeRules(host: Tree, options: PageModuleOptions): Array<Rule> {
   if (options.facade) {
     return [
-      mergeWith(
-        getFacadeTemplateSource(host, options),
-        MergeStrategy.Overwrite
-      )
+      schematic('facade', options)
     ];
   }
 
@@ -109,20 +106,6 @@ function getPageTemplateSource(host: Tree, options: PageModuleOptions): Source {
       hasParent: !!options.parent,
       isJestInstalled,
       isNgxTranslateInstalled,
-      isNgrxInstalled
-    }),
-    move(options.path)
-  ]);
-}
-
-function getFacadeTemplateSource(host: Tree, options: PageModuleOptions): Source {
-  const isNgrxInstalled = isThereDependencyInPackageJson(host, '@ngrx/store');
-
-  return apply(url('./facade'), [
-    template({
-      ...options,
-      ...strings,
-      hasParent: !!options.parent,
       isNgrxInstalled
     }),
     move(options.path)
