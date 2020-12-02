@@ -25,13 +25,7 @@ import { MODULE_EXT } from '@schematics/angular/utility/find-module';
 function prepareOptions(host: Tree, options: FacadeOptions): void {
   prepareOptionsPath(host, options);
 }
-/*
-/sections/page
-/section/parent/page
-/section/page/shared/components/name
-/section/parent/page/shared/components/name
-/shared/name
-*/
+
 function prepareOptionsPath(host: Tree, options: FacadeOptions): void {
   if (!options.path) {
     options.path = getProjectPath(host, options);

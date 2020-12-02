@@ -603,20 +603,29 @@ function addApiToConfigurationFiles(host: Tree, options: InitProjectOptions): Ru
     const appRootPath = getAppRootPath(host, options);
     const configurationFiles = ['configuration.ts', 'configuration.prod.ts'];
 
-    return chain(configurationFiles.map((configurationFile) => {
+    const addApiConstants = configurationFiles.map((configurationFile) => {
       const path = join(appRootPath, 'configurations', configurationFile);
 
-      addTextIntoBeginningOfFile({
+      return addTextIntoBeginningOfFile({
         path,
-        text: `const apiDomain = 'localhost';\nconst apiURL = 'http://' + apiDomain;\n`
+        text: `const apiDomain = 'localhost';\nconst apiURL = 'http://' + apiDomain;\n\n`
       });
+    });
+
+    const addApiObject = configurationFiles.map((configurationFile) => {
+      const path = join(appRootPath, 'configurations', configurationFile);
 
       return addTextToObject({
         path,
         identifier: 'configuration',
         text: `,\n  api: {\n    url: apiURL,\n    allowed_domains: [\n      apiDomain\n    ],\n    disallowed_routes: [\n    ]\n  }`
       });
-    }));
+    });
+
+    return chain([
+      ...addApiConstants,
+      ...addApiObject
+    ]);
   };
 }
 
