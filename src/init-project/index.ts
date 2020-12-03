@@ -86,7 +86,7 @@ function replaceEnvironments(host: Tree, options: InitProjectOptions): Rule {
   return chain([
     replaceEnvironmentsDirectory(host, options),
     replaceEnvironmentsInMainTs(host, options),
-    replaceEnvironmentsInAngularJson(host, options),
+    replaceEnvironmentsInAngularJson(host, options)
   ]);
 }
 
