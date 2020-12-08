@@ -3,7 +3,10 @@ import {
   getProjectPath,
   getRoutingModulePath,
   parseLocation,
-  isThereDependencyInPackageJson
+  isThereDependencyInPackageJson,
+  camelize,
+  classify,
+  dasherize
 } from '../../core';
 import {
   apply,
@@ -18,7 +21,7 @@ import {
   Tree,
   url
 } from '@angular-devkit/schematics';
-import { join, Path, strings } from '@angular-devkit/core';
+import { join, Path } from '@angular-devkit/core';
 import { Schema as PageModuleOptions } from './schema';
 
 function prepareOptions(host: Tree, options: PageModuleOptions): void {
@@ -102,7 +105,9 @@ function getPageTemplateSource(host: Tree, options: PageModuleOptions): Source {
   return apply(url('./files'), [
     template({
       ...options,
-      ...strings,
+      camelize,
+      classify,
+      dasherize,
       hasParent: !!options.parent,
       isJestInstalled,
       isNgxTranslateInstalled,
