@@ -3,7 +3,7 @@ import { join, normalize, Path } from '@angular-devkit/core';
 import { MODULE_EXT } from '@schematics/angular/utility/find-module';
 import { ROUTING_MODULE_EXT } from './interfaces';
 import { SchematicsException, Tree } from '@angular-devkit/schematics';
-import { WorkspaceProject } from '@angular-devkit/core/src/experimental/workspace';
+import { WorkspaceProject } from '@schematics/angular/utility/workspace-models';
 
 export function getProject(
   host: Tree,

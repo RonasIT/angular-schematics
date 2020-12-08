@@ -1,13 +1,11 @@
-import { experimental, JsonParseMode, parseJson } from '@angular-devkit/core';
+import { JsonParseMode, parseJson } from '@angular-devkit/core';
 import { SchematicsException, Tree } from '@angular-devkit/schematics';
-
-export type WorkspaceSchema = experimental.workspace.WorkspaceSchema;
+import { WorkspaceSchema } from '@schematics/angular/utility/workspace-models';
 
 export function getWorkspacePath(host: Tree): string {
   const possibleFiles = ['/angular.json', '/.angular.json'];
-  const path = possibleFiles.filter((path) => host.exists(path))[0];
 
-  return path;
+  return possibleFiles.filter((path) => host.exists(path))[0];
 }
 
 export function getWorkspace(host: Tree): WorkspaceSchema {

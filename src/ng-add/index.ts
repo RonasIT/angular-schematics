@@ -5,8 +5,9 @@ import {
   SchematicContext,
   Tree
 } from '@angular-devkit/schematics';
-import { getWorkspace, getWorkspacePath, WorkspaceSchema } from '../../core';
+import { getWorkspace, getWorkspacePath } from '../../core';
 import { Schema as SchematicOptions } from './schema';
+import { WorkspaceSchema } from '@schematics/angular/utility/workspace-models';
 
 function updateWorkspace(host: Tree, key: keyof WorkspaceSchema, value: any) {
   const workspace: any = getWorkspace(host);
