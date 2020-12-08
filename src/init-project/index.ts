@@ -4,6 +4,7 @@ import {
   addDepsToPackageJson,
   addImportToFile,
   addImportToNgModuleMetadata,
+  addTextIntoBeginningOfFile,
   addTextToObject,
   getAppRootPath,
   getProjectPath,
@@ -85,7 +86,7 @@ function replaceEnvironments(host: Tree, options: InitProjectOptions): Rule {
   return chain([
     replaceEnvironmentsDirectory(host, options),
     replaceEnvironmentsInMainTs(host, options),
-    replaceEnvironmentsInAngularJson(host, options),
+    replaceEnvironmentsInAngularJson(host, options)
   ]);
 }
 
@@ -652,13 +653,17 @@ function addNgRxImportsToAppModule(host: Tree, options: InitProjectOptions): Rul
     {
       name: 'StoreDevtoolsModule',
       from: '@ngrx/store-devtools'
+    },
+    {
+      name: 'AppState',
+      from: '@shared/store'
     }
   ];
 
   const metadataImports = [
     'EffectsModule.forRoot([])',
     'StoreRouterConnectingModule.forRoot()',
-    `StoreModule.forRoot({
+    `StoreModule.forRoot<AppState>({
       router: routerReducer
     })`,
     `StoreDevtoolsModule.instrument({

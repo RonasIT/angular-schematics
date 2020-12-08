@@ -76,6 +76,11 @@
       "factory": "./store-parent-page",
       "schema": "./store-parent-page/schema.json"
     },
+    "facade": {
+      "description": "Generate facade",
+      "factory": "./facade",
+      "schema": "./facade/schema.json"
+    },
     "ng-add": {
       "factory": "./ng-add",
       "schema": "./ng-add/schema.json",

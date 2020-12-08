@@ -1,9 +1,8 @@
 export interface Schema {
+  name: string;
   section: string;
   parent: string;
-  name: string;
+  page: string;
   store: boolean;
-  facade: boolean;
-  intoParent: boolean;
   path: string;
 }

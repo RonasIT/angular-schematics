@@ -47,7 +47,8 @@ function prepareOptionsName(host: Tree, options: PageModuleOptions): void {
 function prepareRules(host: Tree, options: PageModuleOptions): Array<Rule> {
   return [
     ...preparePageRules(host, options),
-    ...prepareStoreRules(host, options)
+    ...prepareStoreRules(host, options),
+    ...prepareFacadeRules(host, options)
   ];
 }
 
@@ -77,6 +78,16 @@ function prepareStoreRules(host: Tree, options: PageModuleOptions): Array<Rule> 
         page: options.name,
         name: ''
       })
+    ];
+  }
+
+  return [];
+}
+
+function prepareFacadeRules(host: Tree, options: PageModuleOptions): Array<Rule> {
+  if (options.facade) {
+    return [
+      schematic('facade', options)
     ];
   }
 

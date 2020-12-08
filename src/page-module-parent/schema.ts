@@ -4,5 +4,6 @@ export interface Schema {
   section: string;
   name: string;
   store: boolean;
+  facade: boolean;
   path: string;
 }

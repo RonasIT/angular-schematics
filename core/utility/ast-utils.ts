@@ -10,7 +10,8 @@ import {
   BuildRouteOptions,
   UpsertBarrelFileOptions,
   AddImportToFileOptions,
-  AddChangeDetectionToComponentOptions
+  AddChangeDetectionToComponentOptions,
+  TextOptions
 } from './interfaces';
 import {
   addRouteDeclarationToModule,
@@ -374,4 +375,26 @@ export function readJsonInTree<T = any>(host: Tree, path: string): T {
   } catch (e) {
     throw new SchematicsException(`Cannot parse ${path}: ${e.message}`);
   }
+}
+
+export function addTextIntoBeginningOfFile(options: TextOptions): Rule {
+  return (host: Tree) => {
+    if (!options.path) {
+      return host;
+    }
+
+    const text = host.read(options.path);
+    if (text === null) {
+      throw new SchematicsException(`File ${options.path} does not exist.`);
+    }
+
+    const sourceText = text.toString('utf-8');
+    ts.createSourceFile(options.path, sourceText, ts.ScriptTarget.Latest, true);
+
+    const recorder = host.beginUpdate(options.path);
+    recorder.insertRight(0, options.text);
+    host.commitUpdate(recorder);
+
+    return host;
+  };
 }
