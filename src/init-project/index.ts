@@ -598,37 +598,6 @@ function addLanguagesToConfigurationFiles(host: Tree, options: InitProjectOption
   };
 }
 
-function addApiToConfigurationFiles(host: Tree, options: InitProjectOptions): Rule {
-  return (host: Tree) => {
-    const appRootPath = getAppRootPath(host, options);
-    const configurationFiles = ['configuration.ts', 'configuration.prod.ts'];
-
-    const addApiConstants = configurationFiles.map((configurationFile) => {
-      const path = join(appRootPath, 'configurations', configurationFile);
-
-      return addTextIntoBeginningOfFile({
-        path,
-        text: `const apiDomain = 'localhost';\nconst apiURL = 'http://' + apiDomain;\n\n`
-      });
-    });
-
-    const addApiObject = configurationFiles.map((configurationFile) => {
-      const path = join(appRootPath, 'configurations', configurationFile);
-
-      return addTextToObject({
-        path,
-        identifier: 'configuration',
-        text: `,\n  api: {\n    url: apiURL,\n    allowed_domains: [\n      apiDomain\n    ],\n    disallowed_routes: [\n    ]\n  }`
-      });
-    });
-
-    return chain([
-      ...addApiConstants,
-      ...addApiObject
-    ]);
-  };
-}
-
 const NGRX_VERSION = '^10.0.0';
 const NGRX_FORMS_VERSION = '^6.1.0';
 
@@ -760,8 +729,7 @@ export default function (options: InitProjectOptions): Rule {
         createTranslateFiles(host, options),
         addNgxTranslateToPackageJson(host, options),
         addNgxTranslateToAppModule(host, options),
-        addLanguagesToConfigurationFiles(host, options),
-        addApiToConfigurationFiles(host, options),
+        addLanguagesToConfigurationFiles(host, options)
       );
     }
 
