@@ -1,3 +1,5 @@
+require('jest-preset-angular/ngcc-jest-processor');
+
 module.exports = {
   preset: 'jest-preset-angular',
   setupFilesAfterEnv: [
@@ -14,8 +16,7 @@ module.exports = {
     '/cache/'
   ],
   transform: {
-    '^.+\\.(ts|html)$': 'ts-jest',
-    '^.+\\.js$': 'babel-jest'
+    '^.+\\.(ts|js|html)$': 'jest-preset-angular',
   },
   collectCoverageFrom: [
     '<rootDir>/src/app/**/*.{ts,html}'
@@ -34,16 +35,6 @@ module.exports = {
     '<rootDir>/src/app/(.*)/shared/forms/(.*).ts',
     '<rootDir>/src/app/(.*)/index.ts'
   ],
-  globals: {
-    'ts-jest': {
-      tsConfig: '<rootDir>/tsconfig.spec.json',
-      stringifyContentPathRegex: '\\.html$',
-      astTransformers: [
-        '<rootDir>/node_modules/jest-preset-angular/build/StripStylesTransformer',
-        '<rootDir>/node_modules/jest-preset-angular/build/InlineFilesTransformer'
-      ]
-    }
-  },
   coverageThreshold: {
     global: {
       statements: 80

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "id": "SchematicsPageModule",
+  "$id": "SchematicsPageModule",
   "title": "Page Module Schema",
   "type": "object",
   "properties": {

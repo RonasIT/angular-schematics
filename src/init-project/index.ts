@@ -168,204 +168,91 @@ function addAliasesToTsConfig(host: Tree, options: InitProjectOptions): Rule {
   };
 }
 
-function updateTsLint(host: Tree, options: InitProjectOptions): Rule {
+function updateTsConfig(host: Tree, options: InitProjectOptions): Rule {
+  return (host: Tree) => {
+    return updateJsonInTree('tsconfig.json', (json, context: SchematicContext) => {
+      json.compilerOptions.strictPropertyInitialization = false;
+
+      return json;
+    });
+  };
+}
+
+function installLint(host: Tree, options: InitProjectOptions): Rule {
   return chain([
-    updateTsLintRules(host, options),
-    updateTsLintConfig(host, options)
+    installLintDependencies(host, options),
+    createLintFiles(host, options),
+    updateAngularJsonForLint(host, options),
+    addLintCommandInPackageJson(host, options)
   ]);
 }
 
-const CODELYZER_VERSION = '^6.0.0';
-const TSLINT_VERSION = '^6.0.0';
-const RONAS_IT_TSLINT_RULES_VERSION = '^1.0.3';
-const TS_NODE_VERSION = '^9.0.0';
+const ANGULAR_ESLINT_VERSION = '^12.1.0';
+const TYPESCRIPT_ESLINT_VERSION = '^4.26.0';
+const ESLINT_VERSION = '^7.28.0';
+const ESLINT_PLUGIN_IMPORT_VERSION = '^2.23.4';
+const ESLINT_PLUGIN_JSDOC_VERSION = '^35.1.3';
+const ESLINT_PREFER_ARROW_VERSION = '^1.2.3';
 
-function updateTsLintRules(host: Tree, options: InitProjectOptions): Rule {
+function installLintDependencies(host: Tree, options: InitProjectOptions): Rule {
   return addDepsToPackageJson(
     {},
     {
-      'codelyzer': CODELYZER_VERSION,
-      'tslint': TSLINT_VERSION,
-      '@ronas-it/tslint-rules': RONAS_IT_TSLINT_RULES_VERSION,
-      'ts-node': TS_NODE_VERSION
+      '@angular-eslint/builder': ANGULAR_ESLINT_VERSION,
+      '@angular-eslint/eslint-plugin': ANGULAR_ESLINT_VERSION,
+      '@angular-eslint/eslint-plugin-template': ANGULAR_ESLINT_VERSION,
+      '@angular-eslint/schematics': ANGULAR_ESLINT_VERSION,
+      '@angular-eslint/template-parser': ANGULAR_ESLINT_VERSION,
+      '@typescript-eslint/eslint-plugin': TYPESCRIPT_ESLINT_VERSION,
+      '@typescript-eslint/parser': TYPESCRIPT_ESLINT_VERSION,
+      'eslint': ESLINT_VERSION,
+      'eslint-plugin-import': ESLINT_PLUGIN_IMPORT_VERSION,
+      'eslint-plugin-jsdoc': ESLINT_PLUGIN_JSDOC_VERSION,
+      'eslint-plugin-prefer-arrow': ESLINT_PREFER_ARROW_VERSION,
     }
   );
 }
 
-function updateTsLintConfig(host: Tree, options: InitProjectOptions): Rule {
+function updateAngularJsonForLint(host: Tree, options: InitProjectOptions): Rule {
   return (host: Tree) => {
-    return updateJsonInTree('tslint.json', (json, context: SchematicContext) => {
-      return {
-        'rulesDirectory': [
-          'node_modules/codelyzer',
-          'node_modules/@ronas-it/tslint-rules'
-        ],
-        'rules': {
-          'member-access-except-decorators': true,
-          'encoding': true,
-          'no-boolean-literal-compare': true,
-          'newline-before-return': true,
-          'deprecation': true,
-          'new-parens': true,
-          'binary-expression-operand-order': true,
-          'array-type': [
-            true,
-            'generic'
-          ],
-          'arrow-parens': true,
-          'no-duplicate-imports': true,
-          'max-classes-per-file': [
-            true,
-            1,
-            'exclude-class-expressions'
-          ],
-          'linebreak-style': [
-            true,
-            'LF'
-          ],
-          'prefer-object-spread': true,
-          'arrow-return-shorthand': true,
-          'callable-types': true,
-          'class-name': true,
-          'comment-format': [
-            true,
-            'check-space'
-          ],
-          'curly': true,
-          'eofline': true,
-          'import-blacklist': [
-            true,
-            'rxjs/Rx'
-          ],
-          'import-spacing': true,
-          'indent': [
-            true,
-            'spaces',
-            2
-          ],
-          'interface-over-type-literal': true,
-          'label-position': true,
-          'max-line-length': [
-            true,
-            {
-              'limit': 120,
-              'ignore-pattern': '[^import|^export]'
-            }
-          ],
-          'typedef': [
-            true,
-            'call-signature',
-            'parameter',
-            'member-variable-declaration'
-          ],
-          'member-ordering': [
-            true,
-            {
-              'order': [
-                'public-static-field',
-                'protected-static-field',
-                'private-static-field',
-                'public-instance-field',
-                'protected-instance-field',
-                'private-instance-field',
-                'public-constructor',
-                'protected-constructor',
-                'private-constructor',
-                'public-static-method',
-                'public-instance-method',
-                'protected-static-method',
-                'protected-instance-method',
-                'private-static-method',
-                'private-instance-method'
-              ]
-            }
-          ],
-          'no-arg': true,
-          'no-console': [
-            true,
-            'debug',
-            'log',
-            'info',
-            'time',
-            'timeEnd',
-            'trace'
-          ],
-          'only-arrow-functions': [
-            true,
-            'allow-named-functions'
-          ],
-          'no-duplicate-variable': [
-            true,
-            'check-parameters'
-          ],
-          'no-return-await': true,
-          'prefer-for-of': true,
-          'no-reference': true,
-          'no-namespace': true,
-          'no-construct': true,
-          'no-debugger': true,
-          'no-duplicate-super': true,
-          'no-empty-interface': true,
-          'no-eval': true,
-          'no-misused-new': true,
-          'no-non-null-assertion': true,
-          'no-string-literal': false,
-          'no-string-throw': true,
-          'no-switch-case-fall-through': true,
-          'no-trailing-whitespace': true,
-          'no-unnecessary-initializer': true,
-          'no-unused-expression': true,
-          'no-var-keyword': true,
-          'object-literal-sort-keys': false,
-          'one-line': [
-            true,
-            'check-open-brace',
-            'check-catch',
-            'check-else',
-            'check-whitespace'
-          ],
-          'prefer-const': true,
-          'quotemark': [
-            true,
-            'single'
-          ],
-          'semicolon': [
-            true,
-            'always'
-          ],
-          'triple-equals': true,
-          'typedef-whitespace': [
-            true,
-            {
-              'call-signature': 'nospace',
-              'index-signature': 'nospace',
-              'parameter': 'nospace',
-              'property-declaration': 'nospace',
-              'variable-declaration': 'nospace'
-            }
-          ],
-          'unified-signatures': true,
-          'variable-name': false,
-          'whitespace': [
-            true,
-            'check-branch',
-            'check-decl',
-            'check-operator',
-            'check-separator',
-            'check-type'
-          ],
-          'no-inputs-metadata-property': true,
-          'no-outputs-metadata-property': true,
-          'no-host-metadata-property': true,
-          'use-lifecycle-interface': true,
-          'use-pipe-transform-interface': true,
-          'component-class-suffix': true,
-          'directive-class-suffix': true,
-          'no-attribute-decorator': true
+    return updateJsonInTree('angular.json', (json, context: SchematicContext) => {
+      json.projects[Object.keys(json.projects)[0]].architect.lint = {
+        "builder": "@angular-eslint/builder:lint",
+        "options": {
+          "lintFilePatterns": [
+            "src/**/*.ts",
+            "src/**/*.html"
+          ]
         }
       };
+
+      return json;
     });
   };
+}
+
+function addLintCommandInPackageJson(host: Tree, options: InitProjectOptions): Rule {
+  return (host: Tree) => {
+    return updateJsonInTree('package.json', (json, context: SchematicContext) => {
+      json.scripts.lint = 'ng lint';
+
+      return json;
+    });
+  };
+}
+
+function createLintFiles(host: Tree, options: InitProjectOptions): Rule {
+  const appRootPath = getRootPath(host, options);
+
+  const templateSource = apply(url('./files/lint'), [
+    template({
+      ...options,
+      ...strings
+    }),
+    move(appRootPath)
+  ]);
+
+  return mergeWith(templateSource, MergeStrategy.Overwrite);
 }
 
 function replaceStandardTestingUtilitiesWithJestAndCypress(host: Tree, options: InitProjectOptions): Rule {
@@ -385,14 +272,11 @@ function removeStandardTestingUtilitiesFromPackageJson(host: Tree, options: Init
     return updateJsonInTree('package.json', (json, context: SchematicContext) => {
       delete json.devDependencies['karma'];
       delete json.devDependencies['karma-chrome-launcher'];
-      delete json.devDependencies['karma-coverage-istanbul-reporter'];
+      delete json.devDependencies['karma-coverage'];
       delete json.devDependencies['karma-jasmine'];
       delete json.devDependencies['karma-jasmine-html-reporter'];
       delete json.devDependencies['@types/jasmine'];
-      delete json.devDependencies['@types/jasminewd2'];
       delete json.devDependencies['jasmine-core'];
-      delete json.devDependencies['jasmine-spec-reporter'];
-      delete json.devDependencies['protractor'];
 
       return json;
     });
@@ -405,25 +289,23 @@ function removeStandardTestingFiles(host: Tree, options: InitProjectOptions): Ru
     const appRootPath = getAppRootPath(host, options);
 
     host.delete(join(rootPath, 'karma.conf.js'));
-    host.delete(join(rootPath, 'e2e'));
     host.delete(join(appRootPath, 'test.ts'));
   };
 }
 
-const JEST_VERSION = '^26.1.0';
-const JEST_PRESET_ANGULAR_VERSION = '^8.0.0';
-const BABEL_JEST_VERSION = '^26.1.0';
-const TYPES_JEST_VERSION = '^26.0.5';
-const ANGULAR_BUILDERS_JEST_VERSION = '^10.0.1';
-const CYPRESS_VERSION = '^5.3.0';
-const CYPRESS_IMAGE_SNAPSHOT_VERSION = '^3.1.1';
-const START_SERVER_AND_TEST_VERSION = '^1.10.8';
-const TESTING_LIBRARY_ANGULAR_VERSION = '^10.0.0';
-const TESTING_LIBRARY_JEST_DOM_VERSION = '^5.1.1';
-const NGX_TRANSLATE_TESTING_VERSION = '^5.0.0';
+const JEST_VERSION = '^27.0.4';
+const JEST_PRESET_ANGULAR_VERSION = '^9.0.2';
+const BABEL_JEST_VERSION = '^27.0.2';
+const TYPES_JEST_VERSION = '^26.0.23';
+const CYPRESS_VERSION = '^7.4.0';
+const CYPRESS_IMAGE_SNAPSHOT_VERSION = '^4.0.1';
+const START_SERVER_AND_TEST_VERSION = '^1.12.5';
+const TESTING_LIBRARY_ANGULAR_VERSION = '^10.8.2';
+const TESTING_LIBRARY_JEST_DOM_VERSION = '^5.13.0';
+const NGX_TRANSLATE_TESTING_VERSION = '^5.1.0';
 const NRWL_BUILDERS_VERSION = '^7.8.7';
-const NRWL_CYPRESS_VERSION = '^10.0.1';
-const NRWL_WORKSPACE = '^10.0.1';
+const NRWL_CYPRESS_VERSION = '^12.3.6';
+const NRWL_WORKSPACE = '^12.3.6';
 
 function addJestAndCypressDependenciesToPackageJson(host: Tree, options: InitProjectOptions): Rule {
   return addDepsToPackageJson(
@@ -433,7 +315,6 @@ function addJestAndCypressDependenciesToPackageJson(host: Tree, options: InitPro
       'jest-preset-angular': JEST_PRESET_ANGULAR_VERSION,
       'babel-jest': BABEL_JEST_VERSION,
       '@types/jest': TYPES_JEST_VERSION,
-      '@angular-builders/jest': ANGULAR_BUILDERS_JEST_VERSION,
       'cypress': CYPRESS_VERSION,
       'cypress-image-snapshot': CYPRESS_IMAGE_SNAPSHOT_VERSION,
       'start-server-and-test': START_SERVER_AND_TEST_VERSION,
@@ -452,9 +333,9 @@ function updateTestCommandsInPackageJson(host: Tree, options: InitProjectOptions
     return updateJsonInTree('package.json', (json, context: SchematicContext) => {
       json.scripts.test = 'jest --config jest.config.js --collect-coverage';
 
-      json.scripts['cypress'] = 'start-server-and-test cypress:frontend:serve http-get://127.0.0.1:5555 cypress:tests:run';
+      json.scripts['e2e'] = 'start-server-and-test cypress:frontend:serve http-get://127.0.0.1:5555 cypress:tests:run';
       json.scripts['cypress:open'] = 'cypress open';
-      json.scripts['cypress:frontend:serve'] = 'ng serve --configuration=testing --port=5555';
+      json.scripts['cypress:frontend:serve'] = 'ng serve --configuration=development --port=5555';
       json.scripts['cypress:tests:run'] = 'cypress run';
 
       return json;
@@ -481,17 +362,7 @@ function updateTsConfigSpec(host: Tree, options: InitProjectOptions): Rule {
 function updateAngularJsonForTestingUtilities(host: Tree, options: InitProjectOptions): Rule {
   return (host: Tree) => {
     return updateJsonInTree('angular.json', (json, context: SchematicContext) => {
-      json.projects[Object.keys(json.projects)[0]].architect.test.builder = '@angular-builders/jest:run';
-
-      json.projects[Object.keys(json.projects)[0]].architect.lint.options.tsConfig = [
-        'tsconfig.app.json',
-        'tsconfig.spec.json'
-      ];
-
-      json.projects[Object.keys(json.projects)[0]].architect.e2e.builder = '@nrwl/cypress:cypress';
-      json.projects[Object.keys(json.projects)[0]].architect.e2e.options.cypressConfig = 'cypress.json';
-      json.projects[Object.keys(json.projects)[0]].architect.e2e.options.tsConfig = 'tsconfig.json';
-      delete json.projects[Object.keys(json.projects)[0]].architect.e2e.options.protractorConfig;
+      delete json.projects[Object.keys(json.projects)[0]].architect.test;
 
       return json;
     });
@@ -598,8 +469,8 @@ function addLanguagesToConfigurationFiles(host: Tree, options: InitProjectOption
   };
 }
 
-const NGRX_VERSION = '^10.0.0';
-const NGRX_FORMS_VERSION = '^6.1.0';
+const NGRX_VERSION = '^12.0.0';
+const NGRX_FORMS_VERSION = '^6.3.5';
 
 function createAppStoreFiles(host: Tree, options: InitProjectOptions): Rule {
   const appRootPath = getAppRootPath(host, options);
@@ -715,7 +586,8 @@ export default function (options: InitProjectOptions): Rule {
       renameAppFiles(host, options),
       replaceImportsInAppFiles(host, options),
       addAliasesToTsConfig(host, options),
-      updateTsLint(host, options)
+      updateTsConfig(host, options),
+      installLint(host, options),
     ];
 
     if (options.testing) {

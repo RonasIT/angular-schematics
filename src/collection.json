@@ -85,6 +85,11 @@
       "factory": "./ng-add",
       "schema": "./ng-add/schema.json",
       "description": "Installs the Ronas IT Angular Schematics package"
+    },
+    "npm-install": {
+      "factory": "./npm-install",
+      "schema": "./npm-install/schema.json",
+      "description": "Installs dependencies"
     }
   }
 }

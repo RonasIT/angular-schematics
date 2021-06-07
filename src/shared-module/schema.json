@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "id": "SchematicsSharedModule",
+  "$id": "SchematicsSharedModule",
   "title": "Shared Module Schema",
   "type": "object",
   "properties": {

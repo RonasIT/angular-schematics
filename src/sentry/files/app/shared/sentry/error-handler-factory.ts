@@ -2,6 +2,7 @@ import { configuration } from '@configurations';
 import { ErrorHandler } from '@angular/core';
 import { SentryErrorHandler } from './error-handler';
 
+/* eslint-disable  prefer-arrow/prefer-arrow-functions */
 export function errorHandlerFactory(): ErrorHandler {
   if (configuration.production) {
     return new SentryErrorHandler();
@@ -9,3 +10,4 @@ export function errorHandlerFactory(): ErrorHandler {
 
   return new ErrorHandler();
 }
+/* eslint-enable  prefer-arrow/prefer-arrow-functions */

@@ -1,0 +1,8 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "SchematicsNpmInstall",
+  "title": "Npm Install Schema",
+  "type": "object",
+  "properties": {},
+  "required": []
+}

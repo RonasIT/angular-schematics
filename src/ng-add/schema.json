@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "id": "SchematicsRonasItAngularSchematics",
+  "$id": "SchematicsRonasItAngularSchematics",
   "title": "Scaffolding library for Angular applications using Ronas IT libraries",
   "type": "object",
   "properties": {

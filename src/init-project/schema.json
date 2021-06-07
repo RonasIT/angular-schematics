@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "id": "SchematicsInitProject",
+  "$id": "SchematicsInitProject",
   "title": "Init Project Schema",
   "type": "object",
   "properties": {

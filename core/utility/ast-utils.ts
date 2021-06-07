@@ -23,7 +23,7 @@ import {
 import { buildRelativePath, MODULE_EXT } from '@schematics/angular/utility/find-module';
 import { InsertChange } from '@schematics/angular/utility/change';
 import { join, Path, strings } from '@angular-devkit/core';
-import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
+import { NodePackageInstallTask, RunSchematicTask } from '@angular-devkit/schematics/tasks';
 import {
   Rule,
   SchematicContext,
@@ -32,6 +32,8 @@ import {
 } from '@angular-devkit/schematics';
 import { serializeJson } from './file-utils';
 import { getRootPath } from './project';
+import { Observable } from 'rxjs';
+import { spawn } from 'child_process';
 
 function _buildRoute(options: BuildRouteOptions): string {
   const routePath = strings.dasherize(options.routePath);
@@ -333,7 +335,7 @@ export function addDepsToPackageJson(
     });
 
     if (addInstallTask && !installTaskAdded) {
-      context.addTask(new NodePackageInstallTask());
+      context.addTask(new RunSchematicTask('npm-install', {}));
       installTaskAdded = true;
     }
 
