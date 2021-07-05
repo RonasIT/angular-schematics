@@ -9,6 +9,7 @@ const reducer = createReducer(
   on(<%= classify(section, parent, page, (page) ? 'Page' : name) %>Actions.resetState, () => initialState)
 );
 
-export function <%= camelize(section, parent, page, (page) ? 'Page' : name) %>Reducer(state: <%= classify(section, parent, page, (page) ? 'Page' : name) %>State | undefined, action: Action): <%= classify(section, parent, page, (page) ? 'Page' : name) %>State {
-  return reducer(state, action);
-}
+export const <%= camelize(section, parent, page, (page) ? 'Page' : name) %>Reducer = (
+  state: <%= classify(section, parent, page, (page) ? 'Page' : name) %>State | undefined,
+  action: Action
+): <%= classify(section, parent, page, (page) ? 'Page' : name) %>State => reducer(state, action);
