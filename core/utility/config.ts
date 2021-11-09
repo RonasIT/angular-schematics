@@ -1,4 +1,4 @@
-import { JsonParseMode, parseJson } from '@angular-devkit/core';
+import { parse } from 'jsonc-parser';
 import { SchematicsException, Tree } from '@angular-devkit/schematics';
 import { WorkspaceSchema } from '@schematics/angular/utility/workspace-models';
 
@@ -16,5 +16,5 @@ export function getWorkspace(host: Tree): WorkspaceSchema {
   }
   const content = configBuffer.toString();
 
-  return parseJson(content, JsonParseMode.Loose) as {} as WorkspaceSchema;
+  return parse(content) as {} as WorkspaceSchema;
 }
