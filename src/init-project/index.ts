@@ -4,7 +4,6 @@ import {
   addDepsToPackageJson,
   addImportToFile,
   addImportToNgModuleMetadata,
-  addTextIntoBeginningOfFile,
   addTextToObject,
   getAppRootPath,
   getProjectPath,
@@ -187,12 +186,10 @@ function installLint(host: Tree, options: InitProjectOptions): Rule {
   ]);
 }
 
-const ANGULAR_ESLINT_VERSION = '^12.1.0';
-const TYPESCRIPT_ESLINT_VERSION = '^4.26.0';
-const ESLINT_VERSION = '^7.28.0';
+const ANGULAR_ESLINT_VERSION = '^13.1.0';
+const TYPESCRIPT_ESLINT_VERSION = '^5.16.0';
+const ESLINT_VERSION = '^8.11.0';
 const ESLINT_PLUGIN_IMPORT_VERSION = '^2.23.4';
-const ESLINT_PLUGIN_JSDOC_VERSION = '^35.1.3';
-const ESLINT_PREFER_ARROW_VERSION = '^1.2.3';
 
 function installLintDependencies(host: Tree, options: InitProjectOptions): Rule {
   return addDepsToPackageJson(
@@ -206,9 +203,7 @@ function installLintDependencies(host: Tree, options: InitProjectOptions): Rule 
       '@typescript-eslint/eslint-plugin': TYPESCRIPT_ESLINT_VERSION,
       '@typescript-eslint/parser': TYPESCRIPT_ESLINT_VERSION,
       'eslint': ESLINT_VERSION,
-      'eslint-plugin-import': ESLINT_PLUGIN_IMPORT_VERSION,
-      'eslint-plugin-jsdoc': ESLINT_PLUGIN_JSDOC_VERSION,
-      'eslint-plugin-prefer-arrow': ESLINT_PREFER_ARROW_VERSION,
+      'eslint-plugin-import': ESLINT_PLUGIN_IMPORT_VERSION
     }
   );
 }
@@ -293,19 +288,19 @@ function removeStandardTestingFiles(host: Tree, options: InitProjectOptions): Ru
   };
 }
 
-const JEST_VERSION = '^27.0.4';
-const JEST_PRESET_ANGULAR_VERSION = '^9.0.2';
-const BABEL_JEST_VERSION = '^27.0.2';
-const TYPES_JEST_VERSION = '^26.0.23';
-const CYPRESS_VERSION = '^7.4.0';
+const JEST_VERSION = '^27.5.1';
+const JEST_PRESET_ANGULAR_VERSION = '^11.1.1';
+const BABEL_JEST_VERSION = '^27.5.1';
+const TYPES_JEST_VERSION = '^27.4.1';
+const CYPRESS_VERSION = '^9.5.2';
 const CYPRESS_IMAGE_SNAPSHOT_VERSION = '^4.0.1';
-const START_SERVER_AND_TEST_VERSION = '^1.12.5';
-const TESTING_LIBRARY_ANGULAR_VERSION = '^10.8.2';
-const TESTING_LIBRARY_JEST_DOM_VERSION = '^5.13.0';
-const NGX_TRANSLATE_TESTING_VERSION = '^5.1.0';
+const START_SERVER_AND_TEST_VERSION = '^1.14.0';
+const TESTING_LIBRARY_ANGULAR_VERSION = '^11.0.4';
+const TESTING_LIBRARY_JEST_DOM_VERSION = '^5.16.2';
+const NGX_TRANSLATE_TESTING_VERSION = '^6.0.1';
 const NRWL_BUILDERS_VERSION = '^7.8.7';
-const NRWL_CYPRESS_VERSION = '^12.3.6';
-const NRWL_WORKSPACE = '^12.3.6';
+const NRWL_CYPRESS_VERSION = '^13.9.4';
+const NRWL_WORKSPACE = '^13.9.4';
 
 function addJestAndCypressDependenciesToPackageJson(host: Tree, options: InitProjectOptions): Rule {
   return addDepsToPackageJson(
@@ -383,7 +378,7 @@ function createTestingFiles(host: Tree, options: InitProjectOptions): Rule {
   return mergeWith(templateSource, MergeStrategy.Overwrite);
 }
 
-const NGX_TRANSLATE_VERSION = '^13.0.0';
+const NGX_TRANSLATE_VERSION = '^14.0.0';
 
 function createTranslateFiles(host: Tree, options: InitProjectOptions): Rule {
   const appRootPath = getAppRootPath(host, options);
@@ -469,8 +464,8 @@ function addLanguagesToConfigurationFiles(host: Tree, options: InitProjectOption
   };
 }
 
-const NGRX_VERSION = '^12.0.0';
-const NGRX_FORMS_VERSION = '^6.3.5';
+const NGRX_VERSION = '^13.0.2';
+const NGRX_FORMS_VERSION = '^7.0.0';
 
 function createAppStoreFiles(host: Tree, options: InitProjectOptions): Rule {
   const appRootPath = getAppRootPath(host, options);
