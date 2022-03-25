@@ -9,6 +9,9 @@ src/**/*/*.d.ts
 core/**/*/*.js
 core/**/*/*.js.map
 core/**/*/*.d.ts
+core/**/*.js
+core/**/*.js.map
+core/**/*.d.ts
 
 # IDEs
 .idea/
