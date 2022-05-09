@@ -186,10 +186,10 @@ function installLint(host: Tree, options: InitProjectOptions): Rule {
   ]);
 }
 
-const ANGULAR_ESLINT_VERSION = '^13.1.0';
-const TYPESCRIPT_ESLINT_VERSION = '^5.16.0';
-const ESLINT_VERSION = '^8.11.0';
-const ESLINT_PLUGIN_IMPORT_VERSION = '^2.23.4';
+const ANGULAR_ESLINT_VERSION = '^13.2.1';
+const TYPESCRIPT_ESLINT_VERSION = '^5.22.0';
+const ESLINT_VERSION = '^8.15.0';
+const ESLINT_PLUGIN_IMPORT_VERSION = '^2.26.0';
 
 function installLintDependencies(host: Tree, options: InitProjectOptions): Rule {
   return addDepsToPackageJson(
@@ -288,19 +288,19 @@ function removeStandardTestingFiles(host: Tree, options: InitProjectOptions): Ru
   };
 }
 
-const JEST_VERSION = '^27.5.1';
-const JEST_PRESET_ANGULAR_VERSION = '^11.1.1';
-const BABEL_JEST_VERSION = '^27.5.1';
-const TYPES_JEST_VERSION = '^27.4.1';
-const CYPRESS_VERSION = '^9.5.2';
+const JEST_VERSION = '^28.1.0';
+const JEST_PRESET_ANGULAR_VERSION = '^11.1.2';
+const BABEL_JEST_VERSION = '^28.1.0';
+const TYPES_JEST_VERSION = '^27.5.0';
+const CYPRESS_VERSION = '^9.6.0';
 const CYPRESS_IMAGE_SNAPSHOT_VERSION = '^4.0.1';
 const START_SERVER_AND_TEST_VERSION = '^1.14.0';
 const TESTING_LIBRARY_ANGULAR_VERSION = '^11.0.4';
-const TESTING_LIBRARY_JEST_DOM_VERSION = '^5.16.2';
+const TESTING_LIBRARY_JEST_DOM_VERSION = '^5.16.4';
 const NGX_TRANSLATE_TESTING_VERSION = '^6.0.1';
 const NRWL_BUILDERS_VERSION = '^7.8.7';
-const NRWL_CYPRESS_VERSION = '^13.9.4';
-const NRWL_WORKSPACE = '^13.9.4';
+const NRWL_CYPRESS_VERSION = '^14.1.4';
+const NRWL_WORKSPACE = '^14.1.4';
 
 function addJestAndCypressDependenciesToPackageJson(host: Tree, options: InitProjectOptions): Rule {
   return addDepsToPackageJson(
@@ -464,7 +464,7 @@ function addLanguagesToConfigurationFiles(host: Tree, options: InitProjectOption
   };
 }
 
-const NGRX_VERSION = '^13.0.2';
+const NGRX_VERSION = '^13.2.0';
 const NGRX_FORMS_VERSION = '^7.0.0';
 
 function createAppStoreFiles(host: Tree, options: InitProjectOptions): Rule {
